@@ -36,9 +36,14 @@ export function createGraph (nodes, relationships) {
 }
 
 export function mapNodes (nodes) {
-  return nodes.map(
-    node => new Node(node.id, node.labels, mapProperties(node.properties))
-  )
+  return nodes.map(node => {
+    return new Node(
+      node.id,
+      node.labels,
+      mapProperties(node.properties),
+      node.rawProperties
+    )
+  })
 }
 
 export function mapRelationships (relationships, graph) {
