@@ -22,10 +22,11 @@ export default class Node {
   isNode = true
   isRelationship = false
 
-  constructor (id, labels, properties) {
+  constructor (id, labels, properties, rawProperties) {
     this.id = id
     this.labels = labels
     this.propertyMap = properties
+    this.rawProperties = rawProperties
     this.propertyList = (() => {
       const result = []
       for (let key of Object.keys(properties || {})) {

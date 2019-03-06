@@ -83,7 +83,12 @@ export class GraphEventHandler {
       this.selectItem(d)
       this.onItemSelected({
         type: 'node',
-        item: { id: d.id, labels: d.labels, properties: d.propertyList }
+        item: {
+          id: d.id,
+          labels: d.labels,
+          properties: d.propertyList,
+          rawProperties: d.rawProperties
+        }
       })
     } else {
       this.deselectItem()

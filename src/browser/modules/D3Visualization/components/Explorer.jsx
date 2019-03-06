@@ -114,6 +114,7 @@ export class ExplorerComponent extends Component {
 
   onItemSelect (item) {
     this.setState({ selectedItem: item })
+    this.props.setSelectedItem && this.props.setSelectedItem(item)
   }
 
   onGraphModelChange (stats) {

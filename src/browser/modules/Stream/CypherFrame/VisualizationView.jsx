@@ -22,6 +22,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { deepEquals } from 'services/utils'
 import * as grassActions from 'shared/modules/grass/grassDuck'
+import * as itemEditorActions from 'shared/modules/itemEditor/itemEditorDuck'
 import bolt from 'services/bolt/bolt'
 import { withBus } from 'react-suber'
 import { ExplorerComponent } from '../../D3Visualization/components/Explorer'
@@ -143,6 +144,9 @@ export class Visualization extends Component {
     this.graph = graph
     this.autoCompleteRelationships([], this.graph._nodes)
   }
+  setSelectedItem (item) {
+    this.props.setSelectedItem(item)
+  }
   render () {
     if (!this.state.nodes.length) return null
 
@@ -163,6 +167,7 @@ export class Visualization extends Component {
             this.autoCompleteCallback = callback
           }}
           setGraph={this.setGraph.bind(this)}
+          setSelectedItem={this.setSelectedItem.bind(this)}
         />
       </StyledVisContainer>
     )
@@ -179,6 +184,9 @@ const mapDispatchToProps = dispatch => {
   return {
     updateStyle: graphStyleData => {
       dispatch(grassActions.updateGraphStyleData(graphStyleData))
+    },
+    setSelectedItem: item => {
+      dispatch(itemEditorActions.setSelectedItem(item))
     }
   }
 }
