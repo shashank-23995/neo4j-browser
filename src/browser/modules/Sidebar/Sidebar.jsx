@@ -21,6 +21,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DatabaseInfo from '../DatabaseInfo/DatabaseInfo'
+import EditorInfo from '../EditorInfo/EditorInfo'
 import Favorites from './Favorites'
 import Documents from './Documents'
 import About from './About'
@@ -50,6 +51,7 @@ class Sidebar extends Component {
     const openDrawer = this.props.openDrawer
     const onNavClick = this.props.onNavClick
     const DatabaseDrawer = DatabaseInfo
+    const EditorDrawer = EditorInfo
     const FavoritesDrawer = Favorites
     const DocumentsDrawer = Documents
     const SettingsDrawer = Settings
@@ -89,7 +91,7 @@ class Sidebar extends Component {
             title='Editor'
           />
         ),
-        content: DatabaseDrawer
+        content: EditorDrawer
       }
     ]
     const bottomNavItemsList = [
