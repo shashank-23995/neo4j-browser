@@ -222,8 +222,7 @@ export function extractNodesAndRelationshipsFromRecordsForOldVis (
     return {
       id: item.identity.toString(),
       labels: item.labels,
-      properties: itemIntToString(item.properties, converters),
-      rawProperties: item.properties
+      properties: itemIntToString(item.properties, converters)
     }
   })
   let relationships = rawRels
