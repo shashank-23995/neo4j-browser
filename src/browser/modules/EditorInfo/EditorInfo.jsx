@@ -21,6 +21,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
+import * as itemEditorActions from 'shared/modules/itemEditor/itemEditorDuck'
+import * as _ from 'lodash'
 import {
   Drawer,
   DrawerBody,
@@ -29,117 +31,84 @@ import {
   DrawerSectionBody,
   DrawerSubHeader
 } from 'browser-components/drawer'
+import { EditProperties } from './EditProperties'
+import { EditNodes } from './EditNodes'
 
 export class EditorInfo extends Component {
   constructor (props) {
+    console.log('from constructor', props)
     super(props)
-    this.state = {
-      moreStep: 50,
-      labelsMax: 50,
-      relationshipsMax: 50,
-      propertiesMax: 50
-    }
-  }
-  onMoreClick (type) {
-    return num => {
-      withBus
-      this.setState({ [type + 'Max']: this.state[type + 'Max'] + num })
-    }
-  }
-  render () {
-    console.log(this.props.itemEditor.selectedItem)
 
-    return this.props.itemEditor.selectedItem.item.type ? (
-      <Drawer id='db-drawer'>
-        <DrawerHeader>Editor</DrawerHeader>
-        <DrawerBody>
-          <DrawerSection>
-            <DrawerSectionBody>
-              <DrawerSubHeader>
-                {
-                  <div>
-                    {`${this.props.itemEditor.selectedItem.type.toUpperCase()}`}
-                    <ul>
-                      <li>
-                        ID : {`${this.props.itemEditor.selectedItem.item.id}`}
-                      </li>
-                      <li>
-                        Type :{' '}
-                        {`${this.props.itemEditor.selectedItem.item.type}`}
-                      </li>
-                      {this.props.itemEditor.selectedItem.item.properties.map(
-                        (item, index) => (
-                          <p key={index}>
-                            {' '}
-                            <li>
-                              Properties :
-                              <ul>
-                                <li>
-                                  {item.key} : {item.value}
-                                </li>
-                              </ul>
-                            </li>
-                          </p>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                }
-              </DrawerSubHeader>
-            </DrawerSectionBody>
-          </DrawerSection>
-        </DrawerBody>
-      </Drawer>
-    ) : (
-      <Drawer id='db-drawer'>
-        <DrawerHeader>Editor</DrawerHeader>
-        <DrawerBody>
-          <DrawerSection>
-            <DrawerSectionBody>
-              <DrawerSubHeader>
-                {
-                  <div>
-                    {`${this.props.itemEditor.selectedItem.type.toUpperCase()}`}
-                    <ul>
-                      <li>
-                        ID : {`${this.props.itemEditor.selectedItem.item.id}`}
-                      </li>
-                      <li>
-                        Label :{' '}
-                        {`${this.props.itemEditor.selectedItem.item.labels}`}
-                      </li>
-                      <li>
-                        Properties :
-                        {this.props.itemEditor.selectedItem.item.properties.map(
-                          (item, index) => (
-                            <p key={index}>
-                              {' '}
-                              <ul>
-                                <li>
-                                  {item.key} : {item.value}
-                                </li>
-                              </ul>
-                            </p>
-                          )
-                        )}
-                      </li>
-                    </ul>
-                  </div>
-                }
-              </DrawerSubHeader>
-            </DrawerSectionBody>
-          </DrawerSection>
-        </DrawerBody>
-      </Drawer>
+    this.state = {
+      isEditing: false,
+      disabled: true,
+      properties: props.itemEditor.selectedItem
+        ? _.cloneDeep(props.itemEditor.selectedItem.item.properties)
+        : undefined
+    }
+    console.log(this.state)
+  }
+
+  editSelectedItem = item => {
+    console.log('helloo', this.props)
+    this.props.editSelectedItem(item)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    // nextProps will receive all the props of the store....
+    this.setState({
+      // type: nextProps.itemEditor.selectedItem.type,
+      properties: _.cloneDeep(nextProps.itemEditor.selectedItem.item.properties)
+    })
+  }
+
+  handleEdit = () => {
+    this.setState({
+      'disabled': !this.state.disabled
+    })
+  }
+
+  toggleEdit () {
+    this.setState({ isEditing: !this.state.isEditing })
+  }
+
+  render () {
+    console.log(this.state)
+    if (this.state.isEditing) {
+      return <div>edit</div>
+    }
+    return (
+      <div>
+        <div>
+          <EditNodes
+            properties_state_data={this.props.itemEditor}
+            properties={this.state}
+            handleEdit={this.handleEdit}
+            editSelectedItem={this.editSelectedItem}
+          />
+        </div>
+      </div>
     )
   }
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     itemEditor: state.itemEditor
   }
 }
 
-export default withBus(connect(mapStateToProps)(EditorInfo))
+const mapDispatchToProps = dispatch => {
+  return {
+    editSelectedItem: item => {
+      dispatch(itemEditorActions.editSelectedItem(item))
+    }
+  }
+}
+
+export default withBus(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(EditorInfo)
+)
