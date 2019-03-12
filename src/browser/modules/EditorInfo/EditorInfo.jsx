@@ -40,10 +40,20 @@ export class EditorInfo extends Component {
     this.setState({
       properties: _.cloneDeep(nextProps.itemEditor.selectedItem.item.properties)
     })
+
+    if (
+      !this.props.itemEditor.selectedItem ||
+      (nextProps.itemEditor.selectedItem.item.id &&
+        nextProps.itemEditor.selectedItem.item.id !==
+          this.props.itemEditor.selectedItem.item.id)
+    ) {
+      this.props.fetchData(nextProps.itemEditor.selectedItem.item.id)
+    }
   }
 
   /**
-   * toggle the disable state to handle
+   *
+   * Toggle the disable state to handle
    * the edit button
    */
   handleEdit = () => {
@@ -70,14 +80,19 @@ export class EditorInfo extends Component {
 
 const mapStateToProps = state => {
   return {
-    itemEditor: state.itemEditor
+    itemEditor: state.itemEditor,
+    requests: state.requests
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (_, ownProps) => {
   return {
-    editSelectedItem: item => {
-      dispatch(itemEditorActions.editSelectedItem(item))
+    // editSelectedItem: item => {
+    //   dispatch(itemEditorActions.editSelectedItem(item))
+    // },
+    fetchData: id => {
+      const action = itemEditorActions.fetchData(id)
+      ownProps.bus.send(action.type, action)
     }
   }
 }
