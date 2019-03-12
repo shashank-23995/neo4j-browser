@@ -16,6 +16,8 @@ export const setSelectedItem = item => {
   }
 }
 
+// Action for editing selected item
+
 export const editSelectedItem = item => {
   return {
     type: EDIT_SELECTED_ITEM,
@@ -25,13 +27,11 @@ export const editSelectedItem = item => {
 
 // Reducer
 export default function reducer (state = initialState, action) {
-  // console.log(action.type);
   switch (action.type) {
     case SET_SELECTED_ITEM:
       return { ...state, selectedItem: action.item }
     case EDIT_SELECTED_ITEM:
-      console.log('in reducer', action.item)
-      console.log('**', state)
+      // ADD code TODO for updating state to store
       return state
 
     default:

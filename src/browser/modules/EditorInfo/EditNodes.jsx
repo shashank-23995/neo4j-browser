@@ -1,3 +1,8 @@
+/*
+ * This program depicts the behaviour of the edit drawer that displays
+ * and edits the properties selected from the canvas. As this is used
+ * for handling all the rendering and used as component in EditorInfo.
+ */
 import React, { Component } from 'react'
 import {
   Drawer,
@@ -9,13 +14,17 @@ import {
 } from 'browser-components/drawer'
 
 export class EditNodes extends Component {
+  // to toggle the edit button
   handleEdit = () => {
     this.props.handleEdit()
   }
+
+  // method for editing selected item
   editSelectedItem = item => {
     this.props.editSelectedItem(item)
   }
 
+  // handles the changes when editted and change the state
   handleChange = (key, e) => {
     let newProperties = [...this.props.properties.properties]
     for (let i in newProperties) {
@@ -24,14 +33,11 @@ export class EditNodes extends Component {
       }
     }
     this.setState({ properties: newProperties })
-    console.log(this.state)
   }
 
   render () {
-    // console.log(this.props.p);
     let props_p = this.props.properties.properties
     let propes = null
-    console.log(this.props.properties)
     if (this.props.properties.properties) {
       propes = props_p.map((item, index) => (
         <p key={index}>
@@ -78,7 +84,6 @@ export class EditNodes extends Component {
             data-testid='sidebarMetaItem'
             class='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
             onClick={() => {
-              console.log('####')
               this.handleEdit()
             }}
           >
