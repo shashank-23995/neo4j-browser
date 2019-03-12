@@ -23,33 +23,36 @@ export class EditorInfo extends Component {
     }
   }
 
-  // this is the method for dispatch
+  /**
+   * this method is used to dispatch action in reducer
+   * by passing the param (object properties of selected Items)
+   */
+
   editSelectedItem = item => {
     this.props.editSelectedItem(item)
   }
 
-  // changes the props to local state
+  /**
+   *
+   * Changes the props to local state
+   */
   componentWillReceiveProps (nextProps) {
     this.setState({
       properties: _.cloneDeep(nextProps.itemEditor.selectedItem.item.properties)
     })
   }
 
-  // this function is passed to EditNode
+  /**
+   * toggle the disable state to handle
+   * the edit button
+   */
   handleEdit = () => {
     this.setState({
       disabled: !this.state.disabled
     })
   }
 
-  toggleEdit () {
-    this.setState({ isEditing: !this.state.isEditing })
-  }
-
   render () {
-    if (this.state.isEditing) {
-      return <div>edit</div>
-    }
     return (
       <div>
         <div>

@@ -16,7 +16,9 @@ export const setSelectedItem = item => {
   }
 }
 
-// Action for editing selected item
+/**
+ *  Action for editing selected item
+ */
 
 export const editSelectedItem = item => {
   return {
@@ -32,6 +34,7 @@ export default function reducer (state = initialState, action) {
       return { ...state, selectedItem: action.item }
     case EDIT_SELECTED_ITEM:
       // ADD code TODO for updating state to store
+
       return state
 
     default:

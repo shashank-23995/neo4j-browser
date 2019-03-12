@@ -12,19 +12,34 @@ import {
   DrawerSectionBody,
   DrawerSubHeader
 } from 'browser-components/drawer'
+import EditProperties from './EditProperties'
 
 export class EditNodes extends Component {
-  // to toggle the edit button
+  /**
+   * this method toggles the edit button
+   *
+   */
   handleEdit = () => {
     this.props.handleEdit()
   }
 
-  // method for editing selected item
+  /**
+   * method for editing selected item
+   * passes the the object of properties as param to the
+   * function editSelectedItem(item) as props to parent
+   * componet
+   *  */
+
   editSelectedItem = item => {
     this.props.editSelectedItem(item)
   }
 
-  // handles the changes when editted and change the state
+  /**
+   * handles the changes when edited and change the state
+   * it has two params "key" and "e" where key is the index of
+   * properties array and e is the event for the handlechange
+   * */
+
   handleChange = (key, e) => {
     let newProperties = [...this.props.properties.properties]
     for (let i in newProperties) {
@@ -36,32 +51,6 @@ export class EditNodes extends Component {
   }
 
   render () {
-    let props_p = this.props.properties.properties
-    let propes = null
-    if (this.props.properties.properties) {
-      propes = props_p.map((item, index) => (
-        <p key={index}>
-          {' '}
-          <li>
-            {item.key} :{' '}
-            {this.props.properties.disabled ? (
-              item.value
-            ) : (
-              <input
-                id='properties'
-                style={{ color: 'black' }}
-                type='text'
-                value={item.value}
-                onChange={e => {
-                  this.handleChange(item.key, e)
-                }}
-              />
-            )}
-          </li>
-        </p>
-      ))
-    }
-
     let content = null
     if (
       this.props.properties_state_data.selectedItem &&
@@ -70,15 +59,22 @@ export class EditNodes extends Component {
       content = (
         <div>
           {`${this.props.properties_state_data.selectedItem.type.toUpperCase()}`}
+          <hr />
           <ul>
-            <li>
-              ID : {`${this.props.properties_state_data.selectedItem.item.id}`}
-            </li>
             <li>
               Type : {`${this.props.properties_state_data.selectedItem.type}`}
             </li>
-            <li>Properties : {propes}</li>
+            <hr />
+            <li>
+              Properties :{' '}
+              <EditProperties
+                properties={this.props.properties.properties}
+                handleChange={this.handleChange}
+                disabled={this.props.properties.disabled}
+              />
+            </li>
           </ul>
+          <hr />
 
           <div
             data-testid='sidebarMetaItem'
