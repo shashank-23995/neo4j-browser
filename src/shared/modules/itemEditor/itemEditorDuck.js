@@ -36,10 +36,11 @@ export const editSelectedItem = item => {
  * Fetch data action creator
  * @param {*} id The id of the node.
  */
-export const fetchData = id => {
+export const fetchData = (id, entityType) => {
   return {
     type: FETCH_DATA,
-    id
+    id,
+    entityType
   }
 }
 
@@ -70,6 +71,9 @@ export const handleFetchDataEpic = (action$, store) =>
     let cmd = `MATCH (a) where id(a)=${
       action.id
     } RETURN a, ((a)-->()) , ((a)<--())`
+    if (action.entityType === 'relationship') {
+      cmd = `MATCH ()-[r]->() where id(r)=${action.id} RETURN r`
+    }
     let newAction = _.cloneDeep(action)
     newAction.cmd = cmd
     let [id, request] = handleCypherCommand(newAction, store.dispatch)

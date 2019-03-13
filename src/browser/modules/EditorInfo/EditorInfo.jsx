@@ -47,7 +47,10 @@ export class EditorInfo extends Component {
         nextProps.itemEditor.selectedItem.item.id !==
           this.props.itemEditor.selectedItem.item.id)
     ) {
-      this.props.fetchData(nextProps.itemEditor.selectedItem.item.id)
+      this.props.fetchData(
+        nextProps.itemEditor.selectedItem.item.id,
+        nextProps.itemEditor.selectedItem.type
+      )
     }
   }
 
@@ -90,8 +93,8 @@ const mapDispatchToProps = (_, ownProps) => {
     // editSelectedItem: item => {
     //   dispatch(itemEditorActions.editSelectedItem(item))
     // },
-    fetchData: id => {
-      const action = itemEditorActions.fetchData(id)
+    fetchData: (id, entityType) => {
+      const action = itemEditorActions.fetchData(id, entityType)
       ownProps.bus.send(action.type, action)
     }
   }
