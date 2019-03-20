@@ -13,12 +13,10 @@ import { EditNodes } from './EditNodes'
 export class EditorInfo extends Component {
   constructor (props) {
     super(props)
-
     this.state = {
-      isEditing: false,
       disabled: true,
-      properties: props.itemEditor.selectedItem
-        ? _.cloneDeep(props.itemEditor.selectedItem.item.properties)
+      properties: props.itemEditor.neo4jItem
+        ? _.cloneDeep(props.itemEditor.neo4jItem._fields)
         : undefined
     }
   }
@@ -38,19 +36,20 @@ export class EditorInfo extends Component {
    */
   componentWillReceiveProps (nextProps) {
     this.setState({
-      properties: _.cloneDeep(nextProps.itemEditor.selectedItem.item.properties)
+      properties: _.cloneDeep(nextProps.itemEditor.neo4jItem)
     })
-
-    if (
-      !this.props.itemEditor.selectedItem ||
-      (nextProps.itemEditor.selectedItem.item.id &&
-        nextProps.itemEditor.selectedItem.item.id !==
-          this.props.itemEditor.selectedItem.item.id)
-    ) {
-      this.props.fetchData(nextProps.itemEditor.selectedItem.item.id)
-    }
   }
 
+  setParentComponentState = newProperties => {
+    let newstate = _.cloneDeep(this.state)
+
+    Object.keys(newstate).forEach(function (k, i) {
+      if (newstate[k]) {
+        newstate[k]._fields[0] = newProperties
+      }
+    })
+    this.setState(newstate)
+  }
   /**
    *
    * Toggle the disable state to handle
@@ -71,6 +70,9 @@ export class EditorInfo extends Component {
             properties={this.state}
             handleEdit={this.handleEdit}
             editSelectedItem={this.editSelectedItem}
+            selectedItem={this.props.itemEditor.selectedItem}
+            setParentComponentState={this.setParentComponentState}
+            neo4jItem={this.props.itemEditor.neo4jItem}
           />
         </div>
       </div>
@@ -81,18 +83,14 @@ export class EditorInfo extends Component {
 const mapStateToProps = state => {
   return {
     itemEditor: state.itemEditor,
+    neo4jItem: state.itemEditor.neo4jItem,
     requests: state.requests
   }
 }
-
-const mapDispatchToProps = (_, ownProps) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    // editSelectedItem: item => {
-    //   dispatch(itemEditorActions.editSelectedItem(item))
-    // },
-    fetchData: id => {
-      const action = itemEditorActions.fetchData(id)
-      ownProps.bus.send(action.type, action)
+    editSelectedItem: item => {
+      dispatch(itemEditorActions.editSelectedItem(item))
     }
   }
 }

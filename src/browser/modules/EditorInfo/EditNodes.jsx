@@ -13,6 +13,7 @@ import {
   DrawerSubHeader
 } from 'browser-components/drawer'
 import EditProperties from './EditProperties'
+import * as _ from 'lodash'
 
 export class EditNodes extends Component {
   /**
@@ -30,8 +31,10 @@ export class EditNodes extends Component {
    * componet
    *  */
 
-  editSelectedItem = item => {
-    this.props.editSelectedItem(item)
+  editSelectedItem = () => {
+    let editedItem = _.cloneDeep(this.props.selectedItem)
+    editedItem.item = this.state
+    this.props.editSelectedItem(editedItem)
   }
 
   /**
@@ -41,26 +44,31 @@ export class EditNodes extends Component {
    * */
 
   handleChange = (key, e) => {
-    let newProperties = [...this.props.properties.properties]
-    for (let i in newProperties) {
-      if (newProperties[i].key === key) {
-        newProperties[i].value = e.target.value
+    let newProperties = _.cloneDeep(this.props.properties.properties._fields[0])
+    for (const i in newProperties) {
+      if (key in newProperties[i]) {
+        let obj = { [key]: e.target.value }
+        Object.assign(newProperties[i], obj)
       }
     }
-    this.setState({ properties: newProperties })
+    this.props.setParentComponentState(newProperties)
   }
 
   render () {
     let content = null
     if (
-      this.props.properties_state_data.selectedItem &&
+      this.props.neo4jItem &&
       this.props.properties_state_data.selectedItem.type !== 'canvas'
     ) {
       content = (
         <div>
-          {`${this.props.properties_state_data.selectedItem.type.toUpperCase()}`}
+          {`${this.props.neo4jItem._fields[0].labels}`}
           <hr />
           <ul>
+            <li>
+              id:
+              {`${this.props.neo4jItem._fields[0].identity}`}
+            </li>
             <li>
               Type : {`${this.props.properties_state_data.selectedItem.type}`}
             </li>
@@ -71,6 +79,7 @@ export class EditNodes extends Component {
                 properties={this.props.properties.properties}
                 handleChange={this.handleChange}
                 disabled={this.props.properties.disabled}
+                neo4jItem={this.props.neo4jItem._fields}
               />
             </li>
           </ul>
@@ -78,7 +87,7 @@ export class EditNodes extends Component {
 
           <div
             data-testid='sidebarMetaItem'
-            class='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
+            className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
             onClick={() => {
               this.handleEdit()
             }}
@@ -87,7 +96,7 @@ export class EditNodes extends Component {
           </div>
           <div
             data-testid='sidebarMetaItem'
-            class='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
+            className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
             onClick={this.editSelectedItem}
           >
             update
