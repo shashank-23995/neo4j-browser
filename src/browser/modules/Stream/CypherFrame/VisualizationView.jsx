@@ -187,8 +187,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     setSelectedItem: item => {
       dispatch(itemEditorActions.setSelectedItem(item))
-      const action = itemEditorActions.fetchData(item.item.id)
-      ownProps.bus.send(action.type, action)
+      // const action = itemEditorActions.fetchData(item.item.id);
+      // ownProps.bus.send(action.type, action);
     }
   }
 }

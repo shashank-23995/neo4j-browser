@@ -2,6 +2,8 @@
  * This program depicts the behaviour of the edit drawer that displays
  * and edits the properties selected from the canvas. As this is used
  * for handling all the rendering and used as component in EditorInfo.
+ * All the props are coming from the parent state of EditorInfo and
+ * are passed on to the EditProperties component to render properties
  */
 import React, { Component } from 'react'
 import {
@@ -32,9 +34,8 @@ export class EditNodes extends Component {
    *  */
 
   editSelectedItem = () => {
-    let editedItem = _.cloneDeep(this.props.selectedItem)
-    editedItem.item = this.state
-    this.props.editSelectedItem(editedItem)
+    // let editedItem = _.cloneDeep(this.props.neo4jItem);
+    this.props.editSelectedItem()
   }
 
   /**
@@ -57,17 +58,19 @@ export class EditNodes extends Component {
   render () {
     let content = null
     if (
-      this.props.neo4jItem &&
+      this.props.properties_state_data.neo4jItem &&
       this.props.properties_state_data.selectedItem.type !== 'canvas'
     ) {
       content = (
         <div>
-          {`${this.props.neo4jItem._fields[0].labels}`}
+          {`${this.props.properties_state_data.neo4jItem._fields[0].labels}`}
           <hr />
           <ul>
             <li>
               id:
-              {`${this.props.neo4jItem._fields[0].identity}`}
+              {`${
+                this.props.properties_state_data.neo4jItem._fields[0].identity
+              }`}
             </li>
             <li>
               Type : {`${this.props.properties_state_data.selectedItem.type}`}
@@ -79,7 +82,6 @@ export class EditNodes extends Component {
                 properties={this.props.properties.properties}
                 handleChange={this.handleChange}
                 disabled={this.props.properties.disabled}
-                neo4jItem={this.props.neo4jItem._fields}
               />
             </li>
           </ul>

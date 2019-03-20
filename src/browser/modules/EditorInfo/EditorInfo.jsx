@@ -20,14 +20,13 @@ export class EditorInfo extends Component {
         : undefined
     }
   }
-
   /**
    * this method is used to dispatch action in reducer
    * by passing the param (object properties of selected Items)
    */
 
-  editSelectedItem = item => {
-    this.props.editSelectedItem(item)
+  editSelectedItem = () => {
+    this.props.editSelectedItem(this.state.properties)
   }
 
   /**
@@ -38,6 +37,14 @@ export class EditorInfo extends Component {
     this.setState({
       properties: _.cloneDeep(nextProps.itemEditor.neo4jItem)
     })
+    if (
+      !this.props.itemEditor.selectedItem ||
+      (nextProps.itemEditor.selectedItem.item.id &&
+        nextProps.itemEditor.selectedItem.item.id !==
+          this.props.itemEditor.selectedItem.item.id)
+    ) {
+      this.props.fetchData(nextProps.itemEditor.selectedItem.item.id)
+    }
   }
 
   setParentComponentState = newProperties => {
@@ -62,6 +69,7 @@ export class EditorInfo extends Component {
   }
 
   render () {
+    console.log('Props from state==>>', this.state.properties)
     return (
       <div>
         <div>
@@ -70,9 +78,7 @@ export class EditorInfo extends Component {
             properties={this.state}
             handleEdit={this.handleEdit}
             editSelectedItem={this.editSelectedItem}
-            selectedItem={this.props.itemEditor.selectedItem}
             setParentComponentState={this.setParentComponentState}
-            neo4jItem={this.props.itemEditor.neo4jItem}
           />
         </div>
       </div>
@@ -91,6 +97,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     editSelectedItem: item => {
       dispatch(itemEditorActions.editSelectedItem(item))
+    },
+    fetchData: id => {
+      const action = itemEditorActions.fetchData(id)
+      ownProps.bus.send(action.type, action)
     }
   }
 }

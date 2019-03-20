@@ -49,9 +49,7 @@ export default function reducer (state = initialState, action) {
     case SET_SELECTED_ITEM:
       return { ...state, selectedItem: action.item }
     case EDIT_SELECTED_ITEM:
-      // TODO add code for updating state to store
-      // console.log(state.selectedItem.item.properties[0].key);
-      return { ...state, selectedItem: action.item }
+      return { ...state, neo4jItem: action.item }
 
     case SET_NEO4J_ITEM:
       return { ...state, neo4jItem: action.item }
