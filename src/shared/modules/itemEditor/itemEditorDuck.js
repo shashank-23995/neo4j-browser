@@ -50,8 +50,8 @@ export default function reducer (state = initialState, action) {
     case SET_SELECTED_ITEM:
       return { ...state, selectedItem: action.item }
     case EDIT_SELECTED_ITEM:
-      // TODO add code for updating state to store
-      return state
+      return { ...state, neo4jItem: action.item }
+
     case SET_NEO4J_ITEM:
       return { ...state, neo4jItem: action.item }
 
@@ -83,6 +83,30 @@ export const handleFetchDataEpic = (action$, store) =>
           console.log(res.records[0])
           store.dispatch({ type: SET_NEO4J_ITEM, item: res.records[0] })
         }
+        return noop
+      })
+      .catch(function (e) {
+        throw e
+      })
+  })
+
+// Epic
+
+export const handleUpdateDataEpic = (action$, store) =>
+  action$.ofType(FETCH_DATA).mergeMap(action => {
+    const noop = { type: 'NOOP' }
+    // console.log("*******");
+    let cmd = `MERGE (n) WHERE id(n)=${action.id}
+      SET n ={${state.selectedItem.item.properties[0].key}:${
+  state.selectedItem.item.properties[0].value
+}}
+      RETURN n`
+    let newAction = _.cloneDeep(action)
+    newAction.cmd = cmd
+    let [id, request] = handleCypherCommand(newAction, store.dispatch)
+    return request
+      .then(res => {
+        console.log(res.records[0])
         return noop
       })
       .catch(function (e) {

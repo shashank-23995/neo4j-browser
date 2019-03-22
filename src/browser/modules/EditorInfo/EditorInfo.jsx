@@ -13,23 +13,20 @@ import { EditNodes } from './EditNodes'
 export class EditorInfo extends Component {
   constructor (props) {
     super(props)
-
     this.state = {
-      isEditing: false,
       disabled: true,
-      properties: props.itemEditor.selectedItem
-        ? _.cloneDeep(props.itemEditor.selectedItem.item.properties)
+      properties: props.itemEditor.neo4jItem
+        ? _.cloneDeep(props.itemEditor.neo4jItem)
         : undefined
     }
   }
-
   /**
    * this method is used to dispatch action in reducer
    * by passing the param (object properties of selected Items)
    */
 
-  editSelectedItem = item => {
-    this.props.editSelectedItem(item)
+  editSelectedItem = () => {
+    this.props.editSelectedItem(this.state.properties)
   }
 
   /**
@@ -38,22 +35,26 @@ export class EditorInfo extends Component {
    */
   componentWillReceiveProps (nextProps) {
     this.setState({
-      properties: _.cloneDeep(nextProps.itemEditor.selectedItem.item.properties)
+      properties: _.cloneDeep(nextProps.itemEditor.neo4jItem)
     })
-
-    if (
-      !this.props.itemEditor.selectedItem ||
-      (nextProps.itemEditor.selectedItem.item.id &&
-        nextProps.itemEditor.selectedItem.item.id !==
-          this.props.itemEditor.selectedItem.item.id)
-    ) {
-      this.props.fetchData(
-        nextProps.itemEditor.selectedItem.item.id,
-        nextProps.itemEditor.selectedItem.type
-      )
-    }
   }
 
+  /**
+   *  This function is used to set properties of the state
+   * when changes are done while  child component changes data
+   *
+   */
+
+  setParentComponentState = newProperties => {
+    let newstate = _.cloneDeep(this.state)
+
+    Object.keys(newstate).forEach(function (k) {
+      if (newstate[k]) {
+        newstate[k]._fields[0] = newProperties
+      }
+    })
+    this.setState(newstate)
+  }
   /**
    *
    * Toggle the disable state to handle
@@ -74,6 +75,7 @@ export class EditorInfo extends Component {
             properties={this.state}
             handleEdit={this.handleEdit}
             editSelectedItem={this.editSelectedItem}
+            setParentComponentState={this.setParentComponentState}
           />
         </div>
       </div>
@@ -84,18 +86,14 @@ export class EditorInfo extends Component {
 const mapStateToProps = state => {
   return {
     itemEditor: state.itemEditor,
+    neo4jItem: state.itemEditor.neo4jItem,
     requests: state.requests
   }
 }
-
-const mapDispatchToProps = (_, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
-    // editSelectedItem: item => {
-    //   dispatch(itemEditorActions.editSelectedItem(item))
-    // },
-    fetchData: (id, entityType) => {
-      const action = itemEditorActions.fetchData(id, entityType)
-      ownProps.bus.send(action.type, action)
+    editSelectedItem: item => {
+      dispatch(itemEditorActions.editSelectedItem(item))
     }
   }
 }
