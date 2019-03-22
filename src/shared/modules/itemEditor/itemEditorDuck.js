@@ -25,7 +25,7 @@ export const setSelectedItem = item => {
 /**
  *  Action for editing selected item
  */
-export const editSelectedItem = item => {
+export const setEditSelectedItem = item => {
   return {
     type: EDIT_SELECTED_ITEM,
     item
@@ -80,33 +80,8 @@ export const handleFetchDataEpic = (action$, store) =>
     return request
       .then(res => {
         if (res && res.records && res.records.length) {
-          console.log(res.records[0])
           store.dispatch({ type: SET_NEO4J_ITEM, item: res.records[0] })
         }
-        return noop
-      })
-      .catch(function (e) {
-        throw e
-      })
-  })
-
-// Epic
-
-export const handleUpdateDataEpic = (action$, store) =>
-  action$.ofType(FETCH_DATA).mergeMap(action => {
-    const noop = { type: 'NOOP' }
-    // console.log("*******");
-    let cmd = `MERGE (n) WHERE id(n)=${action.id}
-      SET n ={${state.selectedItem.item.properties[0].key}:${
-  state.selectedItem.item.properties[0].value
-}}
-      RETURN n`
-    let newAction = _.cloneDeep(action)
-    newAction.cmd = cmd
-    let [id, request] = handleCypherCommand(newAction, store.dispatch)
-    return request
-      .then(res => {
-        console.log(res.records[0])
         return noop
       })
       .catch(function (e) {

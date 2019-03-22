@@ -14,7 +14,6 @@ export class EditorInfo extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isEditing: false,
       disabled: true,
       item: props.itemEditor.neo4jItem
         ? _.cloneDeep(props.itemEditor.neo4jItem)

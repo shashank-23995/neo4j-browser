@@ -2,8 +2,6 @@
  * This program depicts the behaviour of the edit drawer that displays
  * and edits the properties selected from the canvas. As this is used
  * for handling all the rendering and used as component in EditorInfo.
- * All the props are coming from the parent state of EditorInfo and
- * are passed on to the EditProperties component to render properties
  */
 import React, { Component } from 'react'
 import {
@@ -28,32 +26,30 @@ export class EditNodes extends Component {
 
   /**
    * method for editing selected item
-   * passes the the object of properties as param to the
-   * function editSelectedItem(item) as props to parent
+   * function setEditSelectedItem() as props to parent
    * componet
    *  */
 
-  editSelectedItem = () => {
-    // let editedItem = _.cloneDeep(this.props.neo4jItem);
-    this.props.editSelectedItem()
+  setEditSelectedItem = () => {
+    this.props.setEditSelectedItem()
   }
 
   /**
-   * handles the changes when edited and change the state by invoking
-   * parent function setParentComponentState,
+   * Handles the changes when edited and change the state by invoking
+   * parent function setParentItemState,
    * handleChange function has two params "key" and "e" where key is the index of
    * properties key and e is the event for the handlechange
    * */
 
   handleChange = (key, e) => {
-    let newProperties = _.cloneDeep(this.props.properties.properties._fields[0])
+    let newProperties = _.cloneDeep(this.props.item.item._fields[0])
     for (const i in newProperties) {
       if (key in newProperties[i]) {
         let obj = { [key]: e.target.value }
-        Object.assign(newProperties[i], obj)
+        _.assign(newProperties[i], obj)
       }
     }
-    this.props.setParentComponentState(newProperties)
+    this.props.setParentItemState(newProperties)
   }
 
   render () {
@@ -64,15 +60,9 @@ export class EditNodes extends Component {
     ) {
       content = (
         <div>
-          {`${this.props.properties_state_data.neo4jItem._fields[0].labels}`}
+          {`${this.props.properties_state_data.selectedItem.type.toUpperCase()}`}
           <hr />
           <ul>
-            <li>
-              id:
-              {`${
-                this.props.properties_state_data.neo4jItem._fields[0].identity
-              }`}
-            </li>
             <li>
               Type : {`${this.props.properties_state_data.selectedItem.type}`}
             </li>
@@ -80,9 +70,9 @@ export class EditNodes extends Component {
             <li>
               Properties :{' '}
               <EditProperties
-                properties={this.props.properties}
+                item={this.props.item}
                 handleChange={this.handleChange}
-                disabled={this.props.properties.disabled}
+                disabled={this.props.item.disabled}
               />
             </li>
           </ul>
@@ -95,12 +85,12 @@ export class EditNodes extends Component {
               this.handleEdit()
             }}
           >
-            {this.props.properties.disabled ? 'Edit' : 'Done'}
+            {this.props.item.disabled ? 'Edit' : 'Done'}
           </div>
           <div
             data-testid='sidebarMetaItem'
             className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
-            onClick={this.editSelectedItem}
+            onClick={this.setEditSelectedItem}
           >
             update
           </div>
