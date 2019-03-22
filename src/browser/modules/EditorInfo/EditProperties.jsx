@@ -1,8 +1,7 @@
 import React from 'react'
 
 function EditProperties (props) {
-  console.log('props-->', props)
-  const properties = props.properties._fields[0].properties
+  const properties = props.properties.properties._fields[0].properties
   return (
     <div>
       {properties &&

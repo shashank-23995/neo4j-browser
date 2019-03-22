@@ -39,9 +39,10 @@ export class EditNodes extends Component {
   }
 
   /**
-   * handles the changes when edited and change the state
-   * it has two params "key" and "e" where key is the index of
-   * properties array and e is the event for the handlechange
+   * handles the changes when edited and change the state by invoking
+   * parent function setParentComponentState,
+   * handleChange function has two params "key" and "e" where key is the index of
+   * properties key and e is the event for the handlechange
    * */
 
   handleChange = (key, e) => {
@@ -79,7 +80,7 @@ export class EditNodes extends Component {
             <li>
               Properties :{' '}
               <EditProperties
-                properties={this.props.properties.properties}
+                properties={this.props.properties}
                 handleChange={this.handleChange}
                 disabled={this.props.properties.disabled}
               />

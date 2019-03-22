@@ -16,7 +16,7 @@ export class EditorInfo extends Component {
     this.state = {
       disabled: true,
       properties: props.itemEditor.neo4jItem
-        ? _.cloneDeep(props.itemEditor.neo4jItem._fields)
+        ? _.cloneDeep(props.itemEditor.neo4jItem)
         : undefined
     }
   }
@@ -37,20 +37,18 @@ export class EditorInfo extends Component {
     this.setState({
       properties: _.cloneDeep(nextProps.itemEditor.neo4jItem)
     })
-    if (
-      !this.props.itemEditor.selectedItem ||
-      (nextProps.itemEditor.selectedItem.item.id &&
-        nextProps.itemEditor.selectedItem.item.id !==
-          this.props.itemEditor.selectedItem.item.id)
-    ) {
-      this.props.fetchData(nextProps.itemEditor.selectedItem.item.id)
-    }
   }
+
+  /**
+   *  This function is used to set properties of the state
+   * when changes are done while  child component changes data
+   *
+   */
 
   setParentComponentState = newProperties => {
     let newstate = _.cloneDeep(this.state)
 
-    Object.keys(newstate).forEach(function (k, i) {
+    Object.keys(newstate).forEach(function (k) {
       if (newstate[k]) {
         newstate[k]._fields[0] = newProperties
       }
@@ -69,7 +67,6 @@ export class EditorInfo extends Component {
   }
 
   render () {
-    console.log('Props from state==>>', this.state.properties)
     return (
       <div>
         <div>
@@ -93,14 +90,10 @@ const mapStateToProps = state => {
     requests: state.requests
   }
 }
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
     editSelectedItem: item => {
       dispatch(itemEditorActions.editSelectedItem(item))
-    },
-    fetchData: id => {
-      const action = itemEditorActions.fetchData(id)
-      ownProps.bus.send(action.type, action)
     }
   }
 }
