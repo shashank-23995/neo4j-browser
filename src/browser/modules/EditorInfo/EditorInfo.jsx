@@ -14,19 +14,20 @@ export class EditorInfo extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      isEditing: false,
       disabled: true,
-      properties: props.itemEditor.neo4jItem
+      item: props.itemEditor.neo4jItem
         ? _.cloneDeep(props.itemEditor.neo4jItem)
         : undefined
     }
   }
+
   /**
    * this method is used to dispatch action in reducer
-   * by passing the param (object properties of selected Items)
    */
 
-  editSelectedItem = () => {
-    this.props.editSelectedItem(this.state.properties)
+  setEditSelectedItem = () => {
+    this.props.setEditSelectedItem(this.state.item)
   }
 
   /**
@@ -35,17 +36,17 @@ export class EditorInfo extends Component {
    */
   componentWillReceiveProps (nextProps) {
     this.setState({
-      properties: _.cloneDeep(nextProps.itemEditor.neo4jItem)
+      item: _.cloneDeep(nextProps.itemEditor.neo4jItem)
     })
   }
 
   /**
-   *  This function is used to set properties of the state
+   *  This function is used to set item of the state
    * when changes are done while  child component changes data
    *
    */
 
-  setParentComponentState = newProperties => {
+  setParentItemState = newProperties => {
     let newstate = _.cloneDeep(this.state)
 
     Object.keys(newstate).forEach(function (k) {
@@ -72,10 +73,10 @@ export class EditorInfo extends Component {
         <div>
           <EditNodes
             properties_state_data={this.props.itemEditor}
-            properties={this.state}
+            item={this.state}
             handleEdit={this.handleEdit}
-            editSelectedItem={this.editSelectedItem}
-            setParentComponentState={this.setParentComponentState}
+            setEditSelectedItem={this.setEditSelectedItem}
+            setParentItemState={this.setParentItemState}
           />
         </div>
       </div>
@@ -86,14 +87,13 @@ export class EditorInfo extends Component {
 const mapStateToProps = state => {
   return {
     itemEditor: state.itemEditor,
-    neo4jItem: state.itemEditor.neo4jItem,
     requests: state.requests
   }
 }
 const mapDispatchToProps = dispatch => {
   return {
-    editSelectedItem: item => {
-      dispatch(itemEditorActions.editSelectedItem(item))
+    setEditSelectedItem: item => {
+      dispatch(itemEditorActions.setEditSelectedItem(item))
     }
   }
 }
