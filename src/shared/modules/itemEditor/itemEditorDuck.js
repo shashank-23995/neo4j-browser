@@ -25,7 +25,7 @@ export const setSelectedItem = item => {
 /**
  *  Action for editing selected item
  */
-export const setEditSelectedItem = item => {
+export const editSelectedItem = item => {
   return {
     type: EDIT_SELECTED_ITEM,
     item
@@ -50,8 +50,8 @@ export default function reducer (state = initialState, action) {
     case SET_SELECTED_ITEM:
       return { ...state, selectedItem: action.item }
     case EDIT_SELECTED_ITEM:
-      return { ...state, neo4jItem: action.item }
-
+      // TODO add code for updating state to store
+      return state
     case SET_NEO4J_ITEM:
       return { ...state, neo4jItem: action.item }
 
@@ -80,6 +80,7 @@ export const handleFetchDataEpic = (action$, store) =>
     return request
       .then(res => {
         if (res && res.records && res.records.length) {
+          console.log(res.records[0])
           store.dispatch({ type: SET_NEO4J_ITEM, item: res.records[0] })
         }
         return noop

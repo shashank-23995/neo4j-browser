@@ -13,7 +13,6 @@ import {
   DrawerSubHeader
 } from 'browser-components/drawer'
 import EditProperties from './EditProperties'
-import * as _ from 'lodash'
 
 export class EditNodes extends Component {
   /**
@@ -26,36 +25,35 @@ export class EditNodes extends Component {
 
   /**
    * method for editing selected item
-   * function setEditSelectedItem() as props to parent
+   * passes the the object of properties as param to the
+   * function editSelectedItem(item) as props to parent
    * componet
    *  */
 
-  setEditSelectedItem = () => {
-    this.props.setEditSelectedItem()
+  editSelectedItem = item => {
+    this.props.editSelectedItem(item)
   }
 
   /**
-   * Handles the changes when edited and change the state by invoking
-   * parent function setParentItemState,
-   * handleChange function has two params "key" and "e" where key is the index of
-   * properties key and e is the event for the handlechange
+   * handles the changes when edited and change the state
+   * it has two params "key" and "e" where key is the index of
+   * properties array and e is the event for the handlechange
    * */
 
   handleChange = (key, e) => {
-    let newProperties = _.cloneDeep(this.props.item.item._fields[0])
-    for (const i in newProperties) {
-      if (key in newProperties[i]) {
-        let obj = { [key]: e.target.value }
-        _.assign(newProperties[i], obj)
+    let newProperties = [...this.props.properties.properties]
+    for (let i in newProperties) {
+      if (newProperties[i].key === key) {
+        newProperties[i].value = e.target.value
       }
     }
-    this.props.setParentItemState(newProperties)
+    this.setState({ properties: newProperties })
   }
 
   render () {
     let content = null
     if (
-      this.props.properties_state_data.neo4jItem &&
+      this.props.properties_state_data.selectedItem &&
       this.props.properties_state_data.selectedItem.type !== 'canvas'
     ) {
       content = (
@@ -70,9 +68,9 @@ export class EditNodes extends Component {
             <li>
               Properties :{' '}
               <EditProperties
-                item={this.props.item}
+                properties={this.props.properties.properties}
                 handleChange={this.handleChange}
-                disabled={this.props.item.disabled}
+                disabled={this.props.properties.disabled}
               />
             </li>
           </ul>
@@ -80,17 +78,17 @@ export class EditNodes extends Component {
 
           <div
             data-testid='sidebarMetaItem'
-            className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
+            class='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
             onClick={() => {
               this.handleEdit()
             }}
           >
-            {this.props.item.disabled ? 'Edit' : 'Done'}
+            {this.props.properties.disabled ? 'Edit' : 'Done'}
           </div>
           <div
             data-testid='sidebarMetaItem'
-            className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
-            onClick={this.setEditSelectedItem}
+            class='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
+            onClick={this.editSelectedItem}
           >
             update
           </div>

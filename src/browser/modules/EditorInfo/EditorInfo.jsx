@@ -13,21 +13,23 @@ import { EditNodes } from './EditNodes'
 export class EditorInfo extends Component {
   constructor (props) {
     super(props)
+
     this.state = {
       isEditing: false,
       disabled: true,
-      item: props.itemEditor.neo4jItem
-        ? _.cloneDeep(props.itemEditor.neo4jItem)
+      properties: props.itemEditor.selectedItem
+        ? _.cloneDeep(props.itemEditor.selectedItem.item.properties)
         : undefined
     }
   }
 
   /**
    * this method is used to dispatch action in reducer
+   * by passing the param (object properties of selected Items)
    */
 
-  setEditSelectedItem = () => {
-    this.props.setEditSelectedItem(this.state.item)
+  editSelectedItem = item => {
+    this.props.editSelectedItem(item)
   }
 
   /**
@@ -36,26 +38,22 @@ export class EditorInfo extends Component {
    */
   componentWillReceiveProps (nextProps) {
     this.setState({
-      item: _.cloneDeep(nextProps.itemEditor.neo4jItem)
+      properties: _.cloneDeep(nextProps.itemEditor.selectedItem.item.properties)
     })
+
+    if (
+      !this.props.itemEditor.selectedItem ||
+      (nextProps.itemEditor.selectedItem.item.id &&
+        nextProps.itemEditor.selectedItem.item.id !==
+          this.props.itemEditor.selectedItem.item.id)
+    ) {
+      this.props.fetchData(
+        nextProps.itemEditor.selectedItem.item.id,
+        nextProps.itemEditor.selectedItem.type
+      )
+    }
   }
 
-  /**
-   *  This function is used to set item of the state
-   * when changes are done while  child component changes data
-   *
-   */
-
-  setParentItemState = newProperties => {
-    let newstate = _.cloneDeep(this.state)
-
-    Object.keys(newstate).forEach(function (k) {
-      if (newstate[k]) {
-        newstate[k]._fields[0] = newProperties
-      }
-    })
-    this.setState(newstate)
-  }
   /**
    *
    * Toggle the disable state to handle
@@ -73,10 +71,9 @@ export class EditorInfo extends Component {
         <div>
           <EditNodes
             properties_state_data={this.props.itemEditor}
-            item={this.state}
+            properties={this.state}
             handleEdit={this.handleEdit}
-            setEditSelectedItem={this.setEditSelectedItem}
-            setParentItemState={this.setParentItemState}
+            editSelectedItem={this.editSelectedItem}
           />
         </div>
       </div>
@@ -90,10 +87,15 @@ const mapStateToProps = state => {
     requests: state.requests
   }
 }
-const mapDispatchToProps = dispatch => {
+
+const mapDispatchToProps = (_, ownProps) => {
   return {
-    setEditSelectedItem: item => {
-      dispatch(itemEditorActions.setEditSelectedItem(item))
+    // editSelectedItem: item => {
+    //   dispatch(itemEditorActions.editSelectedItem(item))
+    // },
+    fetchData: (id, entityType) => {
+      const action = itemEditorActions.fetchData(id, entityType)
+      ownProps.bus.send(action.type, action)
     }
   }
 }
