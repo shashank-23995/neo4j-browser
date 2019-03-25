@@ -56,6 +56,19 @@ export class EditorInfo extends Component {
     })
     this.setState(newstate)
   }
+
+  /**
+   *  This function is used to set new added propeties
+   * to the component state.
+   *
+   */
+
+  setNewPropsToState = newProperties => {
+    let newstate = _.cloneDeep(this.state)
+    newstate.item._fields[0].properties = newProperties
+    this.setState(newstate)
+  }
+
   /**
    *
    * Toggle the disable state to handle
@@ -77,6 +90,7 @@ export class EditorInfo extends Component {
             handleEdit={this.handleEdit}
             setEditSelectedItem={this.setEditSelectedItem}
             setParentItemState={this.setParentItemState}
+            setNewPropsToState={this.setNewPropsToState}
           />
         </div>
       </div>
