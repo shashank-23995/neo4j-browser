@@ -70,6 +70,7 @@ export class EditNodes extends Component {
             <li>
               Properties :{' '}
               <EditProperties
+                itemProperties={this.props.item.item._fields[0].properties}
                 item={this.props.item}
                 handleChange={this.handleChange}
                 disabled={this.props.item.disabled}

@@ -1,16 +1,19 @@
 import React from 'react'
 
 function EditProperties (props) {
-  const item = props.item.item._fields[0].properties
+  const itemProperties = props.itemProperties
   return (
     <div>
-      {item &&
-        Object.keys(item).map(key => {
+      {itemProperties &&
+        Object.keys(itemProperties).map(key => {
           let value
-          if (typeof item[key] === 'object') {
-            value = item[key].high == 0 ? item[key].low : item[key].high
+          if (typeof itemProperties[key] === 'object') {
+            value =
+              itemProperties[key].high == 0
+                ? itemProperties[key].low
+                : itemProperties[key].high
           } else {
-            value = item[key]
+            value = itemProperties[key]
           }
 
           return (
@@ -24,7 +27,7 @@ function EditProperties (props) {
                     id='item'
                     style={{ color: 'black' }}
                     type='text'
-                    value={item[key]}
+                    value={itemProperties[key]}
                     onChange={e => {
                       props.handleChange(key, e)
                     }}

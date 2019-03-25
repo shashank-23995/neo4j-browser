@@ -68,6 +68,12 @@ export default function reducer (state = initialState, action) {
 export const handleFetchDataEpic = (action$, store) =>
   action$.ofType(FETCH_DATA).mergeMap(action => {
     const noop = { type: 'NOOP' }
+    if (!action.id) {
+      return Promise.resolve().then(() => {
+        store.dispatch({ type: SET_NEO4J_ITEM, item: undefined })
+        return noop
+      })
+    }
     let cmd = `MATCH (a) where id(a)=${
       action.id
     } RETURN a, ((a)-->()) , ((a)<--())`

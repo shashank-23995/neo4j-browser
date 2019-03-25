@@ -35,7 +35,8 @@ export class EditorInfo extends Component {
    */
   componentWillReceiveProps (nextProps) {
     this.setState({
-      item: _.cloneDeep(nextProps.itemEditor.neo4jItem)
+      item: _.cloneDeep(nextProps.itemEditor.neo4jItem),
+      disabled: true
     })
   }
 
