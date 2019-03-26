@@ -1,11 +1,16 @@
+/**
+ * This program allows you to add new properties to the node
+ **/
 import React from 'react'
 
 function AddProperty (props) {
   return (
     <div>
       key:
+      <br />
       <input id='key' style={{ color: 'black' }} onChange={props.addProperty} />
       Value:
+      <br />
       <input
         id='value'
         style={{ color: 'black' }}

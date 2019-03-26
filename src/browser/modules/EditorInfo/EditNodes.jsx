@@ -3,6 +3,7 @@
  * and edits the properties selected from the canvas. As this is used
  * for handling all the rendering and used as component in EditorInfo.
  */
+
 import React, { Component } from 'react'
 import {
   Drawer,
@@ -29,6 +30,7 @@ export class EditNodes extends Component {
    * this method toggles the edit button
    *
    */
+
   handleEdit = () => {
     this.props.handleEdit()
   }
@@ -37,7 +39,8 @@ export class EditNodes extends Component {
    * method for editing selected item
    * function setEditSelectedItem() as props to parent
    * componet
-   *  */
+   *
+   */
 
   setEditSelectedItem = () => {
     this.props.setEditSelectedItem()
@@ -69,12 +72,15 @@ export class EditNodes extends Component {
 
   saveNewProperty = () => {
     let newProperties = _.cloneDeep(this.props.item.item._fields[0].properties)
-
     let obj = { [this.state.addedProps.key]: this.state.addedProps.value }
     _.assign(newProperties, obj)
-
     this.props.setNewPropsToState(newProperties)
   }
+
+  /**
+   * this function is involed on onChange event of child input
+   * component and values are updated to component state
+   * */
 
   addProperty = e => {
     let newstate = _.assign(this.state)
@@ -85,6 +91,10 @@ export class EditNodes extends Component {
     }
     this.setState(newstate)
   }
+
+  /**
+   * methods for setting visibility of AddProperty component
+   */
 
   showAddProperty = () => {
     this.setState({
@@ -112,20 +122,37 @@ export class EditNodes extends Component {
               Type : {`${this.props.properties_state_data.selectedItem.type}`}
             </li>
             <hr />
-            <div
-              data-testid='sidebarMetaItem'
-              className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
-              style={{
-                width: 'auto',
-                height: 'auto',
-                float: 'right'
-              }}
-              onClick={() => {
-                this.showAddProperty()
-              }}
-            >
-              Add Property
+            <div>
+              <li
+                style={{
+                  float: 'left'
+                }}
+              >
+                Properties :
+              </li>
+              <div
+                data-testid='sidebarMetaItem'
+                className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
+                style={{
+                  width: '100px',
+                  height: '30px',
+                  float: 'right'
+                }}
+                onClick={() => {
+                  this.showAddProperty()
+                }}
+              >
+                <p
+                  style={{
+                    marginTop: '-5px',
+                    marginLeft: '5px'
+                  }}
+                >
+                  Add Property
+                </p>
+              </div>
             </div>
+            <br />
             {this.state.toggleAddProp ? (
               <AddProperty
                 closeAddProperty={this.closeAddProperty}
@@ -134,7 +161,6 @@ export class EditNodes extends Component {
               />
             ) : null}
             <div>
-              <li>Properties :</li>
               <EditProperties
                 itemProperties={this.props.item.item._fields[0].properties}
                 item={this.props.item}
@@ -144,7 +170,6 @@ export class EditNodes extends Component {
             </div>
             <hr />
           </ul>
-
           <div
             data-testid='sidebarMetaItem'
             className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
