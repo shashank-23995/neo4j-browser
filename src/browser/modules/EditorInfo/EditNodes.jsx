@@ -78,10 +78,7 @@ export class EditNodes extends Component {
   }
 
   deleteProperties = (key, e) => {
-    console.log(key, '--------', e)
-    let newProperties = _.cloneDeep(this.props.item.item._fields[0].properties)
-    newProperties = _.omit(newProperties, [key])
-    this.props.setNewPropsToState(newProperties)
+    this.props.deletedProperty(key)
   }
 
   /**
@@ -169,11 +166,15 @@ export class EditNodes extends Component {
             ) : null}
             <div>
               <EditProperties
+                deletedProperties={
+                  this.props.properties_state_data.deletedProperties
+                }
                 itemProperties={this.props.item.item._fields[0].properties}
                 item={this.props.item}
                 handleChange={this.handleChange}
                 disabled={this.props.item.disabled}
-                deleteProperties={this.deleteProperties}
+                deleteProperty={this.props.deleteProperty}
+                invertDelete={this.props.invertDelete}
               />
             </div>
             <hr />

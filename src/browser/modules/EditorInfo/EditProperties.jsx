@@ -4,6 +4,8 @@
  * properties of node.
  */
 import React from 'react'
+import * as _ from 'lodash'
+// import { strikethrough } from "../../../../node_modules/ansi-colors/types/index";
 
 function EditProperties (props) {
   const itemProperties = props.itemProperties
@@ -21,8 +23,13 @@ function EditProperties (props) {
             value = itemProperties[key]
           }
 
+          const isPropertyDeleted = !!_.find(
+            props.deletedProperties,
+            v => v === key
+          )
+          const strikethroughValue = isPropertyDeleted ? 'line-through' : 'none'
           return (
-            <div key={key}>
+            <div style={{ textDecoration: strikethroughValue }} key={key}>
               <div
                 data-testid='sidebarMetaItem'
                 className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
@@ -32,7 +39,9 @@ function EditProperties (props) {
                   float: 'right'
                 }}
                 onClick={e => {
-                  props.deleteProperties(key, e)
+                  isPropertyDeleted
+                    ? props.invertDelete(key)
+                    : props.deleteProperty(key, e)
                 }}
               >
                 <p
@@ -42,10 +51,10 @@ function EditProperties (props) {
                     marginRight: '-2px'
                   }}
                 >
-                  X
+                  {isPropertyDeleted ? 'Undo' : 'X'}
                 </p>
               </div>
-              {key}:
+              {key} {isPropertyDeleted ? '-' : null}:
               {props.disabled ? (
                 value
               ) : (

@@ -91,6 +91,8 @@ export class EditorInfo extends Component {
             setEditSelectedItem={this.setEditSelectedItem}
             setParentItemState={this.setParentItemState}
             setNewPropsToState={this.setNewPropsToState}
+            deleteProperty={this.props.deleteProperty}
+            invertDelete={this.props.invertDelete}
           />
         </div>
       </div>
@@ -108,6 +110,12 @@ const mapDispatchToProps = dispatch => {
   return {
     setEditSelectedItem: item => {
       dispatch(itemEditorActions.setEditSelectedItem(item))
+    },
+    deleteProperty: property => {
+      dispatch(itemEditorActions.deleteProperty(property))
+    },
+    invertDelete: property => {
+      dispatch(itemEditorActions.invertDelete(property))
     }
   }
 }

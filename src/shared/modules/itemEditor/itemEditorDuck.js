@@ -3,7 +3,8 @@ import * as _ from 'lodash'
 
 const initialState = {
   selectedItem: undefined,
-  neo4jItem: undefined
+  neo4jItem: undefined,
+  deletedProperties: []
 }
 
 // Action type constants
@@ -12,6 +13,8 @@ export const SET_SELECTED_ITEM = `${NAME}/SET_SELECTED_ITEM`
 export const EDIT_SELECTED_ITEM = `${NAME}/EDIT_SELECTED_ITEM`
 export const FETCH_DATA = `${NAME}/FETCH_DATA`
 export const SET_NEO4J_ITEM = `${NAME}/SET_NEO4J_ITEM`
+export const DELETE_PROPERTY = `${NAME}/DELETE_PROPERTY`
+export const INVERT_DELETE_PROPERTY = `${NAME}/INVERT_DELETE_PROPERTY`
 
 // Actions
 
@@ -19,6 +22,18 @@ export const setSelectedItem = item => {
   return {
     type: SET_SELECTED_ITEM,
     item
+  }
+}
+export const deleteProperty = property => {
+  return {
+    type: DELETE_PROPERTY,
+    property
+  }
+}
+export const invertDelete = property => {
+  return {
+    type: INVERT_DELETE_PROPERTY,
+    property
   }
 }
 
@@ -46,14 +61,22 @@ export const fetchData = (id, entityType) => {
 
 // Reducer
 export default function reducer (state = initialState, action) {
+  let newState
   switch (action.type) {
     case SET_SELECTED_ITEM:
       return { ...state, selectedItem: action.item }
     case EDIT_SELECTED_ITEM:
       return { ...state, neo4jItem: action.item }
-
     case SET_NEO4J_ITEM:
       return { ...state, neo4jItem: action.item }
+    case DELETE_PROPERTY:
+      newState = _.cloneDeep(state)
+      newState.deletedProperties.push(action.property)
+      return newState
+    case INVERT_DELETE_PROPERTY:
+      newState = _.cloneDeep(state)
+      _.remove(newState.deletedProperties, v => v === action.property)
+      return newState
 
     default:
       return state
