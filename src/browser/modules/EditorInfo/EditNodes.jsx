@@ -77,6 +77,13 @@ export class EditNodes extends Component {
     this.props.setNewPropsToState(newProperties)
   }
 
+  deleteProperties = (key, e) => {
+    console.log(key, '--------', e)
+    let newProperties = _.cloneDeep(this.props.item.item._fields[0].properties)
+    newProperties = _.omit(newProperties, [key])
+    this.props.setNewPropsToState(newProperties)
+  }
+
   /**
    * this function is involed on onChange event of child input
    * component and values are updated to component state
@@ -166,6 +173,7 @@ export class EditNodes extends Component {
                 item={this.props.item}
                 handleChange={this.handleChange}
                 disabled={this.props.item.disabled}
+                deleteProperties={this.deleteProperties}
               />
             </div>
             <hr />

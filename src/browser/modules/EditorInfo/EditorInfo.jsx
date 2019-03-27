@@ -58,7 +58,7 @@ export class EditorInfo extends Component {
   }
 
   /**
-   *  This function is used to set new added propeties
+   *  This function is used to set new added or deleted propeties
    * to the component state.
    *
    */
