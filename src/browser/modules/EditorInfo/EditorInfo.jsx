@@ -15,6 +15,7 @@ export class EditorInfo extends Component {
     super(props)
     this.state = {
       disabled: true,
+      toggleAddProp: false,
       item: props.itemEditor.neo4jItem
         ? _.cloneDeep(props.itemEditor.neo4jItem)
         : undefined
@@ -36,7 +37,8 @@ export class EditorInfo extends Component {
   componentWillReceiveProps (nextProps) {
     this.setState({
       item: _.cloneDeep(nextProps.itemEditor.neo4jItem),
-      disabled: true
+      disabled: true,
+      toggleAddProp: false
     })
   }
 
@@ -80,6 +82,21 @@ export class EditorInfo extends Component {
     })
   }
 
+  /**
+   * methods for setting visibility of AddProperty component
+   */
+
+  showAddProperty = () => {
+    this.setState({
+      toggleAddProp: true
+    })
+  }
+  closeAddProperty = () => {
+    this.setState({
+      toggleAddProp: false
+    })
+  }
+
   render () {
     return (
       <div>
@@ -93,6 +110,8 @@ export class EditorInfo extends Component {
             setNewPropsToState={this.setNewPropsToState}
             deleteProperty={this.props.deleteProperty}
             invertDelete={this.props.invertDelete}
+            showAddProperty={this.showAddProperty}
+            closeAddProperty={this.closeAddProperty}
           />
         </div>
       </div>

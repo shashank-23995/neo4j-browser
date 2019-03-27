@@ -19,7 +19,6 @@ import AddProperty from './AddProperty'
 
 export class EditNodes extends Component {
   state = {
-    toggleAddProp: false,
     addedProps: {
       key: '',
       value: ''
@@ -75,6 +74,7 @@ export class EditNodes extends Component {
     let obj = { [this.state.addedProps.key]: this.state.addedProps.value }
     _.assign(newProperties, obj)
     this.props.setNewPropsToState(newProperties)
+    // this.props.closeAddProperty();
   }
 
   deleteProperties = (key, e) => {
@@ -94,21 +94,6 @@ export class EditNodes extends Component {
       }
     }
     this.setState(newstate)
-  }
-
-  /**
-   * methods for setting visibility of AddProperty component
-   */
-
-  showAddProperty = () => {
-    this.setState({
-      toggleAddProp: true
-    })
-  }
-  closeAddProperty = () => {
-    this.setState({
-      toggleAddProp: false
-    })
   }
 
   render () {
@@ -143,7 +128,7 @@ export class EditNodes extends Component {
                   float: 'right'
                 }}
                 onClick={() => {
-                  this.showAddProperty()
+                  this.props.showAddProperty()
                 }}
               >
                 <p
@@ -157,9 +142,9 @@ export class EditNodes extends Component {
               </div>
             </div>
             <br />
-            {this.state.toggleAddProp ? (
+            {this.props.item.toggleAddProp ? (
               <AddProperty
-                closeAddProperty={this.closeAddProperty}
+                closeAddProperty={this.props.closeAddProperty}
                 addProperty={this.addProperty}
                 saveNewProperty={this.saveNewProperty}
               />
