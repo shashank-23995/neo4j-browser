@@ -3,6 +3,7 @@
  * and edits the properties selected from the canvas. As this is used
  * for handling all the rendering and used as component in EditorInfo.
  */
+
 import React, { Component } from 'react'
 import {
   Drawer,
@@ -14,12 +15,22 @@ import {
 } from 'browser-components/drawer'
 import EditProperties from './EditProperties'
 import * as _ from 'lodash'
+import AddProperty from './AddProperty'
 
 export class EditNodes extends Component {
+  state = {
+    toggleAddProp: false,
+    addedProps: {
+      key: '',
+      value: ''
+    }
+  }
+
   /**
    * this method toggles the edit button
    *
    */
+
   handleEdit = () => {
     this.props.handleEdit()
   }
@@ -28,7 +39,8 @@ export class EditNodes extends Component {
    * method for editing selected item
    * function setEditSelectedItem() as props to parent
    * componet
-   *  */
+   *
+   */
 
   setEditSelectedItem = () => {
     this.props.setEditSelectedItem()
@@ -52,6 +64,49 @@ export class EditNodes extends Component {
     this.props.setParentItemState(newProperties)
   }
 
+  /**
+   * new property is added to the items property in state and
+   * function is used for invoking the parent function to
+   * setState.
+   * */
+
+  saveNewProperty = () => {
+    let newProperties = _.cloneDeep(this.props.item.item._fields[0].properties)
+    let obj = { [this.state.addedProps.key]: this.state.addedProps.value }
+    _.assign(newProperties, obj)
+    this.props.setNewPropsToState(newProperties)
+  }
+
+  /**
+   * this function is involed on onChange event of child input
+   * component and values are updated to component state
+   * */
+
+  addProperty = e => {
+    let newstate = _.assign(this.state)
+    for (const i in newstate) {
+      if (i === 'addedProps') {
+        newstate[i][e.target.id] = e.target.value
+      }
+    }
+    this.setState(newstate)
+  }
+
+  /**
+   * methods for setting visibility of AddProperty component
+   */
+
+  showAddProperty = () => {
+    this.setState({
+      toggleAddProp: true
+    })
+  }
+  closeAddProperty = () => {
+    this.setState({
+      toggleAddProp: false
+    })
+  }
+
   render () {
     let content = null
     if (
@@ -67,18 +122,54 @@ export class EditNodes extends Component {
               Type : {`${this.props.properties_state_data.selectedItem.type}`}
             </li>
             <hr />
-            <li>
-              Properties :{' '}
+            <div>
+              <li
+                style={{
+                  float: 'left'
+                }}
+              >
+                Properties :
+              </li>
+              <div
+                data-testid='sidebarMetaItem'
+                className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
+                style={{
+                  width: '100px',
+                  height: '30px',
+                  float: 'right'
+                }}
+                onClick={() => {
+                  this.showAddProperty()
+                }}
+              >
+                <p
+                  style={{
+                    marginTop: '-5px',
+                    marginLeft: '5px'
+                  }}
+                >
+                  Add Property
+                </p>
+              </div>
+            </div>
+            <br />
+            {this.state.toggleAddProp ? (
+              <AddProperty
+                closeAddProperty={this.closeAddProperty}
+                addProperty={this.addProperty}
+                saveNewProperty={this.saveNewProperty}
+              />
+            ) : null}
+            <div>
               <EditProperties
                 itemProperties={this.props.item.item._fields[0].properties}
                 item={this.props.item}
                 handleChange={this.handleChange}
                 disabled={this.props.item.disabled}
               />
-            </li>
+            </div>
+            <hr />
           </ul>
-          <hr />
-
           <div
             data-testid='sidebarMetaItem'
             className='styled__chip-sc-1srdf8s-0 styled__StyledLabel-sc-1srdf8s-1 eGKpnH'
@@ -98,6 +189,7 @@ export class EditNodes extends Component {
         </div>
       )
     }
+
     return (
       <Drawer id='db-drawer'>
         <DrawerHeader>Editor</DrawerHeader>
