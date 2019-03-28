@@ -15,6 +15,7 @@ export class EditorInfo extends Component {
     super(props)
     this.state = {
       disabled: true,
+      toggleAddProp: false,
       item: props.itemEditor.neo4jItem
         ? _.cloneDeep(props.itemEditor.neo4jItem)
         : undefined
@@ -36,7 +37,8 @@ export class EditorInfo extends Component {
   componentWillReceiveProps (nextProps) {
     this.setState({
       item: _.cloneDeep(nextProps.itemEditor.neo4jItem),
-      disabled: true
+      disabled: true,
+      toggleAddProp: false
     })
   }
 
@@ -49,8 +51,9 @@ export class EditorInfo extends Component {
   setParentItemState = newProperties => {
     let newstate = _.cloneDeep(this.state)
 
+    // FIXME why not directly set to newState.item._fields[0] instead of below iteration
     Object.keys(newstate).forEach(function (k) {
-      if (newstate[k]) {
+      if (newstate[k] && newstate[k]._fields && newstate[k]._fields.length) {
         newstate[k]._fields[0] = newProperties
       }
     })
@@ -58,7 +61,7 @@ export class EditorInfo extends Component {
   }
 
   /**
-   *  This function is used to set new added propeties
+   *  This function is used to set new added or deleted propeties
    * to the component state.
    *
    */
@@ -80,6 +83,21 @@ export class EditorInfo extends Component {
     })
   }
 
+  /**
+   * methods for setting visibility of AddProperty component
+   */
+
+  showAddProperty = () => {
+    this.setState({
+      toggleAddProp: true
+    })
+  }
+  closeAddProperty = () => {
+    this.setState({
+      toggleAddProp: false
+    })
+  }
+
   render () {
     return (
       <div>
@@ -91,6 +109,10 @@ export class EditorInfo extends Component {
             setEditSelectedItem={this.setEditSelectedItem}
             setParentItemState={this.setParentItemState}
             setNewPropsToState={this.setNewPropsToState}
+            deleteProperty={this.props.deleteProperty}
+            invertDelete={this.props.invertDelete}
+            showAddProperty={this.showAddProperty}
+            closeAddProperty={this.closeAddProperty}
           />
         </div>
       </div>
@@ -110,6 +132,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(itemEditorActions.setEditSelectedItem(item))
       const action = itemEditorActions.UpdateData(item)
       ownProps.bus.send(action.type, action)
+    },
+    deleteProperty: property => {
+      dispatch(itemEditorActions.deleteProperty(property))
+    },
+    invertDelete: property => {
+      dispatch(itemEditorActions.invertDelete(property))
     }
   }
 }
