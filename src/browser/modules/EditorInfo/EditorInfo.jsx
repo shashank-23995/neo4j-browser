@@ -51,8 +51,9 @@ export class EditorInfo extends Component {
   setParentItemState = newProperties => {
     let newstate = _.cloneDeep(this.state)
 
+    // FIXME why not directly set to newState.item._fields[0] instead of below iteration
     Object.keys(newstate).forEach(function (k) {
-      if (newstate[k]) {
+      if (newstate[k] && newstate[k]._fields && newstate[k]._fields.length) {
         newstate[k]._fields[0] = newProperties
       }
     })
