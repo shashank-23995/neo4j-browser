@@ -26,8 +26,8 @@ function AddProperty (props) {
           float: 'left'
         }}
         onClick={() => {
-          props.closeAddProperty()
           props.saveNewProperty()
+          props.closeAddProperty()
         }}
       >
         Save
