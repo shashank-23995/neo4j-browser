@@ -104,10 +104,12 @@ const mapStateToProps = state => {
     requests: state.requests
   }
 }
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     setEditSelectedItem: item => {
       dispatch(itemEditorActions.setEditSelectedItem(item))
+      const action = itemEditorActions.UpdateData(item)
+      ownProps.bus.send(action.type, action)
     }
   }
 }
