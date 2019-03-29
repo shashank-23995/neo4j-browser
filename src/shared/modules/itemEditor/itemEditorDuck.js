@@ -16,6 +16,7 @@ export const SET_NEO4J_ITEM = `${NAME}/SET_NEO4J_ITEM`
 export const UPDATE_DATA = `${NAME}/UPDATE_DATA`
 export const DELETE_PROPERTY = `${NAME}/DELETE_PROPERTY`
 export const INVERT_DELETE_PROPERTY = `${NAME}/INVERT_DELETE_PROPERTY`
+export const CLEAR_DELETE_PROPERTY = `${NAME}/CLEAR_DELETE_PROPERTY`
 
 // Actions
 
@@ -25,6 +26,7 @@ export const setSelectedItem = item => {
     item
   }
 }
+
 export const deleteProperty = property => {
   return {
     type: DELETE_PROPERTY,
@@ -86,6 +88,10 @@ export default function reducer (state = initialState, action) {
       newState = _.cloneDeep(state)
       newState.deletedProperties.push(action.property)
       return newState
+    case CLEAR_DELETE_PROPERTY:
+      newState = _.cloneDeep(state)
+      newState.deletedProperties = []
+      return newState
     case INVERT_DELETE_PROPERTY:
       newState = _.cloneDeep(state)
       _.remove(newState.deletedProperties, v => v === action.property)
@@ -138,24 +144,32 @@ export const handleUpdateDataEpic = (action$, store) =>
   action$.ofType(UPDATE_DATA).mergeMap(action => {
     const noop = { type: 'NOOP' }
     let itemProperties = _.cloneDeep(action.id._fields[0].properties)
-    itemProperties = _.mapValues(itemProperties, function (object_integer) {
-      if (_.isObject(object_integer)) {
-        return object_integer.low || object_integer.high || 0
+    let deletedProps = store.getState().itemEditor.deletedProperties
+    itemProperties = _.omit(itemProperties, deletedProps)
+    itemProperties = _.mapValues(itemProperties, function (
+      props_ItemProperties
+    ) {
+      if (_.isObject(props_ItemProperties)) {
+        return props_ItemProperties.low || props_ItemProperties.high || 0
       } else {
-        return object_integer
+        return props_ItemProperties
       }
     })
     let cmd = `match (n) WHERE id(n)=${action.id._fields[0].identity}
     SET n =${JSON.stringify(itemProperties).replace(
     /\"([^(\")"]+)\":/g,
     '$1:'
-  )}`
+  )} Return n`
     let newAction = _.cloneDeep(action)
     newAction.cmd = cmd
 
     let [id, request] = handleCypherCommand(newAction, store.dispatch)
     return request
       .then(res => {
+        if (res && res.records && res.records.length) {
+          store.dispatch({ type: SET_NEO4J_ITEM, item: res.records[0] })
+        }
+        store.dispatch({ type: CLEAR_DELETE_PROPERTY })
         return noop
       })
       .catch(function (e) {
