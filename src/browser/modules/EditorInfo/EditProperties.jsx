@@ -9,6 +9,7 @@ import * as _ from 'lodash'
 
 function EditProperties (props) {
   const itemProperties = props.itemProperties
+
   return (
     <div>
       {itemProperties &&
@@ -22,11 +23,11 @@ function EditProperties (props) {
           } else {
             value = itemProperties[key]
           }
-
           const isPropertyDeleted = !!_.find(
             props.deletedProperties,
             v => v === key
           )
+
           const strikethroughValue = isPropertyDeleted ? 'line-through' : 'none'
           return (
             <div style={{ textDecoration: strikethroughValue }} key={key}>
@@ -65,7 +66,7 @@ function EditProperties (props) {
                     type='text'
                     value={itemProperties[key]}
                     onChange={e => {
-                      props.handleChange(key, e)
+                      props.handleChange(key, e, typeof itemProperties[key])
                     }}
                   />
                 </div>

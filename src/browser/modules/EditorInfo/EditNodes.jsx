@@ -44,23 +44,10 @@ export class EditNodes extends Component {
   setEditSelectedItem = () => {
     this.props.setEditSelectedItem()
   }
+  /** the function is used for check for typeof properties and allow user to enter only valid property type */
 
-  /**
-   * Handles the changes when edited and change the state by invoking
-   * parent function setParentItemState,
-   * handleChange function has two params "key" and "e" where key is the index of
-   * properties key and e is the event for the handlechange
-   * */
-
-  handleChange = (key, e) => {
-    let newProperties = _.cloneDeep(this.props.item.item._fields[0])
-    for (const i in newProperties) {
-      if (key in newProperties[i]) {
-        let obj = { [key]: e.target.value }
-        _.assign(newProperties[i], obj)
-      }
-    }
-    this.props.setParentItemState(newProperties)
+  handleChange = (key, e, type) => {
+    this.props.changePropertyValue(key, e.target.value, type)
   }
 
   /**
@@ -70,7 +57,9 @@ export class EditNodes extends Component {
    * */
 
   saveNewProperty = () => {
-    let newProperties = _.cloneDeep(this.props.item.item._fields[0].properties)
+    let newProperties = _.cloneDeep(
+      this.props.properties_state_data.neo4jItem._fields[0].properties
+    )
     let obj = { [this.state.addedProps.key]: this.state.addedProps.value }
     _.assign(newProperties, obj)
     this.props.setNewPropsToState(newProperties)
@@ -154,7 +143,10 @@ export class EditNodes extends Component {
                 deletedProperties={
                   this.props.properties_state_data.deletedProperties
                 }
-                itemProperties={this.props.item.item._fields[0].properties}
+                itemProperties={
+                  this.props.properties_state_data.neo4jItem._fields[0]
+                    .properties
+                }
                 item={this.props.item}
                 handleChange={this.handleChange}
                 disabled={this.props.item.disabled}

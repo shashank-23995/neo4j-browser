@@ -4,7 +4,8 @@ import * as _ from 'lodash'
 const initialState = {
   selectedItem: undefined,
   neo4jItem: undefined,
-  deletedProperties: []
+  deletedProperties: [],
+  invalidProperties: []
 }
 
 // Action type constants
@@ -16,6 +17,8 @@ export const SET_NEO4J_ITEM = `${NAME}/SET_NEO4J_ITEM`
 export const UPDATE_DATA = `${NAME}/UPDATE_DATA`
 export const DELETE_PROPERTY = `${NAME}/DELETE_PROPERTY`
 export const INVERT_DELETE_PROPERTY = `${NAME}/INVERT_DELETE_PROPERTY`
+export const INVALID_PROPERTIES = `${NAME}/INVALID_PROPERTIES`
+export const CHANGE_PROPERTY_VALUE = `${NAME}/CHANGE_PROPERTY_VALUE`
 export const CLEAR_DELETE_PROPERTY = `${NAME}/CLEAR_DELETE_PROPERTY`
 
 // Actions
@@ -37,6 +40,24 @@ export const invertDelete = property => {
   return {
     type: INVERT_DELETE_PROPERTY,
     property
+  }
+}
+export const setinvalidProperty = invalidproperty => {
+  return {
+    type: INVALID_PROPERTIES,
+    invalidproperty
+  }
+}
+
+export const changePropertyValue = (key, value, type) => {
+  // check properties changes
+  // if invalide then set it in invalidProperties
+
+  return {
+    type: CHANGE_PROPERTY_VALUE,
+    key,
+    value,
+    typeOfObject: type
   }
 }
 
@@ -96,6 +117,29 @@ export default function reducer (state = initialState, action) {
       newState = _.cloneDeep(state)
       _.remove(newState.deletedProperties, v => v === action.property)
       return newState
+
+    case INVALID_PROPERTIES:
+      console.log(state.neo4jItem._fields[0].properties)
+      console.log(action.invalidproperty)
+      newState = _.cloneDeep(state)
+      newState.invalidProperties.push(action.invalidproperty)
+      return newState
+
+    case CHANGE_PROPERTY_VALUE:
+      newState = _.cloneDeep(state)
+      let { key, value, typeOfObject } = action
+      let newProperties = newState.neo4jItem._fields[0].properties
+      let obj
+      if (key in newProperties) {
+        if (typeOfObject === 'string') obj = { [key]: value }
+        else {
+          obj = { [key]: parseFloat(value) }
+        }
+        _.assign(newProperties, obj)
+      }
+      return newState
+
+      break
 
     default:
       return state

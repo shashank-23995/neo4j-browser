@@ -27,7 +27,7 @@ export class EditorInfo extends Component {
    */
 
   setEditSelectedItem = () => {
-    this.props.setEditSelectedItem(this.state.item)
+    this.props.setEditSelectedItem(this.props.itemEditor.neo4jItem)
   }
 
   /**
@@ -36,33 +36,14 @@ export class EditorInfo extends Component {
    */
   componentWillReceiveProps (nextProps) {
     this.setState({
-      item: _.cloneDeep(nextProps.itemEditor.neo4jItem),
-      disabled: true,
       toggleAddProp: false
     })
   }
 
   /**
-   *  This function is used to set item of the state
-   * when changes are done while  child component changes data
-   *
-   */
-
-  setParentItemState = newProperties => {
-    let newstate = _.cloneDeep(this.state)
-
-    // FIXME why not directly set to newState.item._fields[0] instead of below iteration
-    Object.keys(newstate).forEach(function (k) {
-      if (newstate[k] && newstate[k]._fields && newstate[k]._fields.length) {
-        newstate[k]._fields[0] = newProperties
-      }
-    })
-    this.setState(newstate)
-  }
-
-  /**
    *  This function is used to set new added or deleted propeties
    * to the component state.
+   * FIX ME
    *
    */
 
@@ -113,6 +94,7 @@ export class EditorInfo extends Component {
             invertDelete={this.props.invertDelete}
             showAddProperty={this.showAddProperty}
             closeAddProperty={this.closeAddProperty}
+            changePropertyValue={this.props.changePropertyValue}
           />
         </div>
       </div>
@@ -138,6 +120,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     invertDelete: property => {
       dispatch(itemEditorActions.invertDelete(property))
+    },
+    changePropertyValue: (key, value, type) => {
+      dispatch(itemEditorActions.changePropertyValue(key, value, type))
     }
   }
 }
