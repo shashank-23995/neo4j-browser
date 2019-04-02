@@ -20,6 +20,7 @@ export const INVERT_DELETE_PROPERTY = `${NAME}/INVERT_DELETE_PROPERTY`
 export const INVALID_PROPERTIES = `${NAME}/INVALID_PROPERTIES`
 export const CHANGE_PROPERTY_VALUE = `${NAME}/CHANGE_PROPERTY_VALUE`
 export const CLEAR_DELETE_PROPERTY = `${NAME}/CLEAR_DELETE_PROPERTY`
+export const ADD_NEW_PROPERTY = `${NAME}/ADD_NEW_PROPERTY`
 
 // Actions
 
@@ -27,6 +28,12 @@ export const setSelectedItem = item => {
   return {
     type: SET_SELECTED_ITEM,
     item
+  }
+}
+export const addPropertyToState = object => {
+  return {
+    type: ADD_NEW_PROPERTY,
+    object
   }
 }
 
@@ -113,6 +120,10 @@ export default function reducer (state = initialState, action) {
       newState = _.cloneDeep(state)
       newState.deletedProperties = []
       return newState
+    case ADD_NEW_PROPERTY:
+      newState = _.cloneDeep(state)
+      _.assign(newState.neo4jItem._fields[0].properties, action.object)
+      return newState
     case INVERT_DELETE_PROPERTY:
       newState = _.cloneDeep(state)
       _.remove(newState.deletedProperties, v => v === action.property)
@@ -138,8 +149,6 @@ export default function reducer (state = initialState, action) {
         _.assign(newProperties, obj)
       }
       return newState
-
-      break
 
     default:
       return state

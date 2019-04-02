@@ -47,12 +47,6 @@ export class EditorInfo extends Component {
    *
    */
 
-  setNewPropsToState = newProperties => {
-    let newstate = _.cloneDeep(this.state)
-    newstate.item._fields[0].properties = newProperties
-    this.setState(newstate)
-  }
-
   /**
    *
    * Toggle the disable state to handle
@@ -88,8 +82,7 @@ export class EditorInfo extends Component {
             item={this.state}
             handleEdit={this.handleEdit}
             setEditSelectedItem={this.setEditSelectedItem}
-            setParentItemState={this.setParentItemState}
-            setNewPropsToState={this.setNewPropsToState}
+            addPropertyToState={this.props.addPropertyToState}
             deleteProperty={this.props.deleteProperty}
             invertDelete={this.props.invertDelete}
             showAddProperty={this.showAddProperty}
@@ -123,6 +116,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     changePropertyValue: (key, value, type) => {
       dispatch(itemEditorActions.changePropertyValue(key, value, type))
+    },
+    addPropertyToState: (object, type) => {
+      dispatch(itemEditorActions.addPropertyToState(object, type))
     }
   }
 }

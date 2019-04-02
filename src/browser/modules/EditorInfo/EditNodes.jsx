@@ -57,13 +57,8 @@ export class EditNodes extends Component {
    * */
 
   saveNewProperty = () => {
-    let newProperties = _.cloneDeep(
-      this.props.properties_state_data.neo4jItem._fields[0].properties
-    )
     let obj = { [this.state.addedProps.key]: this.state.addedProps.value }
-    _.assign(newProperties, obj)
-    this.props.setNewPropsToState(newProperties)
-    // this.props.closeAddProperty();
+    this.props.addPropertyToState(obj)
   }
 
   deleteProperties = (key, e) => {
