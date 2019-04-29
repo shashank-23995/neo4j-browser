@@ -37,6 +37,7 @@ import {
 
 import {
   DatabaseIcon,
+  EditorIcon,
   FavoritesIcon,
   DocumentsIcon,
   CloudSyncIcon,
@@ -77,6 +78,18 @@ class Sidebar extends Component {
         title: 'Documentation',
         icon: isOpen => <DocumentsIcon isOpen={isOpen} title='Documentation' />,
         content: DocumentsDrawer
+      },
+      {
+        name: 'Edit',
+        title: 'Editor',
+        icon: isOpen => (
+          <EditorIcon
+            isOpen={isOpen}
+            connectionState={this.props.neo4jConnectionState}
+            title='Editor'
+          />
+        ),
+        content: DatabaseDrawer
       }
     ]
     const bottomNavItemsList = [

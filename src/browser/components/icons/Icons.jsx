@@ -22,6 +22,7 @@ import React from 'react'
 import { keyframes, css } from 'styled-components'
 import { IconContainer } from './IconContainer'
 import ratingStar from 'icons/rating-star.svg'
+import editorIcon from 'icons/editorIcon.svg'
 import databaseCheck from 'icons/database-check.svg'
 import bookSearch from 'icons/book-search.svg'
 import cog from 'icons/cog.svg'
@@ -108,6 +109,20 @@ export const DatabaseIcon = props => {
       inactiveStyle={databaseConnectionStateStyles[connectionState].inactive}
       className={databaseConnectionStateStyles[connectionState].classModifier}
       icon={databaseCheck}
+      width={28}
+      {...rest}
+    />
+  )
+}
+
+export const EditorIcon = props => {
+  const { connectionState, ...rest } = props
+  return (
+    <IconContainer
+      activeStyle={databaseConnectionStateStyles[connectionState].active}
+      inactiveStyle={databaseConnectionStateStyles[connectionState].inactive}
+      className={databaseConnectionStateStyles[connectionState].classModifier}
+      icon={editorIcon}
       width={28}
       {...rest}
     />
