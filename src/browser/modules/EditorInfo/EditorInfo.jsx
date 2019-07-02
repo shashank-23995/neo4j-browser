@@ -14,6 +14,7 @@ export class EditorInfo extends Component {
     return (
       <div>
         <DisplayNodeDetails
+          labels={this.props.selectedItem._fields[0].labels}
           selectedItem={this.props.selectedItem._fields[0].properties}
         />
       </div>
