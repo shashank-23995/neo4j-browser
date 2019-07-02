@@ -1,6 +1,6 @@
 /*
  * This module maps the props received from EditorInfo and
- * displays the labels and properties of the selected node.
+ * displays the labels, properties and entity type of the selected node.
  */
 
 import React from 'react'
@@ -57,6 +57,10 @@ function DisplayNodeDetails (props) {
 
   return (
     <div>
+      <DrawerSection>
+        <DrawerSubHeader>Entity</DrawerSubHeader>
+        {props.entityType}
+      </DrawerSection>
       <DrawerSection>
         <DrawerSubHeader>Labels</DrawerSubHeader>
         <DrawerSectionBody

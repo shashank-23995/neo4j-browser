@@ -1,6 +1,7 @@
 import { handleCypherCommand } from '../commands/helpers/cypher'
 const initialState = {
-  selectedItem: undefined
+  selectedItem: undefined,
+  entityType: undefined
 }
 
 // Action type constants
@@ -29,6 +30,8 @@ export default function reducer (state = initialState, action) {
   switch (action.type) {
     case SET_SELECTED_ITEM:
       return { ...state, selectedItem: action.item }
+    case FETCH_DATA_ON_SELECT:
+      return { ...state, entityType: action.entityType }
     default:
       return state
   }
