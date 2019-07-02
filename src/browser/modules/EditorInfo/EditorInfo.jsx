@@ -25,7 +25,7 @@ export class EditorInfo extends Component {
           <DrawerHeader>Editor</DrawerHeader>
           <DrawerBody>
             {this.props.selectedItem !== undefined ? (
-              this.props.entityType == 'node' ? (
+              this.props.entityType === 'node' ? (
                 <DisplayNodeDetails
                   selectedItem={this.props.selectedItem._fields[0].properties}
                   entityType={this.props.entityType}
