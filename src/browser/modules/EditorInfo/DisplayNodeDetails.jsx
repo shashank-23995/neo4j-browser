@@ -6,11 +6,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  Drawer,
-  DrawerHeader,
   DrawerSection,
   DrawerSubHeader,
-  DrawerBody,
   DrawerSectionBody
 } from 'browser-components/drawer/index'
 import { getStringValue } from './utils'
@@ -60,25 +57,20 @@ function DisplayNodeDetails (props) {
 
   return (
     <div>
-      <Drawer>
-        <DrawerHeader>Editor</DrawerHeader>
-        <DrawerBody>
-          <DrawerSection>
-            <DrawerSubHeader>Labels</DrawerSubHeader>
-            <DrawerSectionBody
-              className={classNames({
-                [styles['wrapper']]: true
-              })}
-            >
-              {labelItems}
-            </DrawerSectionBody>
-          </DrawerSection>
-          <DrawerSection>
-            <DrawerSubHeader>Properties</DrawerSubHeader>
-            {content}
-          </DrawerSection>
-        </DrawerBody>
-      </Drawer>
+      <DrawerSection>
+        <DrawerSubHeader>Labels</DrawerSubHeader>
+        <DrawerSectionBody
+          className={classNames({
+            [styles['wrapper']]: true
+          })}
+        >
+          {labelItems}
+        </DrawerSectionBody>
+      </DrawerSection>
+      <DrawerSection>
+        <DrawerSubHeader>Properties</DrawerSubHeader>
+        {content}
+      </DrawerSection>
     </div>
   )
 }

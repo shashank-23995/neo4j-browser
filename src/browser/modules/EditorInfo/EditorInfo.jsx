@@ -8,15 +8,28 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
 import DisplayNodeDetails from './DisplayNodeDetails'
+import {
+  Drawer,
+  DrawerHeader,
+  DrawerBody
+} from 'browser-components/drawer/index'
 
 export class EditorInfo extends Component {
   render () {
     return (
       <div>
-        <DisplayNodeDetails
-          labels={this.props.selectedItem._fields[0].labels}
-          selectedItem={this.props.selectedItem._fields[0].properties}
-        />
+        <Drawer>
+          <DrawerHeader>Editor</DrawerHeader>
+          <DrawerBody>
+            {this.props.selectedItem !== undefined ? (
+              <DisplayNodeDetails
+                labels={this.props.selectedItem._fields[0].labels}
+                selectedItem={this.props.selectedItem._fields[0].properties}
+              />
+            ) : null}
+          </DrawerBody>
+        </Drawer>
+        )}
       </div>
     )
   }
