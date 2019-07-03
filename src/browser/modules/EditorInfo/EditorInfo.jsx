@@ -1,11 +1,3 @@
-/*
- * This module depicts the behaviour of the edit drawer and
- * it imports DisplayNodeDetails which is used for rendering
- * selected node's properties.
- * Also,it imports DisplayRelationshipDetails which is used for rendering
- * selected relationship's properties.
- */
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
@@ -17,6 +9,11 @@ import {
   DrawerBody
 } from 'browser-components/drawer/index'
 
+/**
+ * The Editor drawer.
+ * Based on selection, either provides node editor or relationship editor.
+ * If nothing is selected then it prompts to do so.
+ */
 export class EditorInfo extends Component {
   render () {
     return (
@@ -24,21 +21,13 @@ export class EditorInfo extends Component {
         <Drawer>
           <DrawerHeader>Editor</DrawerHeader>
           <DrawerBody>
-            {this.props.selectedItem !== undefined ? (
+            {this.props.selectedItem ? (
               this.props.entityType === 'node' ? (
-                <DisplayNodeDetails
-                  selectedItem={this.props.selectedItem._fields[0].properties}
-                  entityType={this.props.entityType}
-                  labels={this.props.selectedItem._fields[0].labels}
-                />
+                <DisplayNodeDetails node={this.props.selectedItem} />
               ) : (
                 <div>
                   <DisplayRelationshipDetails
-                    relationshipType={this.props.selectedItem._fields[0].type}
-                    relationshipProperties={
-                      this.props.selectedItem._fields[0].properties
-                    }
-                    entityType={this.props.entityType}
+                    relationship={this.props.selectedItem}
                   />
                 </div>
               )
@@ -50,9 +39,44 @@ export class EditorInfo extends Component {
   }
 }
 
+/**
+ * Get selected item from state.
+ *
+ * FIXME move it to selectors (Reselect)
+ *
+ * @param {*} state
+ * @returns Either Node or Relationship or null
+ */
+const getSelectedItem = state => {
+  if (
+    state.itemEditor.entityType === 'node' &&
+    state.itemEditor.record &&
+    state.itemEditor.record.has &&
+    state.itemEditor.record.has('a')
+  ) {
+    return (
+      state.itemEditor.record &&
+      state.itemEditor.record.get &&
+      state.itemEditor.record.get('a')
+    )
+  } else if (
+    state.itemEditor.entityType === 'relationship' &&
+    state.itemEditor.record &&
+    state.itemEditor.record.has &&
+    state.itemEditor.record.has('r')
+  ) {
+    return (
+      state.itemEditor.record &&
+      state.itemEditor.record.get &&
+      state.itemEditor.record.get('r')
+    )
+  }
+  return null
+}
+
 const mapStateToProps = state => {
   return {
-    selectedItem: state.itemEditor.selectedItem,
+    selectedItem: getSelectedItem(state),
     entityType: state.itemEditor.entityType
   }
 }
