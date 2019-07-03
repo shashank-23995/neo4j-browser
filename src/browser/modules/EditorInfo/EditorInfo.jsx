@@ -40,6 +40,41 @@ export class EditorInfo extends Component {
   }
 }
 
+/**
+ * Get selected item from state.
+ *
+ * FIXME move it to selectors (Reselect)
+ *
+ * @param {*} state
+ * @returns Either Node or Relationship or null
+ */
+const getSelectedItem = state => {
+  if (
+    state.itemEditor.entityType === 'node' &&
+    state.itemEditor.record &&
+    state.itemEditor.record.has &&
+    state.itemEditor.record.has('a')
+  ) {
+    return (
+      state.itemEditor.record &&
+      state.itemEditor.record.get &&
+      state.itemEditor.record.get('a')
+    )
+  } else if (
+    state.itemEditor.entityType === 'relationship' &&
+    state.itemEditor.record &&
+    state.itemEditor.record.has &&
+    state.itemEditor.record.has('r')
+  ) {
+    return (
+      state.itemEditor.record &&
+      state.itemEditor.record.get &&
+      state.itemEditor.record.get('r')
+    )
+  }
+  return null
+}
+
 const mapStateToProps = state => {
   return {
     selectedItem: getSelectedItem(state),
