@@ -31,14 +31,14 @@ RelationShipTypeSection.propTypes = {
  */
 function DisplayRelationshipDetails (props) {
   return (
-    <div>
+    <React.Fragment>
       <EntitySection type='Relationship' />
       <RelationShipTypeSection {...props} />
       <PropertiesSection
         properties={props.relationship ? props.relationship.properties : null}
         entityType='relationship'
       />
-    </div>
+    </React.Fragment>
   )
 }
 

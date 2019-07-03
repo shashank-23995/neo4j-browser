@@ -26,11 +26,9 @@ export class EditorInfo extends Component {
               this.props.entityType === 'node' ? (
                 <DisplayNodeDetails node={this.props.selectedItem} />
               ) : (
-                <div>
-                  <DisplayRelationshipDetails
-                    relationship={this.props.selectedItem}
-                  />
-                </div>
+                <DisplayRelationshipDetails
+                  relationship={this.props.selectedItem}
+                />
               )
             ) : null}
           </DrawerBody>

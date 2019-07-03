@@ -115,14 +115,14 @@ PropertiesSection.propTypes = {
  */
 function DisplayNodeDetails (props) {
   return (
-    <div>
+    <React.Fragment>
       <EntitySection type='Node' />
       <LabelSection {...props} />
       <PropertiesSection
         properties={props.node ? props.node.properties : null}
         entityType='node'
       />
-    </div>
+    </React.Fragment>
   )
 }
 
