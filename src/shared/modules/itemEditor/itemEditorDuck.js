@@ -8,6 +8,7 @@ const initialState = {
 export const NAME = 'itemEditor'
 export const SET_RECORD = `${NAME}/SET_RECORD`
 export const FETCH_DATA_ON_SELECT = `${NAME}/FETCH_DATA_ON_SELECT`
+export const REMOVE_PROPERTY = `${NAME}/REMOVE_PROPERTY`
 
 // Actions
 
@@ -24,6 +25,19 @@ export const fetchData = (id, entityType) => {
   }
 }
 
+/**
+ * Remove data action creator
+ * @param {string/object} propertyKey The propertyKey of selected properties to be removed
+ * @param {string} propertyValue The propertyValue of the selected properties to be removed
+ */
+
+export const removeClick = (propertyKey, propertyValue) => {
+  return {
+    type: REMOVE_PROPERTY,
+    propertyKey,
+    propertyValue
+  }
+}
 // Reducer
 export default function reducer (state = initialState, action) {
   switch (action.type) {
@@ -31,6 +45,10 @@ export default function reducer (state = initialState, action) {
       return { ...state, record: action.item }
     case FETCH_DATA_ON_SELECT:
       return { ...state, entityType: action.entityType }
+    case REMOVE_PROPERTY:
+      console.log(action.propertyKey, action.propertyValue)
+      return state
+
     default:
       return state
   }

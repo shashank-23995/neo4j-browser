@@ -11,6 +11,8 @@ import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import { chip, StyledKeyEditor } from './styled'
 import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
+import { BinIcon } from 'browser-components/icons/Icons'
+import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 
 /**
  * Creates items to display in chip format
@@ -84,6 +86,11 @@ export const PropertiesSection = props => {
                 <StyledKeyEditor>{key}:</StyledKeyEditor>
                 <StyledValue data-testid='user-details-username'>
                   {getStringValue(value)}
+                  <ConfirmationButton
+                    requestIcon={<BinIcon />}
+                    confirmIcon={<BinIcon deleteAction />}
+                    onConfirmed={() => props.removeClick(key, value)}
+                  />
                 </StyledValue>
               </tr>
             </tbody>
@@ -105,7 +112,8 @@ export const PropertiesSection = props => {
   )
 }
 PropertiesSection.propTypes = {
-  properties: PropTypes.object
+  properties: PropTypes.object,
+  removeClick: PropTypes.func
 }
 
 /**
@@ -121,13 +129,15 @@ function DisplayNodeDetails (props) {
       <PropertiesSection
         properties={props.node ? props.node.properties : null}
         entityType='node'
+        removeClick={props.removeClick}
       />
     </React.Fragment>
   )
 }
 
 DisplayNodeDetails.propTypes = {
-  node: PropTypes.object
+  node: PropTypes.object,
+  removeClick: PropTypes.func
 }
 
 export default DisplayNodeDetails
