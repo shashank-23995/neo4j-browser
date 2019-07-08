@@ -75,20 +75,24 @@ LabelSection.propTypes = {
 export const EntitySection = props => {
   return (
     <DrawerSection>
-      <IconButton
-        onClick={() => {
-          props.editEntityAction(
-            props.node.identity.toInt(),
-            props.node.labels[0],
-            'delete',
-            'node'
-          )
-        }}
-      >
-        Delete Node
-      </IconButton>
       <DrawerSubHeader>Entity</DrawerSubHeader>
       {props.type}
+      {props.type === 'Node' && (
+        <ConfirmationButton
+          requestIcon={<BinIcon />}
+          confirmIcon={<BinIcon deleteAction />}
+          onConfirmed={() => {
+            props.editEntityAction(
+              {
+                nodeId: props.node.identity.toInt(),
+                firstLabel: props.node.labels[0]
+              },
+              'delete',
+              'node'
+            )
+          }}
+        />
+      )}
     </DrawerSection>
   )
 }
@@ -118,13 +122,15 @@ export const PropertiesSection = props => {
                     confirmIcon={<BinIcon deleteAction />}
                     onConfirmed={() => {
                       props.editEntityAction(
-                        props.node
-                          ? props.node.identity.toInt()
-                          : props.relationship.identity.toInt(),
-                        props.node
-                          ? props.node.labels[0]
-                          : props.relationship.type,
-                        key,
+                        {
+                          [props.node ? 'nodeId' : 'relationshipId']: props.node
+                            ? props.node.identity.toInt()
+                            : props.relationship.identity.toInt(),
+                          [props.node ? 'label' : 'type']: props.node
+                            ? props.node.labels[0]
+                            : props.relationship.type,
+                          propertyKey: key
+                        },
                         'delete',
                         props.node ? 'nodeProperty' : 'relationshipProperty'
                       )

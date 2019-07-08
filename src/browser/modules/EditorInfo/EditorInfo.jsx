@@ -51,17 +51,9 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    editEntityAction: (
-      nodeId,
-      firstLabel,
-      propertyKey,
-      editType,
-      entityType
-    ) => {
+    editEntityAction: (editPayload, editType, entityType) => {
       const action = itemEditorActions.editEntityAction(
-        nodeId,
-        firstLabel,
-        propertyKey,
+        editPayload,
         editType,
         entityType
       )
