@@ -43,18 +43,21 @@ RelationShipTypeSection.propTypes = {
 function DisplayRelationshipDetails (props) {
   return (
     <React.Fragment>
-      <EntitySection type='Relationship' />
+      <EntitySection type='Relationship' {...props} />
       <RelationShipTypeSection {...props} />
       <PropertiesSection
         properties={props.relationship ? props.relationship.properties : null}
+        {...props}
         entityType='relationship'
+        editEntityAction={props.editEntityAction}
       />
     </React.Fragment>
   )
 }
 
 DisplayRelationshipDetails.propTypes = {
-  relationship: PropTypes.object
+  relationship: PropTypes.object,
+  editEntityAction: PropTypes.func
 }
 
 export default DisplayRelationshipDetails

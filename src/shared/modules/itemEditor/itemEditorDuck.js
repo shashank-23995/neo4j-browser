@@ -1,9 +1,9 @@
 import { handleCypherCommand } from '../commands/helpers/cypher'
+import * as _ from 'lodash'
 const initialState = {
   record: undefined,
   entityType: undefined
 }
-
 // Action type constants
 export const NAME = 'itemEditor'
 export const SET_RECORD = `${NAME}/SET_RECORD`
@@ -32,29 +32,23 @@ export const fetchData = (id, entityType) => {
  * @param {string} editType edit type (create, update, delete)
  * @param {string} entityType entity type (node, relationship)
  */
-export const editEntityAction = (nodeId, firstLabel, editType, entityType) => {
+export const editEntityAction = (
+  nodeId,
+  firstLabel,
+  propertyKey,
+  editType,
+  entityType
+) => {
   return {
     type: EDIT_ENTITY_ACTION_CONSTANT,
     nodeId,
     firstLabel,
+    propertyKey,
     editType,
     entityType
   }
 }
 
-/**
- * Remove data action creator
- * @param {string/object} propertyKey The propertyKey of selected properties to be removed
- * @param {string} propertyValue The propertyValue of the selected properties to be removed
- */
-
-export const removeClick = (propertyKey, propertyValue) => {
-  return {
-    type: REMOVE_PROPERTY,
-    propertyKey,
-    propertyValue
-  }
-}
 // Reducer
 export default function reducer (state = initialState, action) {
   switch (action.type) {
@@ -64,10 +58,6 @@ export default function reducer (state = initialState, action) {
       return { ...state, entityType: action.entityType }
     case EDIT_ENTITY_ACTION_CONSTANT:
       return state
-    case REMOVE_PROPERTY:
-      console.log(action.propertyKey, action.propertyValue)
-      return state
-
     default:
       return state
   }
@@ -85,7 +75,9 @@ export const handleFetchDataEpic = (action$, store) =>
         return noop
       })
     }
-    let cmd = `MATCH (a) where id(a)=${action.id} RETURN a, ((a)-->()) , ((a)<--())`
+    let cmd = `MATCH (a) where id(a)=${
+      action.id
+    } RETURN a, ((a)-->()) , ((a)<--())`
     if (action.entityType === 'relationship') {
       cmd = `MATCH ()-[r]->() where id(r)=${action.id} RETURN r`
     }
@@ -120,9 +112,18 @@ export const handleEditEntityEpic = (action$, store) =>
         break
       case 'delete':
         if (action.entityType === 'node') {
-          cmd = `MATCH (p:${action.firstLabel}) where ID(p)=${action.nodeId} OPTIONAL MATCH (p)-[r]-() DELETE r,p`
+          cmd = `MATCH (p:${action.firstLabel}) where ID(p)=${
+            action.nodeId
+          } OPTIONAL MATCH (p)-[r]-() DELETE r,p`
         } else if (action.entityType === 'relationship') {
           // FIXME find out the command for relationship deletion
+        } else if (action.entityType === 'nodeProperty') {
+          cmd = `MATCH (a:${action.firstLabel}) where ID(a)=${action.nodeId}
+          REMOVE a.${action.propertyKey} RETURN a, ((a)-->()) , ((a)<--())`
+        } else if (action.entityType === 'relationshipProperty') {
+          cmd = `MATCH ()-[r:${action.firstLabel}]-() WHERE ID(r)=${
+            action.nodeId
+          } REMOVE r.${action.propertyKey} RETURN r`
         }
         break
     }
@@ -133,7 +134,6 @@ export const handleEditEntityEpic = (action$, store) =>
       let [id, request] = handleCypherCommand(newAction, store.dispatch)
       return request
         .then(res => {
-          console.log(res)
           store.dispatch({ type: SET_RECORD, item: res.records[0] })
           return noop
         })
