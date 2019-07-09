@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   DrawerSection,
@@ -10,11 +10,19 @@ import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import { chip, StyledKeyEditor } from './styled'
-import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
+import {
+  StyledTable,
+  StyledValue,
+  StyledRelationship
+} from '../DatabaseInfo/styled'
 import styled from 'styled-components'
-import { BinIcon } from 'browser-components/icons/Icons'
+import {
+  BinIcon,
+  ExpandMenuIcon,
+  CollapseMenuIcon
+} from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-
+import { FoldersButton } from '../Sidebar/styled'
 const IconButton = styled.button`
   margin-left: 4px;
   border: 0;
@@ -24,6 +32,7 @@ const IconButton = styled.button`
     outline: solid;
   }
 `
+// const setFlag = active => !active
 
 /**
  * Creates items to display in chip format
@@ -217,8 +226,11 @@ const showRelationshipDetails = (
                 <StyledValue data-testid='user-details-username'>
                   {relationshipEndpoint === 'from' && ' ----> '}
                   {relationshipEndpoint === 'to' && ' <---- '}
+                  {/* displaying node ID */}
                   {value.end.identity.toInt()}
+                  {/* displaying relationship type */}
                 </StyledValue>
+                <ExpandDetails value={value} />
               </tr>
             </tbody>
           </StyledTable>
@@ -234,6 +246,25 @@ const showRelationshipDetails = (
   }
   return relationShipArray
 }
+
+/**
+ *
+ * @param {*} props
+ */
+const ExpandDetails = props => {
+  const [active, setFlag] = useState(false)
+  return (
+    <FoldersButton onClick={() => setFlag(!active)}>
+      {active === true ? <CollapseMenuIcon /> : <ExpandMenuIcon />}
+      {active === true && (
+        <StyledRelationship>
+          {props.value.segments.map((item, index) => item.relationship.type)}
+        </StyledRelationship>
+      )}
+    </FoldersButton>
+  )
+}
+
 /**
  * Relationship Section
  */
