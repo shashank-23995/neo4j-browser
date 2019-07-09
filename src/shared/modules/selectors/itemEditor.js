@@ -12,7 +12,14 @@ export const getSelectedItem = createSelector(
   [getEntityType, getRecord],
   (entityType, record) => {
     if (entityType === 'node' && record && record.has && record.has('a')) {
-      return record && record.get && record.get('a')
+      return (
+        record &&
+        record.get && {
+          node: record.get('a'),
+          fromSelectedNode: record.get('((a)-->())'),
+          toSelectedNode: record.get('((a)<--())')
+        }
+      )
     } else if (
       entityType === 'relationship' &&
       record &&
