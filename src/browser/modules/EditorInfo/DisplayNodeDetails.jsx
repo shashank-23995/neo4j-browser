@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   DrawerSection,
@@ -9,7 +9,7 @@ import { getStringValue } from './utils'
 import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
-import { chip, StyledKeyEditor } from './styled'
+import { chip, StyledKeyEditor, EditPropertiesInput } from './styled'
 import {
   StyledTable,
   StyledValue,
@@ -17,6 +17,7 @@ import {
 } from '../DatabaseInfo/styled'
 import {
   BinIcon,
+  EditIcon,
   ExpandMenuIcon,
   CollapseMenuIcon
 } from 'browser-components/icons/Icons'
@@ -103,10 +104,43 @@ EntitySection.propTypes = {
  * Properties section
  * @param {*} props
  */
+
 export const PropertiesSection = props => {
+  const initState = {
+    properties: { ...props.properties }
+  }
+
+  const [propertiesState, updatePropertiesState] = useState(initState)
+
+  /**
+   * useEffect accepts a function that updates the state whenever the props change
+   * @param updatePropertiesState — Function that returns an updated state everytime props change
+   * @param deps —  Will activate when the props change
+   */
+  useEffect(
+    () => {
+      updatePropertiesState({
+        ...propertiesState,
+        properties: { ...props.properties }
+      })
+    },
+    [props.properties]
+  )
+
+  const handleChange = (key, e) => {
+    let newState = _.cloneDeep(propertiesState)
+    updatePropertiesState({
+      ...newState,
+      properties: {
+        ...newState.properties,
+        [key]: getStringValue(e.target.value)
+      }
+    })
+  }
+
   let content = []
-  if (props.properties) {
-    content = _.map(props.properties, (value, key) => {
+  if (propertiesState.properties) {
+    content = _.map(propertiesState.properties, (value, key) => {
       return (
         <div key={key}>
           <StyledTable>
@@ -114,7 +148,20 @@ export const PropertiesSection = props => {
               <tr>
                 <StyledKeyEditor>{key}:</StyledKeyEditor>
                 <StyledValue data-testid='user-details-username'>
-                  {getStringValue(value)}
+                  <EditPropertiesInput
+                    id='item'
+                    type='text'
+                    onChange={e => {
+                      handleChange(key, e)
+                    }}
+                    value={getStringValue(value)}
+                  />
+
+                  <ConfirmationButton
+                    requestIcon={<EditIcon />}
+                    confirmIcon={<EditIcon deleteAction />}
+                    onConfirmed={() => this.props.removeClick(key, value)}
+                  />
                   <ConfirmationButton
                     requestIcon={<BinIcon />}
                     confirmIcon={<BinIcon deleteAction />}
@@ -154,6 +201,7 @@ export const PropertiesSection = props => {
     </DrawerSection>
   )
 }
+
 PropertiesSection.propTypes = {
   properties: PropTypes.object,
   editEntityAction: PropTypes.func
@@ -164,7 +212,7 @@ PropertiesSection.propTypes = {
  * Provides editing capabilities for node labels and properties
  * @param {*} props
  */
-function DisplayNodeDetails (props) {
+const DisplayNodeDetails = props => {
   return (
     <React.Fragment>
       <EntitySection {...props} type='Node' />

@@ -5,6 +5,7 @@
 
 import styled from 'styled-components'
 import { StyledKey } from '../DatabaseInfo/styled'
+import { EditFolderInput } from '../Sidebar/styled'
 
 export const chip = styled.div`
   word-break: break-all;
@@ -23,4 +24,10 @@ export const chip = styled.div`
 
 export const StyledKeyEditor = styled(StyledKey)`
   vertical-align: top;
+  text-align: start;
+  padding-right: 0;
+`
+
+export const EditPropertiesInput = styled(EditFolderInput)`
+  margin-bottom: 0.5em;
 `
