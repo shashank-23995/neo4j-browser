@@ -15,7 +15,6 @@ import {
   StyledValue,
   StyledRelationship
 } from '../DatabaseInfo/styled'
-import styled from 'styled-components'
 import {
   BinIcon,
   ExpandMenuIcon,
@@ -23,16 +22,6 @@ import {
 } from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { FoldersButton } from '../Sidebar/styled'
-const IconButton = styled.button`
-  margin-left: 4px;
-  border: 0;
-  background: white;
-  color: black;
-  &:focus {
-    outline: solid;
-  }
-`
-// const setFlag = active => !active
 
 /**
  * Creates items to display in chip format
