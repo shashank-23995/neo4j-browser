@@ -189,6 +189,7 @@ function DisplayNodeDetails (props) {
         fromSelectedNode={props.fromSelectedNode}
         toSelectedNode={props.toSelectedNode}
         entityType={props.entityType}
+        editEntityAction={props.editEntityAction}
       />
     </React.Fragment>
   )
@@ -211,7 +212,8 @@ DisplayNodeDetails.propTypes = {
 const showRelationshipDetails = (
   selectedNodeRelationship,
   entityType,
-  relationshipEndpoint
+  relationshipEndpoint,
+  editEntityAction
 ) => {
   let relationShipArray = []
   if (selectedNodeRelationship) {
@@ -222,6 +224,7 @@ const showRelationshipDetails = (
           selectedNodeRelationship={selectedNodeRelationship}
           entityType={entityType}
           relationshipEndpoint={relationshipEndpoint}
+          editEntityAction={editEntityAction}
         />
       )
     })
@@ -243,6 +246,7 @@ const ExpandDetails = props => {
   const [active, setFlag] = useState(false)
   return (
     <div>
+      {console.log(props.value.segments[0].relationship)}
       <StyledList>
         <StyledListHeaderItem>
           <StyledFolderLabel>
@@ -269,11 +273,28 @@ const ExpandDetails = props => {
             </StyledFavFolderButtonSpan>
           </FolderButtonContainer>
           {active === true && (
-            <StyledRelationship>
-              {props.value.segments.map(
-                (item, index) => item.relationship.type
-              )}
-            </StyledRelationship>
+            <div>
+              <DrawerSubHeader>Relationship Type</DrawerSubHeader>
+              <StyledRelationship>
+                {props.value.segments.map(
+                  (item, index) => item.relationship.type
+                )}
+              </StyledRelationship>
+            </div>
+          )}
+          {active === true && (
+            <div>
+              {props.value.segments.map((item, index) => (
+                <PropertiesSection
+                  properties={
+                    item.relationship ? item.relationship.properties : null
+                  }
+                  {...props}
+                  entityType='relationship'
+                  editEntityAction={props.editEntityAction}
+                />
+              ))}
+            </div>
           )}
         </StyledListHeaderItem>
       </StyledList>
@@ -296,10 +317,16 @@ export const RelationshipSection = props => {
       {showRelationshipDetails(
         props.fromSelectedNode,
         props.entityType,
-        'from'
+        'from',
+        props.editEntityAction
       )}
       <DrawerSubHeader>To Selected Node</DrawerSubHeader>
-      {showRelationshipDetails(props.toSelectedNode, props.entityType, 'to')}
+      {showRelationshipDetails(
+        props.toSelectedNode,
+        props.entityType,
+        'to',
+        props.editEntityAction
+      )}
     </DrawerSection>
   )
 }
