@@ -248,7 +248,7 @@ const showRelationshipDetails = (
 }
 
 /**
- *
+ * Component to Expand Relationship Details
  * @param {*} props
  */
 const ExpandDetails = props => {
@@ -263,6 +263,10 @@ const ExpandDetails = props => {
       )}
     </FoldersButton>
   )
+}
+
+ExpandDetails.propTypes = {
+  value: PropTypes.object
 }
 
 /**
