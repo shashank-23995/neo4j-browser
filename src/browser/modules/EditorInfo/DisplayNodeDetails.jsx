@@ -22,6 +22,16 @@ import {
 } from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { FoldersButton } from '../Sidebar/styled'
+import {
+  StyledList,
+  StyledListHeaderItem,
+  StyledFavFolderButtonSpan,
+  EditFolderButton,
+  FolderButtonContainer,
+  EditFolderInput,
+  StyledFolderLabel,
+  StyledFavoriteText
+} from '../Sidebar/styled'
 
 /**
  * Creates items to display in chip format
@@ -207,23 +217,12 @@ const showRelationshipDetails = (
   if (selectedNodeRelationship) {
     relationShipArray = _.map(selectedNodeRelationship, (value, key) => {
       return (
-        <div key={key}>
-          <StyledTable>
-            <tbody>
-              <tr>
-                <StyledKeyEditor>R{key + 1}:</StyledKeyEditor>
-                <StyledValue data-testid='user-details-username'>
-                  {relationshipEndpoint === 'from' && ' ----> '}
-                  {relationshipEndpoint === 'to' && ' <---- '}
-                  {/* displaying node ID */}
-                  {value.end.identity.toInt()}
-                  {/* displaying relationship type */}
-                </StyledValue>
-                <ExpandDetails value={value} />
-              </tr>
-            </tbody>
-          </StyledTable>
-        </div>
+        <ExpandDetails
+          value={value}
+          selectedNodeRelationship={selectedNodeRelationship}
+          entityType={entityType}
+          relationshipEndpoint={relationshipEndpoint}
+        />
       )
     })
   }
@@ -243,14 +242,42 @@ const showRelationshipDetails = (
 const ExpandDetails = props => {
   const [active, setFlag] = useState(false)
   return (
-    <FoldersButton onClick={() => setFlag(!active)}>
-      {active === true ? <CollapseMenuIcon /> : <ExpandMenuIcon />}
-      {active === true && (
-        <StyledRelationship>
-          {props.value.segments.map((item, index) => item.relationship.type)}
-        </StyledRelationship>
-      )}
-    </FoldersButton>
+    <div>
+      <StyledList>
+        <StyledListHeaderItem>
+          <StyledFolderLabel>
+            {props.relationshipEndpoint === 'from' && ' ----> '}
+            {props.relationshipEndpoint === 'to' && ' <---- '}
+            {/* displaying node ID */}
+            {props.value.end.identity.toInt()}
+          </StyledFolderLabel>
+          <FolderButtonContainer>
+            {/* <FoldersButton><ExpandMenuIcon /></FoldersButton> */}
+            <FoldersButton onClick={() => setFlag(!active)}>
+              {active === true ? <CollapseMenuIcon /> : <ExpandMenuIcon />}
+            </FoldersButton>
+            <EditFolderButton />
+            &nbsp;
+            <StyledFavFolderButtonSpan>
+              <ConfirmationButton
+                requestIcon={<BinIcon />}
+                confirmIcon={<BinIcon />}
+                // onConfirmed={() =>
+                //   this.props.removeClick(this.props.folder.id)
+                // }
+              />
+            </StyledFavFolderButtonSpan>
+          </FolderButtonContainer>
+          {active === true && (
+            <StyledRelationship>
+              {props.value.segments.map(
+                (item, index) => item.relationship.type
+              )}
+            </StyledRelationship>
+          )}
+        </StyledListHeaderItem>
+      </StyledList>
+    </div>
   )
 }
 
