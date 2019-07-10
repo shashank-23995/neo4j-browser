@@ -11,19 +11,8 @@ import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import { chip, StyledKeyEditor } from './styled'
 import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
-import styled from 'styled-components'
 import { BinIcon } from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-
-const IconButton = styled.button`
-  margin-left: 4px;
-  border: 0;
-  background: white;
-  color: black;
-  &:focus {
-    outline: solid;
-  }
-`
 
 /**
  * Creates items to display in chip format

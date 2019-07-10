@@ -27,8 +27,7 @@ export const fetchData = (id, entityType) => {
 
 /**
  * Edit Entity action creator
- * @param {int} entityType the selected node id
- * @param {string} firstLabel the label of selected node
+ * @param {object} editPayload the payload received for the operations
  * @param {string} editType edit type (create, update, delete)
  * @param {string} entityType entity type (node, relationship)
  */
