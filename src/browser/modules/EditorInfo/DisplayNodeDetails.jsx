@@ -229,12 +229,11 @@ const showRelationshipDetails = (
       )
     })
   }
-  if (!relationShipArray.length) {
-    relationShipArray.push(
-      <p
-      >{`There are no relationships ${relationshipEndpoint} this ${entityType}`}</p>
-    )
-  }
+  // if (!relationShipArray.length) {
+  //   relationShipArray.push(
+  //     <p>{`There are no relationships ${relationshipEndpoint} this ${entityType}`}</p>
+  //   )
+  // }
   return relationShipArray
 }
 
@@ -256,7 +255,6 @@ const ExpandDetails = props => {
             {props.value.end.identity.toInt()}
           </StyledFolderLabel>
           <FolderButtonContainer>
-            {/* <FoldersButton><ExpandMenuIcon /></FoldersButton> */}
             <FoldersButton onClick={() => setFlag(!active)}>
               {active === true ? <CollapseMenuIcon /> : <ExpandMenuIcon />}
             </FoldersButton>
@@ -266,24 +264,18 @@ const ExpandDetails = props => {
               <ConfirmationButton
                 requestIcon={<BinIcon />}
                 confirmIcon={<BinIcon />}
-                // onConfirmed={() =>
-                //   this.props.removeClick(this.props.folder.id)
-                // }
               />
             </StyledFavFolderButtonSpan>
           </FolderButtonContainer>
           {active === true && (
-            <div>
+            <div style={{ marginLeft: 30 }}>
               <DrawerSubHeader>Relationship Type</DrawerSubHeader>
               <StyledRelationship>
                 {props.value.segments.map(
                   (item, index) => item.relationship.type
                 )}
               </StyledRelationship>
-            </div>
-          )}
-          {active === true && (
-            <div>
+
               {props.value.segments.map((item, index) => (
                 <PropertiesSection
                   properties={
@@ -310,23 +302,27 @@ ExpandDetails.propTypes = {
  * Relationship Section
  */
 export const RelationshipSection = props => {
+  let noRelationshipMessage = null
+  if (!props.toSelectedNode.length && !props.fromSelectedNode.length) {
+    noRelationshipMessage = <p>{`There are no relationships for this node`}</p>
+  }
+
   return (
     <DrawerSection>
       <DrawerSubHeader>Relationships</DrawerSubHeader>
-      <DrawerSubHeader>From Selected Node</DrawerSubHeader>
       {showRelationshipDetails(
         props.fromSelectedNode,
         props.entityType,
         'from',
         props.editEntityAction
       )}
-      <DrawerSubHeader>To Selected Node</DrawerSubHeader>
       {showRelationshipDetails(
         props.toSelectedNode,
         props.entityType,
         'to',
         props.editEntityAction
       )}
+      {noRelationshipMessage}
     </DrawerSection>
   )
 }
