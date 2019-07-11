@@ -98,6 +98,9 @@ export const handleEditEntityEpic = (action$, store) =>
     let cmd
     switch (action.editType) {
       case 'create':
+        cmd = `CREATE (a:${
+          action.editPayload.nodeLabel
+        }) RETURN a, ((a)-->()) , ((a)<--())`
         break
       case 'update':
         break

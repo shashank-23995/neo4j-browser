@@ -282,11 +282,6 @@ const showRelationshipDetails = (
       )
     })
   }
-  // if (!relationShipArray.length) {
-  //   relationShipArray.push(
-  //     <p>{`There are no relationships ${relationshipEndpoint} this ${entityType}`}</p>
-  //   )
-  // }
   return relationShipArray
 }
 
