@@ -11,6 +11,7 @@ const getRecord = state => state.itemEditor.record
 export const getSelectedItem = createSelector(
   [getEntityType, getRecord],
   (entityType, record) => {
+    entityType = entityType || 'node'
     if (entityType === 'node' && record && record.has && record.has('a')) {
       return (
         record &&

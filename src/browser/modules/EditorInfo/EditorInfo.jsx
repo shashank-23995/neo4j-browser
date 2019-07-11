@@ -9,6 +9,7 @@ import {
   DrawerBody
 } from 'browser-components/drawer/index'
 import { getSelectedItem } from 'shared/modules/selectors/itemEditor'
+import AddNode from './AddNode'
 import * as itemEditorActions from 'shared/modules/itemEditor/itemEditorDuck'
 
 /**
@@ -21,7 +22,11 @@ export class EditorInfo extends Component {
     return (
       <div>
         <Drawer>
-          <DrawerHeader>Editor</DrawerHeader>
+          <DrawerHeader>
+            Editor
+            <AddNode editEntityAction={this.props.editEntityAction} />
+          </DrawerHeader>
+
           <DrawerBody>
             {this.props.selectedItem ? (
               this.props.entityType === 'node' ? (
@@ -52,6 +57,7 @@ const mapStateToProps = state => {
     entityType: state.itemEditor.entityType
   }
 }
+
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     editEntityAction: (editPayload, editType, entityType) => {

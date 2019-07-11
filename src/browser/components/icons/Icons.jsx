@@ -41,6 +41,7 @@ import Text201 from 'icons/Text2-01.svg'
 import appWindowCode from 'icons/app-window-code.svg'
 import arrowLeft1 from 'icons/arrow-left-1.svg'
 import arrowRight1 from 'icons/arrow-right-1.svg'
+import tick from 'icons/tick.svg'
 
 const inactive = `
   color: #797979;
@@ -248,6 +249,10 @@ export const BinIcon = props => (
     {...props}
     className='sl-bin'
   />
+)
+
+export const TickMarkIcon = () => (
+  <IconContainer icon={tick} width={12} style={{ fill: '#4cd950' }} />
 )
 
 export const ExpandIcon = () => <IconContainer icon={expand01} width={12} />

@@ -66,9 +66,7 @@ export const handleFetchDataEpic = (action$, store) =>
         return noop
       })
     }
-    let cmd = `MATCH (a) where id(a)=${
-      action.id
-    } RETURN a, ((a)-->()) , ((a)<--())`
+    let cmd = `MATCH (a) where id(a)=${action.id} RETURN a, ((a)-->()) , ((a)<--())`
     if (action.entityType === 'relationship') {
       cmd = `MATCH ()-[r]->() where id(r)=${action.id} RETURN r`
     }
@@ -98,30 +96,21 @@ export const handleEditEntityEpic = (action$, store) =>
     let cmd
     switch (action.editType) {
       case 'create':
+        cmd = `CREATE (a:${action.editPayload.nodeLabel}) RETURN a, ((a)-->()) , ((a)<--())`
         break
       case 'update':
         break
       case 'delete':
         if (action.entityType === 'node') {
-          cmd = `MATCH (p:${action.editPayload.firstLabel}) where ID(p)=${
-            action.editPayload.nodeId
-          } OPTIONAL MATCH (p)-[r]-() DELETE r,p`
+          cmd = `MATCH (p:${action.editPayload.firstLabel}) where ID(p)=${action.editPayload.nodeId} OPTIONAL MATCH (p)-[r]-() DELETE r,p`
         } else if (action.entityType === 'relationship') {
-          cmd = `MATCH ()-[r]-() WHERE ID(r)=${
-            action.editPayload.relationshipId
-          } DELETE r WITH 1 as nothing
+          cmd = `MATCH ()-[r]-() WHERE ID(r)=${action.editPayload.relationshipId} DELETE r WITH 1 as nothing
           MATCH (a) WHERE ID(a)= ${action.editPayload.nodeId} 
           RETURN a,((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'nodeProperty') {
-          cmd = `MATCH (a:${action.editPayload.label}) where ID(a)=${
-            action.editPayload.nodeId
-          } REMOVE a.${
-            action.editPayload.propertyKey
-          } RETURN a, ((a)-->()) , ((a)<--())`
+          cmd = `MATCH (a:${action.editPayload.label}) where ID(a)=${action.editPayload.nodeId} REMOVE a.${action.editPayload.propertyKey} RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'relationshipProperty') {
-          cmd = `MATCH ()-[r:${action.editPayload.type}]-() WHERE ID(r)=${
-            action.editPayload.relationshipId
-          } REMOVE r.${action.editPayload.propertyKey} RETURN r`
+          cmd = `MATCH ()-[r:${action.editPayload.type}]-() WHERE ID(r)=${action.editPayload.relationshipId} REMOVE r.${action.editPayload.propertyKey} RETURN r`
         }
         break
     }

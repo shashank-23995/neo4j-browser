@@ -117,15 +117,12 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        ...propertiesState,
-        properties: { ...props.properties }
-      })
-    },
-    [props.properties]
-  )
+  useEffect(() => {
+    updatePropertiesState({
+      ...propertiesState,
+      properties: { ...props.properties }
+    })
+  }, [props.properties])
 
   const handleChange = (key, e) => {
     let newState = _.cloneDeep(propertiesState)
@@ -296,8 +293,7 @@ const showRelationshipDetails = (
   }
   if (!relationShipArray.length) {
     relationShipArray.push(
-      <p
-      >{`There are no relationships ${relationshipEndpoint} this ${entityType}`}</p>
+      <p>{`There are no relationships ${relationshipEndpoint} this ${entityType}`}</p>
     )
   }
   return relationShipArray
