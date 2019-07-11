@@ -5,16 +5,16 @@ import {
   DrawerSubHeader,
   DrawerSectionBody
 } from 'browser-components/drawer/index'
-import { getStringValue } from './utils'
 import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
-import { chip, StyledKeyEditor, EditPropertiesInput } from './styled'
-import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
-import { BinIcon, EditIcon } from 'browser-components/icons/Icons'
+import { chip } from './styled'
+import { StyledTable } from '../DatabaseInfo/styled'
+import { BinIcon } from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-
+import { DisplayProperties } from '../EditorInfo/DisplayProperties'
 import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
+
 /**
  * Creates items to display in chip format
  * @param {*} originalList Item list
@@ -118,17 +118,6 @@ export const PropertiesSection = props => {
     [props.properties]
   )
 
-  const handleChange = (key, e) => {
-    let newState = _.cloneDeep(propertiesState)
-    updatePropertiesState({
-      ...newState,
-      properties: {
-        ...newState.properties,
-        [key]: getStringValue(e.target.value)
-      }
-    })
-  }
-
   let content = []
   if (propertiesState.properties) {
     content = _.map(propertiesState.properties, (value, key) => {
@@ -137,42 +126,11 @@ export const PropertiesSection = props => {
           <StyledTable>
             <tbody>
               <tr>
-                <StyledKeyEditor>{key}:</StyledKeyEditor>
-                <StyledValue data-testid='user-details-username'>
-                  <EditPropertiesInput
-                    id='item'
-                    type='text'
-                    onChange={e => {
-                      handleChange(key, e)
-                    }}
-                    value={getStringValue(value)}
-                  />
-
-                  <ConfirmationButton
-                    requestIcon={<EditIcon />}
-                    confirmIcon={<EditIcon deleteAction />}
-                    onConfirmed={() => this.props.removeClick(key, value)}
-                  />
-                  <ConfirmationButton
-                    requestIcon={<BinIcon />}
-                    confirmIcon={<BinIcon deleteAction />}
-                    onConfirmed={() => {
-                      props.editEntityAction(
-                        {
-                          [props.node ? 'nodeId' : 'relationshipId']: props.node
-                            ? props.node.identity.toInt()
-                            : props.relationship.identity.toInt(),
-                          [props.node ? 'label' : 'type']: props.node
-                            ? props.node.labels[0]
-                            : props.relationship.type,
-                          propertyKey: key
-                        },
-                        'delete',
-                        props.node ? 'nodeProperty' : 'relationshipProperty'
-                      )
-                    }}
-                  />
-                </StyledValue>
+                <DisplayProperties
+                  {...props}
+                  value={value}
+                  displayPropertiesStateKey={key}
+                />
               </tr>
             </tbody>
           </StyledTable>
