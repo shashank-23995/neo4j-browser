@@ -47,6 +47,14 @@ export const DisplayProperties = props => {
       requested: true
     })
   }
+
+  const onCanceled = () => {
+    updatePropertiesState({
+      properties: { [displayPropertiesStateKey]: value },
+      requested: false
+    })
+  }
+
   return (
     <div>
       <StyledKeyEditor>{displayPropertiesStateKey}:</StyledKeyEditor>
@@ -63,7 +71,10 @@ export const DisplayProperties = props => {
         />
 
         {propertiesState.requested ? (
-          <PartialConfirmationButtons icon={<TickMarkIcon />} />
+          <PartialConfirmationButtons
+            icon={<TickMarkIcon />}
+            onCanceled={onCanceled}
+          />
         ) : null}
 
         <ConfirmationButton
