@@ -10,20 +10,11 @@ import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import { chip, StyledKeyEditor, EditPropertiesInput } from './styled'
-import {
-  StyledTable,
-  StyledValue,
-  StyledRelationship
-} from '../DatabaseInfo/styled'
-import {
-  BinIcon,
-  EditIcon,
-  ExpandMenuIcon,
-  CollapseMenuIcon
-} from 'browser-components/icons/Icons'
+import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
+import { BinIcon, EditIcon } from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-import { FoldersButton } from '../Sidebar/styled'
 
+import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
 /**
  * Creates items to display in chip format
  * @param {*} originalList Item list
@@ -117,12 +108,15 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(() => {
-    updatePropertiesState({
-      ...propertiesState,
-      properties: { ...props.properties }
-    })
-  }, [props.properties])
+  useEffect(
+    () => {
+      updatePropertiesState({
+        ...propertiesState,
+        properties: { ...props.properties }
+      })
+    },
+    [props.properties]
+  )
 
   const handleChange = (key, e) => {
     let newState = _.cloneDeep(propertiesState)
@@ -224,6 +218,7 @@ const DisplayNodeDetails = props => {
         fromSelectedNode={props.fromSelectedNode}
         toSelectedNode={props.toSelectedNode}
         entityType={props.entityType}
+        editEntityAction={props.editEntityAction}
         {...props}
       />
     </React.Fragment>
@@ -257,78 +252,31 @@ const showRelationshipDetails = (
   if (selectedNodeRelationship) {
     relationShipArray = _.map(selectedNodeRelationship, (value, key) => {
       return (
-        <div key={key}>
-          <StyledTable>
-            <tbody>
-              <tr>
-                <StyledKeyEditor>R{key + 1}:</StyledKeyEditor>
-                <StyledValue data-testid='user-details-username'>
-                  {relationshipEndpoint === 'from' && ' ----> '}
-                  {relationshipEndpoint === 'to' && ' <---- '}
-                  {/* displaying node ID */}
-                  {value.end.identity.toInt()}
-                  <ConfirmationButton
-                    requestIcon={<BinIcon />}
-                    confirmIcon={<BinIcon deleteAction />}
-                    onConfirmed={() => {
-                      // delete the relationship based on ID
-                      editEntityAction(
-                        {
-                          relationshipId: value.segments[0].relationship.identity.toInt(),
-                          nodeId: selectedNodeId
-                        },
-                        'delete',
-                        'relationship'
-                      )
-                    }}
-                  />
-                </StyledValue>
-                <ExpandDetails value={value} />
-              </tr>
-            </tbody>
-          </StyledTable>
-        </div>
+        <ExpandRelationshipDetails
+          value={value}
+          entityType={entityType}
+          relationshipEndpoint={relationshipEndpoint}
+          editEntityAction={editEntityAction}
+          selectedNodeId={selectedNodeId}
+        />
       )
     })
   }
-  if (!relationShipArray.length) {
-    relationShipArray.push(
-      <p>{`There are no relationships ${relationshipEndpoint} this ${entityType}`}</p>
-    )
-  }
   return relationShipArray
-}
-
-/**
- * Component to Expand Relationship Details
- * @param {*} props
- */
-const ExpandDetails = props => {
-  const [active, setFlag] = useState(false)
-  return (
-    <FoldersButton onClick={() => setFlag(!active)}>
-      {active === true ? <CollapseMenuIcon /> : <ExpandMenuIcon />}
-      {active === true && (
-        <StyledRelationship>
-          {props.value.segments.map((item, index) => item.relationship.type)}
-        </StyledRelationship>
-      )}
-    </FoldersButton>
-  )
-}
-
-ExpandDetails.propTypes = {
-  value: PropTypes.object
 }
 
 /**
  * Relationship Section
  */
 export const RelationshipSection = props => {
+  let noRelationshipMessage = null
+  if (!props.toSelectedNode.length && !props.fromSelectedNode.length) {
+    noRelationshipMessage = <p>{`There are no relationships for this node`}</p>
+  }
+
   return (
     <DrawerSection>
       <DrawerSubHeader>Relationships</DrawerSubHeader>
-      <DrawerSubHeader>From Selected Node</DrawerSubHeader>
       {showRelationshipDetails(
         props.fromSelectedNode,
         props.entityType,
@@ -336,7 +284,6 @@ export const RelationshipSection = props => {
         props.editEntityAction,
         props.node.identity.toInt()
       )}
-      <DrawerSubHeader>To Selected Node</DrawerSubHeader>
       {showRelationshipDetails(
         props.toSelectedNode,
         props.entityType,
@@ -344,6 +291,7 @@ export const RelationshipSection = props => {
         props.editEntityAction,
         props.node.identity.toInt()
       )}
+      {noRelationshipMessage}
     </DrawerSection>
   )
 }
@@ -353,7 +301,7 @@ RelationshipSection.propTypes = {
   fromSelectedNode: PropTypes.array,
   toSelectedNode: PropTypes.array,
   editEntityAction: PropTypes.func,
-  identity: PropTypes.Integer
+  identity: PropTypes.number
 }
 
 export default DisplayNodeDetails
