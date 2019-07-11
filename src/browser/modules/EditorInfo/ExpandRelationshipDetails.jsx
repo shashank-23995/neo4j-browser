@@ -91,5 +91,5 @@ ExpandRelationshipDetails.propTypes = {
   entityType: PropTypes.string,
   relationshipEndpoint: PropTypes.string,
   editEntityAction: PropTypes.func,
-  selectedNodeId: PropTypes.Integer
+  selectedNodeId: PropTypes.number
 }

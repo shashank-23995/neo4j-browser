@@ -301,7 +301,7 @@ RelationshipSection.propTypes = {
   fromSelectedNode: PropTypes.array,
   toSelectedNode: PropTypes.array,
   editEntityAction: PropTypes.func,
-  identity: PropTypes.Integer
+  identity: PropTypes.number
 }
 
 export default DisplayNodeDetails
