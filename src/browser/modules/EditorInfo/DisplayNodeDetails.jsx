@@ -10,30 +10,11 @@ import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import { chip, StyledKeyEditor, EditPropertiesInput } from './styled'
-import {
-  StyledTable,
-  StyledValue,
-  StyledRelationship
-} from '../DatabaseInfo/styled'
-import {
-  BinIcon,
-  EditIcon,
-  ExpandMenuIcon,
-  CollapseMenuIcon
-} from 'browser-components/icons/Icons'
+import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
+import { BinIcon, EditIcon } from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-import { FoldersButton } from '../Sidebar/styled'
-import {
-  StyledList,
-  StyledListHeaderItem,
-  StyledFavFolderButtonSpan,
-  EditFolderButton,
-  FolderButtonContainer,
-  EditFolderInput,
-  StyledFolderLabel,
-  StyledFavoriteText
-} from '../Sidebar/styled'
 
+import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
 /**
  * Creates items to display in chip format
  * @param {*} originalList Item list
@@ -271,9 +252,8 @@ const showRelationshipDetails = (
   if (selectedNodeRelationship) {
     relationShipArray = _.map(selectedNodeRelationship, (value, key) => {
       return (
-        <ExpandDetails
+        <ExpandRelationshipDetails
           value={value}
-          selectedNodeRelationship={selectedNodeRelationship}
           entityType={entityType}
           relationshipEndpoint={relationshipEndpoint}
           editEntityAction={editEntityAction}
@@ -283,77 +263,6 @@ const showRelationshipDetails = (
     })
   }
   return relationShipArray
-}
-
-/**
- * Component to Expand Relationship Details
- * @param {*} props
- */
-const ExpandDetails = props => {
-  const [active, setFlag] = useState(false)
-  return (
-    <div>
-      <StyledList>
-        <StyledListHeaderItem>
-          <StyledFolderLabel>
-            {props.relationshipEndpoint === 'from' && ' ----> '}
-            {props.relationshipEndpoint === 'to' && ' <---- '}
-            {/* displaying node ID */}
-            {props.value.end.identity.toInt()}
-          </StyledFolderLabel>
-          <FolderButtonContainer>
-            <FoldersButton onClick={() => setFlag(!active)}>
-              {active === true ? <CollapseMenuIcon /> : <ExpandMenuIcon />}
-            </FoldersButton>
-            <EditFolderButton />
-            &nbsp;
-            <StyledFavFolderButtonSpan>
-              <ConfirmationButton
-                requestIcon={<BinIcon />}
-                confirmIcon={<BinIcon deleteAction />}
-                onConfirmed={() => {
-                  // delete the relationship based on ID
-                  props.editEntityAction(
-                    {
-                      relationshipId: props.value.segments[0].relationship.identity.toInt(),
-                      nodeId: props.selectedNodeId
-                    },
-                    'delete',
-                    'relationship'
-                  )
-                }}
-              />
-            </StyledFavFolderButtonSpan>
-          </FolderButtonContainer>
-          {active === true && (
-            <div style={{ marginLeft: 30 }}>
-              <DrawerSubHeader>Relationship Type</DrawerSubHeader>
-              <StyledRelationship>
-                {props.value.segments.map(
-                  (item, index) => item.relationship.type
-                )}
-              </StyledRelationship>
-
-              {props.value.segments.map((item, index) => (
-                <PropertiesSection
-                  properties={
-                    item.relationship ? item.relationship.properties : null
-                  }
-                  {...props}
-                  entityType='relationship'
-                  editEntityAction={props.editEntityAction}
-                />
-              ))}
-            </div>
-          )}
-        </StyledListHeaderItem>
-      </StyledList>
-    </div>
-  )
-}
-
-ExpandDetails.propTypes = {
-  value: PropTypes.object
 }
 
 /**
