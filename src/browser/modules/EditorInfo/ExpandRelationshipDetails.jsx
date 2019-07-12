@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { PropertiesSection } from './DisplayNodeDetails'
-import { DrawerSubHeader } from 'browser-components/drawer/index'
+import {
+  DrawerSubHeader,
+  DrawerSectionBody
+} from 'browser-components/drawer/index'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { StyledRelationship } from '../DatabaseInfo/styled'
 import {
@@ -18,6 +21,8 @@ import {
   FolderButtonContainer,
   StyledFolderLabel
 } from '../Sidebar/styled'
+import classNames from 'classnames'
+import styles from '../DatabaseInfo/style_meta.css'
 
 /**
  * Component to Expand Relationship Details
@@ -30,10 +35,22 @@ export const ExpandRelationshipDetails = props => {
       <StyledList>
         <StyledListHeaderItem>
           <StyledFolderLabel>
-            {props.relationshipEndpoint === 'from' && ' ----> '}
-            {props.relationshipEndpoint === 'to' && ' <---- '}
-            {/* displaying node ID */}
-            {props.value.end.identity.toInt()}
+            <DrawerSectionBody
+              className={classNames({
+                [styles['wrapper']]: true
+              })}
+            >
+              {props.relationshipEndpoint === 'from' &&
+                `-- ${props.value.segments[0].relationship.type} --> 
+                  ${Object.values(props.value.end.properties)[0] ||
+                    props.value.end.identity.toInt()}`}
+              {props.relationshipEndpoint === 'to' &&
+                `<-- 
+                  ${
+    props.value.segments[0].relationship.type
+    }  -- ${Object.values(props.value.end.properties)[0] ||
+                  props.value.end.identity.toInt()}`}
+            </DrawerSectionBody>
           </StyledFolderLabel>
           <FolderButtonContainer>
             <FoldersButton onClick={() => setFlag(!active)}>
@@ -63,9 +80,7 @@ export const ExpandRelationshipDetails = props => {
             <div style={{ marginLeft: 30 }}>
               <DrawerSubHeader>Relationship Type</DrawerSubHeader>
               <StyledRelationship>
-                {props.value.segments.map(
-                  (item, index) => item.relationship.type
-                )}
+                {props.value.segments[0].relationship.type}
               </StyledRelationship>
 
               {props.value.segments.map((item, index) => (
