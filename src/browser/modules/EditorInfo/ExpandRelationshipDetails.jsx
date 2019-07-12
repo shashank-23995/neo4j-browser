@@ -35,30 +35,22 @@ export const ExpandRelationshipDetails = props => {
       <StyledList>
         <StyledListHeaderItem>
           <StyledFolderLabel>
-            {props.relationshipEndpoint === 'from' && (
-              <DrawerSectionBody
-                className={classNames({
-                  [styles['wrapper']]: true
-                })}
-              >
-                {'-- ' + props.value.segments[0].relationship.type}
-
-                {' --> ' +
-                  (Object.values(props.value.end.properties)[0] ||
-                    props.value.end.identity.toInt())}
-              </DrawerSectionBody>
-            )}
-            {props.relationshipEndpoint === 'to' && (
-              <DrawerSectionBody
-                className={classNames({
-                  [styles['wrapper']]: true
-                })}
-              >
-                {(Object.values(props.value.end.properties)[0] ||
-                  props.value.end.identity.toInt()) + ' <-- '}
-                {props.value.segments[0].relationship.type + ' --'}
-              </DrawerSectionBody>
-            )}
+            <DrawerSectionBody
+              className={classNames({
+                [styles['wrapper']]: true
+              })}
+            >
+              {props.relationshipEndpoint === 'from' &&
+                `-- ${props.value.segments[0].relationship.type} --> 
+                  ${Object.values(props.value.end.properties)[0] ||
+                    props.value.end.identity.toInt()}`}
+              {props.relationshipEndpoint === 'to' &&
+                `<-- 
+                  ${
+    props.value.segments[0].relationship.type
+    }  -- ${Object.values(props.value.end.properties)[0] ||
+                  props.value.end.identity.toInt()}`}
+            </DrawerSectionBody>
           </StyledFolderLabel>
           <FolderButtonContainer>
             <FoldersButton onClick={() => setFlag(!active)}>
