@@ -41,12 +41,9 @@ export const ExpandRelationshipDetails = props => {
                   [styles['wrapper']]: true
                 })}
               >
-                <StyledRelationship>
-                  {props.value.segments.map(
-                    (item, index) => item.relationship.type
-                  )}
-                </StyledRelationship>
-                {' ----> ' +
+                {'-- ' + props.value.segments[0].relationship.type}
+
+                {' --> ' +
                   (Object.values(props.value.end.properties)[0] ||
                     props.value.end.identity.toInt())}
               </DrawerSectionBody>
@@ -58,12 +55,8 @@ export const ExpandRelationshipDetails = props => {
                 })}
               >
                 {(Object.values(props.value.end.properties)[0] ||
-                  props.value.end.identity.toInt()) + ' <---- '}
-                <StyledRelationship>
-                  {props.value.segments.map(
-                    (item, index) => item.relationship.type
-                  )}
-                </StyledRelationship>
+                  props.value.end.identity.toInt()) + ' <-- '}
+                {props.value.segments[0].relationship.type + ' --'}
               </DrawerSectionBody>
             )}
           </StyledFolderLabel>
@@ -95,9 +88,7 @@ export const ExpandRelationshipDetails = props => {
             <div style={{ marginLeft: 30 }}>
               <DrawerSubHeader>Relationship Type</DrawerSubHeader>
               <StyledRelationship>
-                {props.value.segments.map(
-                  (item, index) => item.relationship.type
-                )}
+                {props.value.segments[0].relationship.type}
               </StyledRelationship>
 
               {props.value.segments.map((item, index) => (
