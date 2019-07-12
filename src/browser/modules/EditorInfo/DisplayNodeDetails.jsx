@@ -211,6 +211,7 @@ const showRelationshipDetails = (
     relationShipArray = _.map(selectedNodeRelationship, (value, key) => {
       return (
         <ExpandRelationshipDetails
+          key={key}
           value={value}
           entityType={entityType}
           relationshipEndpoint={relationshipEndpoint}
