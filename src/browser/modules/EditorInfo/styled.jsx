@@ -2,7 +2,6 @@
  * This module contains the css which is used for
  * styling labels and properties in DisplayNodeDetails.
  */
-
 import styled from 'styled-components'
 import { StyledKey } from '../DatabaseInfo/styled'
 import { EditFolderInput } from '../Sidebar/styled'
@@ -30,4 +29,28 @@ export const StyledKeyEditor = styled(StyledKey)`
 
 export const EditPropertiesInput = styled(EditFolderInput)`
   margin-bottom: 0.5em;
+`
+
+export const RelationshipIconButton = styled.button`
+  background: transparent;
+  border: none;
+  float: right;
+  font-size: 80%;
+  outline: none;
+`
+export const CreateRelationshipInput = styled.input`
+  color: black;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  line-height: 200%;
+  padding-left: 5px;
+`
+export const CreateRelationshipSelectInput = styled.select`
+  color: black;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  line-height: 200%;
+  padding-left: 5px;
 `
