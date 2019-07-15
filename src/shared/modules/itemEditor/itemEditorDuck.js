@@ -99,6 +99,9 @@ function getCypherCompatibleValue (action) {
     case 'number':
       convertedValue = `toInt('${action.editPayload.value.toString()}')`
       break
+    case 'boolean':
+      convertedValue = `toBoolean('${action.editPayload.value.toString()}')`
+      break
     default:
       convertedValue = `'${action.editPayload.value}'`
       break

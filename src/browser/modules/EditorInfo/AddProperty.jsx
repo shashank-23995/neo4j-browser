@@ -10,7 +10,7 @@ import {
   DrawerSection,
   DrawerSectionBody
 } from 'browser-components/drawer/index'
-import { TextInput } from 'browser-components/Form'
+import { TextInput, RadioSelector } from 'browser-components/Form'
 import styled from 'styled-components'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
@@ -54,6 +54,7 @@ function DropDownContents (props) {
       >
         <MenuItem value='string'>String</MenuItem>
         <MenuItem value='number'>Number</MenuItem>
+        <MenuItem value='boolean'>Boolean</MenuItem>
       </Select>
     </FormControl>
   )
@@ -79,6 +80,7 @@ function AddProperty (props) {
   }
 
   let valueInput = null
+  const options = ['true', 'false']
   switch (myState.newProperties.datatype) {
     case 'string':
       valueInput = (
@@ -100,6 +102,17 @@ function AddProperty (props) {
             handleChange(e.target.id, neo4j.int(e.target.value))
           }}
           style={{ width: '120px' }}
+        />
+      )
+      break
+    case 'boolean':
+      valueInput = (
+        <RadioSelector
+          options={options}
+          onChange={e => {
+            handleChange('propValue', e.target.value)
+          }}
+          selectedValue={myState.newProperties.propValue}
         />
       )
       break
