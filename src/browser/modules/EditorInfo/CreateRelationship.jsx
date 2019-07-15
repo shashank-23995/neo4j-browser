@@ -1,24 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   DrawerSection,
   DrawerSectionBody
 } from 'browser-components/drawer/index'
 import { StyledTable, StyledKey, StyledValue } from '../DatabaseInfo/styled'
+import { SelectionSearch } from './SelectionSearch'
 import { CreateRelationshipSelectInput } from './styled'
-import Select, { components } from 'react-select'
 
 const options = []
 
-const NoOptionsMessage = props => {
-  return props.selectProps.inputValue ? (
-    `Create New + ${props.selectProps.inputValue}`
-  ) : (
-    <components.NoOptionsMessage {...props} />
-  )
-}
-
 export const CreateRelationship = props => {
-  const [selectedOption, handleChange] = useState(null)
   return (
     <React.Fragment>
       <DrawerSection>
@@ -35,18 +26,12 @@ export const CreateRelationship = props => {
                 </StyledValue>
               </tr>
               <tr>
-                <StyledKey>react-select</StyledKey>
+                <StyledKey>Type:</StyledKey>
                 <StyledValue
                   style={{ width: '100%' }}
                   data-testid='user-details-username'
                 >
-                  <Select
-                    isClearable
-                    components={{ NoOptionsMessage }}
-                    value={selectedOption}
-                    onChange={selectedOption => handleChange(selectedOption)}
-                    options={options}
-                  />
+                  <SelectionSearch options={options} />
                 </StyledValue>
               </tr>
             </tbody>
