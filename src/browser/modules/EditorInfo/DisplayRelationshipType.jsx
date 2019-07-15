@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { EditPropertiesInput } from './styled'
 import { getStringValue } from './utils'
+import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 
 /**
  * Component to display the relationship type
@@ -11,15 +12,22 @@ import { getStringValue } from './utils'
 function DisplayRelationshipType (props) {
   const initState = {
     relationshipTypeObj: {
-      'relationshipType': props.relationshipType
+      relationshipType: props.relationshipType,
+      'relationshipId': props.relationshipId,
+      showButtons: false
     }
   }
+
   const [relationshipTypeState, setrelationshipType] = useState(initState)
 
   useEffect(
     () => {
       setrelationshipType({
-        relationshipTypeObj: { 'relationshipType': props.relationshipType }
+        relationshipTypeObj: {
+          relationshipType: props.relationshipType,
+          'relationshipId': props.relationshipId,
+          showButtons: false
+        }
       })
     },
     [props.relationshipType]
@@ -27,7 +35,11 @@ function DisplayRelationshipType (props) {
 
   const handleChange = e => {
     setrelationshipType({
-      relationshipTypeObj: { 'relationshipType': e.target.value }
+      relationshipTypeObj: {
+        relationshipType: e.target.value,
+        'relationshipId': props.relationshipId,
+        showButtons: true
+      }
     })
   }
 
@@ -43,6 +55,9 @@ function DisplayRelationshipType (props) {
           relationshipTypeState.relationshipTypeObj.relationshipType
         )}
       />
+      {relationshipTypeState.relationshipTypeObj.showButtons ? (
+        <PartialConfirmationButtons />
+      ) : null}
     </div>
   )
 }
