@@ -13,7 +13,7 @@ function DisplayRelationshipType (props) {
   const initState = {
     relationshipTypeObj: {
       relationshipType: props.relationshipType,
-      'relationshipId': props.relationshipId,
+      relationshipId: props.relationshipId,
       showButtons: false
     }
   }
@@ -25,7 +25,7 @@ function DisplayRelationshipType (props) {
       setrelationshipType({
         relationshipTypeObj: {
           relationshipType: props.relationshipType,
-          'relationshipId': props.relationshipId,
+          relationshipId: props.relationshipId,
           showButtons: false
         }
       })
@@ -34,11 +34,24 @@ function DisplayRelationshipType (props) {
   )
 
   const handleChange = e => {
+    let newState = _.cloneDeep(relationshipTypeState)
+    setrelationshipType({
+      ...newState,
+      relationshipTypeObj: {
+        ...newState.relationshipTypeObj,
+        relationshipType: e.target.value,
+        relationshipId: props.relationshipId,
+        showButtons: true
+      }
+    })
+  }
+
+  const onCanceled = () => {
     setrelationshipType({
       relationshipTypeObj: {
-        relationshipType: e.target.value,
-        'relationshipId': props.relationshipId,
-        showButtons: true
+        relationshipType: props.relationshipType,
+        relationshipId: props.relationshipId,
+        showButtons: false
       }
     })
   }
@@ -56,7 +69,7 @@ function DisplayRelationshipType (props) {
         )}
       />
       {relationshipTypeState.relationshipTypeObj.showButtons ? (
-        <PartialConfirmationButtons />
+        <PartialConfirmationButtons onCanceled={onCanceled} />
       ) : null}
     </div>
   )
