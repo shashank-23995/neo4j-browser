@@ -40,15 +40,6 @@ export const RelationshipIconButton = styled.button`
   outline: none;
 `
 
-export const CreateRelationshipInput = styled.input`
-  color: black;
-  border: none;
-  outline: none;
-  border-radius: 5px;
-  line-height: 200%;
-  padding-left: 5px;
-`
-
 export const CreateRelationshipSelectInput = styled.select`
   color: black;
   border: none;

@@ -3,12 +3,8 @@ import {
   DrawerSection,
   DrawerSectionBody
 } from 'browser-components/drawer/index'
-import { TextInput } from 'browser-components/Form'
 import { StyledTable, StyledKey, StyledValue } from '../DatabaseInfo/styled'
-import {
-  CreateRelationshipInput,
-  CreateRelationshipSelectInput
-} from './styled'
+import { CreateRelationshipSelectInput } from './styled'
 import Select, { components } from 'react-select'
 
 const options = []
@@ -39,15 +35,13 @@ export const CreateRelationship = props => {
                 </StyledValue>
               </tr>
               <tr>
-                <StyledKey>Type:</StyledKey>
-                <StyledValue data-testid='user-details-username'>
-                  <CreateRelationshipInput id='item' type='text' />
-                </StyledValue>
-              </tr>
-              <tr>
                 <StyledKey>react-select</StyledKey>
-                <StyledValue data-testid='user-details-username'>
+                <StyledValue
+                  style={{ width: '100%' }}
+                  data-testid='user-details-username'
+                >
                   <Select
+                    isClearable
                     components={{ NoOptionsMessage }}
                     value={selectedOption}
                     onChange={selectedOption => handleChange(selectedOption)}
