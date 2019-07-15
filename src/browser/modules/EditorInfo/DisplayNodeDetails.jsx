@@ -8,12 +8,13 @@ import {
 import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
-import { chip } from './styled'
-import { StyledTable } from '../DatabaseInfo/styled'
+import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
 import { BinIcon } from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { DisplayProperties } from '../EditorInfo/DisplayProperties'
 import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
+import { EditPropertiesInput } from './styled'
+import { DisplayLabel } from './DisplayLabel'
 import AddProperty from './AddProperty'
 /**
  * Creates items to display in chip format
@@ -38,21 +39,38 @@ const createItems = (originalList, RenderType) => {
  */
 const LabelSection = props => {
   let { node } = props
+  let labels = [...node.labels]
   let labelItems = <p>There are no labels for this node</p>
   if (node.labels.length) {
-    labelItems = createItems(node.labels, { component: chip })
+    labelItems = createItems(node.labels, { component: EditPropertiesInput })
   }
   return (
-    <DrawerSection>
-      <DrawerSubHeader>Labels</DrawerSubHeader>
-      <DrawerSectionBody
-        className={classNames({
-          [styles['wrapper']]: true
-        })}
-      >
-        {labelItems}
-      </DrawerSectionBody>
-    </DrawerSection>
+    <div>
+      <DrawerSection>
+        <DrawerSubHeader>Labels</DrawerSubHeader>
+        <DrawerSectionBody
+          className={classNames({
+            [styles['wrapper']]: true
+          })}
+        >
+          <StyledValue data-testid='user-details-username'>
+            {labels.map((label, labelKey) => {
+              return (
+                <div key={labelKey}>
+                  <StyledTable>
+                    <tbody>
+                      <tr>
+                        <DisplayLabel label={label} labelKey={labelKey} />
+                      </tr>
+                    </tbody>
+                  </StyledTable>
+                </div>
+              )
+            })}
+          </StyledValue>
+        </DrawerSectionBody>
+      </DrawerSection>
+    </div>
   )
 }
 LabelSection.propTypes = {
@@ -108,15 +126,12 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        ...propertiesState,
-        properties: { ...props.properties }
-      })
-    },
-    [props.properties]
-  )
+  useEffect(() => {
+    updatePropertiesState({
+      ...propertiesState,
+      properties: { ...props.properties }
+    })
+  }, [props.properties])
 
   let content = []
   if (propertiesState.properties) {
