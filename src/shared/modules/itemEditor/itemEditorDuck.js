@@ -98,9 +98,17 @@ export const handleEditEntityEpic = (action$, store) =>
     let cmd
     switch (action.editType) {
       case 'create':
-        cmd = `CREATE (a:${
-          action.editPayload.nodeLabel
-        }) RETURN a, ((a)-->()) , ((a)<--())`
+        if (action.entityType === 'nodeProperty') {
+          cmd = `MATCH (a)
+        WHERE ID(a) = ${action.editPayload.id}
+        SET a.${action.editPayload.key} = '${action.editPayload.value}'
+        RETURN a, ((a)-->()) , ((a)<--())`
+        }
+        if (action.entityType === 'node') {
+          cmd = `CREATE (a:${
+            action.editPayload.nodeLabel
+          }) RETURN a, ((a)-->()) , ((a)<--())`
+        }
         break
       case 'update':
         break
