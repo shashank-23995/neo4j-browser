@@ -16,7 +16,6 @@ import {
   StyledList,
   StyledListHeaderItem,
   StyledFavFolderButtonSpan,
-  EditFolderButton,
   FolderButtonContainer,
   StyledFolderLabel
 } from '../Sidebar/styled'
@@ -57,7 +56,6 @@ export const ExpandRelationshipDetails = props => {
             <FoldersButton onClick={() => setFlag(!active)}>
               {active === true ? <CollapseMenuIcon /> : <ExpandMenuIcon />}
             </FoldersButton>
-            <EditFolderButton />
             &nbsp;
             <StyledFavFolderButtonSpan>
               <ConfirmationButton
