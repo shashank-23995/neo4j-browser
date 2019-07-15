@@ -164,11 +164,7 @@ export const PropertiesSection = props => {
         Properties
         <AddProperty
           editEntityAction={props.editEntityAction}
-          id={
-            props.node
-              ? props.node.identity.toInt()
-              : props.relationship.identity.toInt()
-          }
+          id={props.node ? props.node.identity.toInt() : null}
         />
       </DrawerSubHeader>
       {content}
