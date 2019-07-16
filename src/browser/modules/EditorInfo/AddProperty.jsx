@@ -17,6 +17,9 @@ import Select from '@material-ui/core/Select'
 import FormControl from '@material-ui/core/FormControl'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 import { v1 as neo4j } from 'neo4j-driver'
+import { Calendar } from 'styled-icons/boxicons-regular/Calendar'
+import DayPicker from 'react-day-picker'
+import 'react-day-picker/lib/style.css'
 
 const IconButton = styled.button`
   margin-left: 4px;
@@ -55,6 +58,7 @@ function DropDownContents (props) {
         <MenuItem value='string'>String</MenuItem>
         <MenuItem value='number'>Number</MenuItem>
         <MenuItem value='boolean'>Boolean</MenuItem>
+        <MenuItem value='date'>Date</MenuItem>
       </Select>
     </FormControl>
   )
@@ -62,6 +66,7 @@ function DropDownContents (props) {
 
 function AddProperty (props) {
   const [textField, handleToggle] = useState(false)
+  const [calendarFlag, toggleCalendar] = useState(false)
 
   const initialState = {
     newProperties: {}
@@ -116,6 +121,30 @@ function AddProperty (props) {
         />
       )
       break
+    case 'date':
+      valueInput = (
+        <React.Fragment>
+          <TextInput
+            style={{
+              width: '120px'
+            }}
+            value={myState.newProperties.propValue}
+            disabled
+          />
+          <Calendar
+            style={{
+              float: 'right',
+              height: '2em',
+              width: '2em',
+              color: 'ghostwhite'
+            }}
+            onClick={() => {
+              toggleCalendar(!calendarFlag)
+            }}
+          />
+        </React.Fragment>
+      )
+      break
   }
 
   return (
@@ -150,7 +179,21 @@ function AddProperty (props) {
                 </StyledValue>
               </tr>
               <StyledKey>Value :</StyledKey>
-              <StyledValue>{valueInput}</StyledValue>
+              <StyledValue>
+                {valueInput}
+                {calendarFlag ? (
+                  <DayPicker
+                    style={{ float: 'right' }}
+                    id='date'
+                    onDayClick={day => {
+                      handleChange(
+                        'propValue',
+                        neo4j.types.Date.fromStandardDate(day)
+                      )
+                    }}
+                  />
+                ) : null}
+              </StyledValue>
               <PartialConfirmationButtons
                 cancelIcon={
                   <IconButton onClick={() => handleToggle(textField)}>
