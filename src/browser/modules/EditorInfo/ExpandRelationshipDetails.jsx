@@ -11,7 +11,8 @@ import {
   ExpandMenuIcon,
   CollapseMenuIcon
 } from 'browser-components/icons/Icons'
-import { FoldersButton,
+import {
+  FoldersButton,
   StyledList,
   StyledListHeaderItem,
   StyledFavFolderButtonSpan,
