@@ -9,15 +9,14 @@ import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
-import { BinIcon, PlusIcon } from 'browser-components/icons/Icons'
+import { BinIcon, PlusIcon, CancelIcon } from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { DisplayProperties } from '../EditorInfo/DisplayProperties'
 import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
-import { EditPropertiesInput } from './styled'
+import { EditPropertiesInput, RelationshipIconButton } from './styled'
 import { DisplayLabel } from './DisplayLabel'
 import AddProperty from './AddProperty'
-import { RelationshipIconButton } from './styled'
-import { CancelIcon } from 'browser-components/icons/Icons'
+
 import { CreateRelationship } from './CreateRelationship'
 /**
  * Creates items to display in chip format
@@ -63,7 +62,11 @@ const LabelSection = props => {
                   <StyledTable>
                     <tbody>
                       <tr>
-                        <DisplayLabel label={label} labelKey={labelKey} />
+                        <DisplayLabel
+                          {...props}
+                          label={label}
+                          labelKey={labelKey}
+                        />
                       </tr>
                     </tbody>
                   </StyledTable>
@@ -129,15 +132,12 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        ...propertiesState,
-        properties: { ...props.properties }
-      })
-    },
-    [props.properties]
-  )
+  useEffect(() => {
+    updatePropertiesState({
+      ...propertiesState,
+      properties: { ...props.properties }
+    })
+  }, [props.properties])
 
   let content = []
   if (propertiesState.properties) {

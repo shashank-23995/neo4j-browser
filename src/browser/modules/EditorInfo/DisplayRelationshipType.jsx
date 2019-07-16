@@ -20,18 +20,15 @@ function DisplayRelationshipType (props) {
 
   const [relationshipTypeState, setrelationshipType] = useState(initState)
 
-  useEffect(
-    () => {
-      setrelationshipType({
-        relationshipTypeObj: {
-          relationshipType: props.relationshipType,
-          relationshipId: props.relationshipId,
-          showButtons: false
-        }
-      })
-    },
-    [props.relationshipType]
-  )
+  useEffect(() => {
+    setrelationshipType({
+      relationshipTypeObj: {
+        relationshipType: props.relationshipType,
+        relationshipId: props.relationshipId,
+        showButtons: false
+      }
+    })
+  }, [props.relationshipType])
 
   const handleChange = e => {
     let newState = _.cloneDeep(relationshipTypeState)
