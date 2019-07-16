@@ -68,10 +68,11 @@ export const DisplayLabel = props => {
                 {
                   previousLabelValue: previousLabelValue,
                   labelName: labelState.labelName[labelKey],
-                  nodeId: node.identity.toInt()
+                  nodeId: node.identity.toInt(),
+                  entityType: props.entityType
                 },
                 'update',
-                'node'
+                'nodeLabel'
               )
             }}
           />
