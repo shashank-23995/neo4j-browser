@@ -18,7 +18,7 @@ import { DisplayLabel } from './DisplayLabel'
 import AddProperty from './AddProperty'
 import { RelationshipIconButton } from './styled'
 import { CancelIcon } from 'browser-components/icons/Icons'
-import { CreateRelationship } from './CreateRelationship'
+import CreateRelationship from './CreateRelationship'
 /**
  * Creates items to display in chip format
  * @param {*} originalList Item list
@@ -271,7 +271,10 @@ export const RelationshipSection = props => {
             >
               <CancelIcon />
             </RelationshipIconButton>
-            <CreateRelationship />
+            <CreateRelationship
+              fetchSelectOptions={props.fetchSelectOptions}
+              optionsList={props.optionsList}
+            />
           </React.Fragment>
         ) : (
           <React.Fragment>

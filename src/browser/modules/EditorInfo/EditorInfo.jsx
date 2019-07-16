@@ -36,6 +36,8 @@ export class EditorInfo extends Component {
                   fromSelectedNode={this.props.selectedItem.fromSelectedNode}
                   toSelectedNode={this.props.selectedItem.toSelectedNode}
                   entityType={this.props.entityType}
+                  fetchSelectOptions={this.props.fetchSelectOptions}
+                  optionsList={this.props.optionsList}
                 />
               ) : (
                 <DisplayRelationshipDetails
@@ -54,7 +56,8 @@ export class EditorInfo extends Component {
 const mapStateToProps = state => {
   return {
     selectedItem: getSelectedItem(state),
-    entityType: state.itemEditor.entityType
+    entityType: state.itemEditor.entityType,
+    optionsList: state.itemEditor.optionsList
   }
 }
 
@@ -65,6 +68,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         editPayload,
         editType,
         entityType
+      )
+      ownProps.bus.send(action.type, action)
+    },
+    fetchSelectOptions: (entityType, serachOperation) => {
+      const action = itemEditorActions.fetchSelectOptions(
+        entityType,
+        serachOperation
       )
       ownProps.bus.send(action.type, action)
     }
