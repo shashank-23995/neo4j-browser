@@ -37,7 +37,8 @@ export class EditorInfo extends Component {
                   toSelectedNode={this.props.selectedItem.toSelectedNode}
                   entityType={this.props.entityType}
                   fetchSelectOptions={this.props.fetchSelectOptions}
-                  optionsList={this.props.optionsList}
+                  relationshipTypeList={this.props.relationshipTypeList}
+                  labelList={this.props.labelList}
                 />
               ) : (
                 <DisplayRelationshipDetails
@@ -57,7 +58,8 @@ const mapStateToProps = state => {
   return {
     selectedItem: getSelectedItem(state),
     entityType: state.itemEditor.entityType,
-    optionsList: state.itemEditor.optionsList
+    relationshipTypeList: state.itemEditor.relationshipTypeList,
+    labelList: state.itemEditor.labelList
   }
 }
 

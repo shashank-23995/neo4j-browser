@@ -1,19 +1,28 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   DrawerSection,
   DrawerSectionBody
 } from 'browser-components/drawer/index'
 import { StyledTable, StyledKey, StyledValue } from '../DatabaseInfo/styled'
-import { SelectionSearch } from './SelectionSearch'
 import { CreateRelationshipSelectInput } from './styled'
+import CreatableSelect from 'react-select/creatable'
 
-const options = []
-
+/**
+ * Component to Create New Relationship
+ */
 export default class CreateRelationship extends Component {
   componentDidMount () {
     this.props.fetchSelectOptions('relationship', 'relationshipType')
+    this.props.fetchSelectOptions('relationship', 'label')
+  }
+
+  state = {
+    selectedType: null,
+    selectedLabel: null
   }
   render () {
+    const { selectedType, selectedLabel } = this.state
     return (
       <React.Fragment>
         <DrawerSection>
@@ -35,7 +44,30 @@ export default class CreateRelationship extends Component {
                     style={{ width: '100%' }}
                     data-testid='user-details-username'
                   >
-                    <SelectionSearch options={this.props.optionsList} />
+                    <CreatableSelect
+                      isClearable
+                      value={selectedType}
+                      onChange={selectedType => {
+                        this.setState({ selectedType })
+                      }}
+                      options={this.props.relationshipTypeList}
+                    />
+                  </StyledValue>
+                </tr>
+                <tr>
+                  <StyledKey>Label:</StyledKey>
+                  <StyledValue
+                    style={{ width: '100%' }}
+                    data-testid='user-details-username'
+                  >
+                    <CreatableSelect
+                      isClearable
+                      value={selectedLabel}
+                      onChange={selectedLabel => {
+                        this.setState({ selectedLabel })
+                      }}
+                      options={this.props.labelList}
+                    />
                   </StyledValue>
                 </tr>
               </tbody>
@@ -45,4 +77,9 @@ export default class CreateRelationship extends Component {
       </React.Fragment>
     )
   }
+}
+
+CreateRelationship.propTypes = {
+  labelList: PropTypes.array,
+  relationshipTypeList: PropTypes.array
 }

@@ -273,7 +273,8 @@ export const RelationshipSection = props => {
             </RelationshipIconButton>
             <CreateRelationship
               fetchSelectOptions={props.fetchSelectOptions}
-              optionsList={props.optionsList}
+              relationshipTypeList={props.relationshipTypeList}
+              labelList={props.labelList}
             />
           </React.Fragment>
         ) : (

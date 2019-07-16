@@ -11,7 +11,9 @@ export const FETCH_DATA_ON_SELECT = `${NAME}/FETCH_DATA_ON_SELECT`
 export const EDIT_ENTITY_ACTION_CONSTANT = `${NAME}/EDIT_ENTITY_ACTION_CONSTANT`
 export const REMOVE_PROPERTY = `${NAME}/REMOVE_PROPERTY`
 export const FETCH_SELECT_OPTIONS_LIST = `${NAME}/FETCH_SELECT_OPTIONS_LIST`
-export const SET_SELECT_OPTIONS_LIST = `${NAME}/SET_SELECT_OPTIONS_LIST`
+// export const SET_SELECT_OPTIONS_LIST = `${NAME}/SET_SELECT_OPTIONS_LIST`
+export const SET_RELATIONSHIPTYPE_LIST = `${NAME}/SET_RELATIONSHIPTYPE_LIST`
+export const SET_LABEL_LIST = `${NAME}/SET_LABEL_LIST`
 // Actions
 /**
  * Fetch data action creator
@@ -60,10 +62,15 @@ export default function reducer (state = initialState, action) {
       return state
     case FETCH_SELECT_OPTIONS_LIST:
       return state
-    case SET_SELECT_OPTIONS_LIST:
+    case SET_RELATIONSHIPTYPE_LIST:
       return {
         ...state,
-        optionsList: action.optionsList
+        relationshipTypeList: action.relationshipTypeList
+      }
+    case SET_LABEL_LIST:
+      return {
+        ...state,
+        labelList: action.labelList
       }
     default:
       return state
@@ -193,6 +200,9 @@ export const handleEditEntityEpic = (action$, store) =>
     }
   })
 
+/**
+ * Epic to fetch selection options for creating new relationship on selecting the node
+ */
 export const handleFetchSelectOptionsEpic = (action$, store) =>
   action$.ofType(FETCH_SELECT_OPTIONS_LIST).mergeMap(action => {
     const noop = { type: 'NOOP' }
@@ -203,8 +213,10 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
       })
     }
     let cmd = `MATCH ()-[r]-() RETURN distinct type(r)`
-    if (action.serachOperation === 'relationType') {
+    if (action.serachOperation === 'relationshipType') {
       cmd = `MATCH ()-[r]-() RETURN distinct type(r)`
+    } else if (action.serachOperation === 'label') {
+      cmd = `MATCH (n) RETURN distinct labels(n)`
     }
     let newAction = _.cloneDeep(action)
     newAction.cmd = cmd
@@ -212,13 +224,26 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
     return request
       .then(res => {
         if (res && res.records) {
-          let optionsList = res.records.map((record, index) => {
-            return { label: record._fields[0], value: record._fields[0] }
-          })
-          store.dispatch({
-            type: SET_SELECT_OPTIONS_LIST,
-            optionsList: optionsList
-          })
+          if (action.serachOperation === 'relationshipType') {
+            let optionsList = res.records.map((record, index) => {
+              return { label: record._fields[0], value: record._fields[0] }
+            })
+            store.dispatch({
+              type: SET_RELATIONSHIPTYPE_LIST,
+              relationshipTypeList: optionsList
+            })
+          } else if (action.serachOperation === 'label') {
+            let optionsList = res.records.map((record, index) => {
+              return {
+                label: record._fields[0][0],
+                value: record._fields[0][0]
+              }
+            })
+            store.dispatch({
+              type: SET_LABEL_LIST,
+              labelList: optionsList
+            })
+          }
         }
         return noop
       })
