@@ -23,15 +23,12 @@ export const DisplayLabel = props => {
   }
   const [labelState, setToInitialState] = useState(initialState)
 
-  useEffect(
-    () => {
-      setToInitialState({
-        labelName: { [labelKey]: label },
-        requested: false
-      })
-    },
-    [label]
-  )
+  useEffect(() => {
+    setToInitialState({
+      labelName: { [labelKey]: label },
+      requested: false
+    })
+  }, [label])
 
   const handleChange = (event, labelKey) => {
     let newState = _.cloneDeep(labelState)
@@ -83,7 +80,17 @@ export const DisplayLabel = props => {
         <ConfirmationButton
           requestIcon={<BinIcon />}
           confirmIcon={<BinIcon deleteAction />}
-          //  onConfirmed={onCanceled}
+          onConfirmed={() => {
+            props.editEntityAction(
+              {
+                labelName: labelState.labelName[labelKey],
+                nodeId: node.identity.toInt(),
+                entityType: props.entityType
+              },
+              'delete',
+              'nodeLabel'
+            )
+          }}
         />
       </StyledValue>
     </React.Fragment>
