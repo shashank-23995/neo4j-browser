@@ -10,6 +10,9 @@ export const SET_RECORD = `${NAME}/SET_RECORD`
 export const FETCH_DATA_ON_SELECT = `${NAME}/FETCH_DATA_ON_SELECT`
 export const EDIT_ENTITY_ACTION_CONSTANT = `${NAME}/EDIT_ENTITY_ACTION_CONSTANT`
 export const REMOVE_PROPERTY = `${NAME}/REMOVE_PROPERTY`
+export const FETCH_SELECT_OPTIONS_LIST = `${NAME}/FETCH_SELECT_OPTIONS_LIST`
+export const SET_RELATIONSHIPTYPE_LIST = `${NAME}/SET_RELATIONSHIPTYPE_LIST`
+export const SET_LABEL_LIST = `${NAME}/SET_LABEL_LIST`
 
 // Actions
 /**
@@ -40,6 +43,14 @@ export const editEntityAction = (editPayload, editType, entityType) => {
   }
 }
 
+export const fetchSelectOptions = (entityType, serachOperation) => {
+  return {
+    type: FETCH_SELECT_OPTIONS_LIST,
+    entityType,
+    serachOperation
+  }
+}
+
 // Reducer
 export default function reducer (state = initialState, action) {
   switch (action.type) {
@@ -49,6 +60,18 @@ export default function reducer (state = initialState, action) {
       return { ...state, entityType: action.entityType }
     case EDIT_ENTITY_ACTION_CONSTANT:
       return state
+    case FETCH_SELECT_OPTIONS_LIST:
+      return state
+    case SET_RELATIONSHIPTYPE_LIST:
+      return {
+        ...state,
+        relationshipTypeList: action.relationshipTypeList
+      }
+    case SET_LABEL_LIST:
+      return {
+        ...state,
+        labelList: action.labelList
+      }
     default:
       return state
   }
@@ -194,4 +217,56 @@ export const handleEditEntityEpic = (action$, store) =>
     } else {
       return noop
     }
+  })
+
+/**
+ * Epic to fetch selection options for creating new relationship on selecting the node
+ */
+export const handleFetchSelectOptionsEpic = (action$, store) =>
+  action$.ofType(FETCH_SELECT_OPTIONS_LIST).mergeMap(action => {
+    const noop = { type: 'NOOP' }
+    if (!action.serachOperation) {
+      return Promise.resolve().then(() => {
+        store.dispatch({ type: SET_RECORD, item: undefined })
+        return noop
+      })
+    }
+    let cmd = `MATCH ()-[r]-() RETURN distinct type(r)`
+    if (action.serachOperation === 'relationshipType') {
+      cmd = `MATCH ()-[r]-() RETURN distinct type(r)`
+    } else if (action.serachOperation === 'label') {
+      cmd = `MATCH (n) RETURN distinct labels(n)`
+    }
+    let newAction = _.cloneDeep(action)
+    newAction.cmd = cmd
+    let [id, request] = handleCypherCommand(newAction, store.dispatch)
+    return request
+      .then(res => {
+        if (res && res.records) {
+          if (action.serachOperation === 'relationshipType') {
+            let optionsList = res.records.map((record, index) => {
+              return { label: record._fields[0], value: record._fields[0] }
+            })
+            store.dispatch({
+              type: SET_RELATIONSHIPTYPE_LIST,
+              relationshipTypeList: optionsList
+            })
+          } else if (action.serachOperation === 'label') {
+            let optionsList = res.records.map((record, index) => {
+              return {
+                label: record._fields[0][0],
+                value: record._fields[0][0]
+              }
+            })
+            store.dispatch({
+              type: SET_LABEL_LIST,
+              labelList: optionsList
+            })
+          }
+        }
+        return noop
+      })
+      .catch(function (e) {
+        throw e
+      })
   })
