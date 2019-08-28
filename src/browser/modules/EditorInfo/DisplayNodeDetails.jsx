@@ -63,6 +63,7 @@ const LabelSection = props => {
                     <tbody>
                       <tr>
                         <DisplayLabel
+                          isSingleLabel={labels.length > 1}
                           {...props}
                           label={label}
                           labelKey={labelKey}
@@ -132,15 +133,12 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        ...propertiesState,
-        properties: { ...props.properties }
-      })
-    },
-    [props.properties]
-  )
+  useEffect(() => {
+    updatePropertiesState({
+      ...propertiesState,
+      properties: { ...props.properties }
+    })
+  }, [props.properties])
 
   let content = []
   if (propertiesState.properties) {

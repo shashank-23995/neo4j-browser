@@ -13,7 +13,7 @@ import PropTypes from 'prop-types'
  */
 
 export const DisplayLabel = props => {
-  let { label, labelKey, node } = props
+  let { label, labelKey, node, isSingleLabel } = props
 
   let previousLabelValue = label
 
@@ -77,21 +77,24 @@ export const DisplayLabel = props => {
             }}
           />
         ) : null}
-        <ConfirmationButton
-          requestIcon={<BinIcon />}
-          confirmIcon={<BinIcon deleteAction />}
-          onConfirmed={() => {
-            props.editEntityAction(
-              {
-                labelName: labelState.labelName[labelKey],
-                nodeId: node.identity.toInt(),
-                entityType: props.entityType
-              },
-              'delete',
-              'nodeLabel'
-            )
-          }}
-        />
+
+        {isSingleLabel && (
+          <ConfirmationButton
+            requestIcon={<BinIcon />}
+            confirmIcon={<BinIcon deleteAction />}
+            onConfirmed={() => {
+              props.editEntityAction(
+                {
+                  labelName: labelState.labelName[labelKey],
+                  nodeId: node.identity.toInt(),
+                  entityType: props.entityType
+                },
+                'delete',
+                'nodeLabel'
+              )
+            }}
+          />
+        )}
       </StyledValue>
     </React.Fragment>
   )
