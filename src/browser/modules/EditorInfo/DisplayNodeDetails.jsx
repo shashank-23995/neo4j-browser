@@ -62,7 +62,7 @@ const LabelSection = props => {
                     <tbody>
                       <tr>
                         <DisplayLabel
-                          isSingleLabel={labels.length > 1}
+                          isDeletable={labels.length > 1}
                           {...props}
                           label={label}
                           labelKey={labelKey}

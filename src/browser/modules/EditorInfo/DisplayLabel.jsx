@@ -13,7 +13,7 @@ import PropTypes from 'prop-types'
  */
 
 export const DisplayLabel = props => {
-  let { label, labelKey, node, isSingleLabel } = props
+  let { label, labelKey, node, isDeletable } = props
 
   let previousLabelValue = label
 
@@ -78,7 +78,7 @@ export const DisplayLabel = props => {
           />
         ) : null}
 
-        {isSingleLabel && (
+        {isDeletable && (
           <ConfirmationButton
             requestIcon={<BinIcon />}
             confirmIcon={<BinIcon deleteAction />}
