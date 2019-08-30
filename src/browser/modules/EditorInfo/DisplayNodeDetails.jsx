@@ -21,6 +21,7 @@ import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
 import { EditPropertiesInput, RelationshipIconButton } from './styled'
 import { DisplayLabel } from './DisplayLabel'
 import AddProperty from './AddProperty'
+import AddLabel from './AddLabel'
 import CreateRelationship from './CreateRelationship'
 /**
  * Creates items to display in chip format
@@ -53,7 +54,13 @@ const LabelSection = props => {
   return (
     <div>
       <DrawerSection>
-        <DrawerSubHeader>Labels</DrawerSubHeader>
+        <DrawerSubHeader>
+          Labels
+          <AddLabel
+            editEntityAction={props.editEntityAction}
+            nodeId={props.node ? props.node.identity.toInt() : null}
+          />
+        </DrawerSubHeader>
         <DrawerSectionBody
           className={classNames({
             [styles['wrapper']]: true
