@@ -193,46 +193,48 @@ function AddProperty (props) {
                   />
                 </StyledValue>
               </tr>
-              <StyledKey>Value :</StyledKey>
-              <StyledValue>
-                {valueInput}
-                {calendarFlag ? (
-                  <DayPicker
-                    style={{ float: 'right' }}
-                    id='date'
-                    onDayClick={day => {
-                      handleChange(
-                        'propValue',
-                        neo4j.types.Date.fromStandardDate(day)
-                      )
-                    }}
-                  />
-                ) : null}
-              </StyledValue>
-              <PartialConfirmationButtons
-                cancelIcon={
-                  <IconButton onClick={() => handleToggle(textField)}>
-                    <CancelIcon />
-                  </IconButton>
-                }
-                onCanceled={() => {
-                  handleToggle(false)
-                }}
-                confirmIcon={<TickMarkIcon />}
-                onConfirmed={() => {
-                  handleToggle(!textField)
-                  props.editEntityAction(
-                    {
-                      id: props.id,
-                      key: myState.newProperties.key,
-                      value: myState.newProperties.propValue,
-                      dataType: myState.newProperties.datatype
-                    },
-                    'create',
-                    'nodeProperty'
-                  )
-                }}
-              />
+              <tr>
+                <StyledKey>Value :</StyledKey>
+                <StyledValue>
+                  {valueInput}
+                  {calendarFlag ? (
+                    <DayPicker
+                      style={{ float: 'right' }}
+                      id='date'
+                      onDayClick={day => {
+                        handleChange(
+                          'propValue',
+                          neo4j.types.Date.fromStandardDate(day)
+                        )
+                      }}
+                    />
+                  ) : null}
+                </StyledValue>
+                <PartialConfirmationButtons
+                  cancelIcon={
+                    <IconButton onClick={() => handleToggle(textField)}>
+                      <CancelIcon />
+                    </IconButton>
+                  }
+                  onCanceled={() => {
+                    handleToggle(false)
+                  }}
+                  confirmIcon={<TickMarkIcon />}
+                  onConfirmed={() => {
+                    handleToggle(!textField)
+                    props.editEntityAction(
+                      {
+                        id: props.id,
+                        key: myState.newProperties.key,
+                        value: myState.newProperties.propValue,
+                        dataType: myState.newProperties.datatype
+                      },
+                      'create',
+                      'nodeProperty'
+                    )
+                  }}
+                />
+              </tr>
             </StyledTable>
           </DrawerSectionBody>
         </DrawerSection>
