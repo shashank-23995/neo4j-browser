@@ -21,6 +21,7 @@ import { Calendar } from 'styled-icons/boxicons-regular/Calendar'
 import DayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
 import { SpatialProperty } from './SpatialProperty'
+import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 
 const IconButton = styled.button`
   margin-left: 4px;
@@ -162,10 +163,11 @@ function AddProperty (props) {
 
   return (
     <React.Fragment>
-      <IconButton onClick={() => handleToggle(!textField)}>
-        <PlusIcon />
-        AddProperty
-      </IconButton>
+      <StyledFavFolderButtonSpan>
+        <IconButton onClick={() => handleToggle(!textField)}>
+          <PlusIcon />
+        </IconButton>
+      </StyledFavFolderButtonSpan>
       {textField ? (
         <DrawerSection>
           <DrawerSectionBody>
