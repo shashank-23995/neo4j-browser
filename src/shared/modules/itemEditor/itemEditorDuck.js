@@ -128,15 +128,13 @@ function getCypherCompatibleValue (action) {
     case 'date':
       convertedValue = `date('${action.editPayload.value.toString()}')`
       break
-    case 'cartesian2D':
+    case 'spatial':
+      const zValue = action.editPayload.value.z
+        ? `z: ${action.editPayload.value.z},`
+        : ''
       convertedValue = `point({ x: ${action.editPayload.value.x}, y: ${
         action.editPayload.value.y
-      }, crs: 'cartesian' })`
-      break
-    case 'cartesian3D':
-      convertedValue = `point({ x: ${action.editPayload.value.x}, y: ${
-        action.editPayload.value.y
-      }, z: ${action.editPayload.value.z}, crs: 'cartesian-3D' })`
+      }, ${zValue} srid: ${action.editPayload.value.srid} })`
       break
     default:
       convertedValue = `'${action.editPayload.value}'`

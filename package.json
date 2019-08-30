@@ -121,7 +121,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "@material-ui/core": "^4.2.0",
+    "@material-ui/core": "^4.3.3",
     "ascii-data-table": "^2.1.1",
     "classnames": "^2.2.5",
     "codemirror": "^5.29.0",
@@ -146,6 +146,7 @@
     "react-select": "^3.0.4",
     "react-suber": "1.0.4",
     "react-svg-inline": "^2.1.1",
+    "react-text-mask": "^5.4.3",
     "react-timeago": "^4.1.9",
     "redux": "^3.7.2",
     "redux-observable": "^0.16.0",
