@@ -67,6 +67,7 @@ const LabelSection = props => {
                     <tbody>
                       <tr>
                         <DisplayLabel
+                          isDeletable={labels.length > 1}
                           {...props}
                           label={label}
                           labelKey={labelKey}

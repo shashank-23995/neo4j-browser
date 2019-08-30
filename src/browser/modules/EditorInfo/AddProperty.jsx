@@ -59,6 +59,8 @@ function DropDownContents (props) {
         <MenuItem value='number'>Number</MenuItem>
         <MenuItem value='boolean'>Boolean</MenuItem>
         <MenuItem value='date'>Date</MenuItem>
+        <MenuItem value='cartesian2D'>Cartesian-2D</MenuItem>
+        <MenuItem value='cartesian3D'>Cartesian-3D</MenuItem>
       </Select>
     </FormControl>
   )
@@ -72,6 +74,28 @@ function AddProperty (props) {
     newProperties: {}
   }
   const [myState, updatePropertiesState] = useState(initialState)
+
+  const handleCartesian = (axis, value) => {
+    let newState = _.cloneDeep(myState)
+    let point = newState.newProperties.propValue
+    let p = { x: 0, y: 0, z: undefined }
+    if (point && neo4j.isPoint(point)) {
+      p.x = point.x
+      p.y = point.y
+      p.z = point.z
+    }
+    p[axis] = value || 0
+    const srid = newState.newProperties.datatype === 'cartesian2D' ? 7203 : 9157
+    point = new neo4j.types.Point(srid, p.x, p.y, p.z)
+
+    updatePropertiesState({
+      ...newState,
+      newProperties: {
+        ...newState.newProperties,
+        propValue: point
+      }
+    })
+  }
 
   const handleChange = (key1, value) => {
     let newState = _.cloneDeep(myState)
@@ -141,6 +165,63 @@ function AddProperty (props) {
             onClick={() => {
               toggleCalendar(!calendarFlag)
             }}
+          />
+        </React.Fragment>
+      )
+      break
+    case 'cartesian2D':
+      valueInput = (
+        <React.Fragment>
+          X:
+          <TextInput
+            id='x'
+            type='number'
+            onChange={e => {
+              handleCartesian(e.target.id, parseFloat(e.target.value))
+            }}
+            style={{ width: '120px' }}
+          />
+          Y:
+          <TextInput
+            id='y'
+            type='number'
+            onChange={e => {
+              handleCartesian(e.target.id, parseFloat(e.target.value))
+            }}
+            style={{ width: '120px' }}
+          />
+        </React.Fragment>
+      )
+      break
+    case 'cartesian3D':
+      valueInput = (
+        <React.Fragment>
+          X:
+          <TextInput
+            id='x'
+            type='number'
+            onChange={e => {
+              handleCartesian(e.target.id, parseFloat(e.target.value))
+            }}
+            style={{ width: '120px' }}
+          />
+          Y:
+          <TextInput
+            id='y'
+            type='number'
+            onChange={e => {
+              handleCartesian(e.target.id, parseFloat(e.target.value))
+            }}
+            style={{ width: '120px' }}
+          />
+          Z:
+          <TextInput
+            id='z'
+            type='number'
+            onChange={e => {
+              handleCartesian(e.target.id, parseFloat(e.target.value))
+            }}
+            style={{ width: '120px' }}
           />
         </React.Fragment>
       )
