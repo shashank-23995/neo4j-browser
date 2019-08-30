@@ -1,5 +1,6 @@
 import { handleCypherCommand } from '../commands/helpers/cypher'
 import * as _ from 'lodash'
+import { string } from 'prop-types'
 const initialState = {
   record: undefined,
   entityType: undefined
@@ -13,6 +14,7 @@ export const REMOVE_PROPERTY = `${NAME}/REMOVE_PROPERTY`
 export const FETCH_SELECT_OPTIONS_LIST = `${NAME}/FETCH_SELECT_OPTIONS_LIST`
 export const SET_RELATIONSHIPTYPE_LIST = `${NAME}/SET_RELATIONSHIPTYPE_LIST`
 export const SET_LABEL_LIST = `${NAME}/SET_LABEL_LIST`
+export const SET_NODE_LIST = `${NAME}/SET_NODE_LIST`
 
 // Actions
 /**
@@ -72,6 +74,11 @@ export default function reducer (state = initialState, action) {
         ...state,
         labelList: action.labelList
       }
+    case SET_NODE_LIST:
+      return {
+        ...state,
+        nodeList: action.nodeList
+      }
     default:
       return state
   }
@@ -89,7 +96,9 @@ export const handleFetchDataEpic = (action$, store) =>
         return noop
       })
     }
-    let cmd = `MATCH (a) where id(a)=${action.id} RETURN a, ((a)-->()) , ((a)<--())`
+    let cmd = `MATCH (a) where id(a)=${
+      action.id
+    } RETURN a, ((a)-->()) , ((a)<--())`
     if (action.entityType === 'relationship') {
       cmd = `MATCH ()-[r]->() where id(r)=${action.id} RETURN r`
     }
@@ -144,15 +153,24 @@ export const handleEditEntityEpic = (action$, store) =>
     let cmd
     switch (action.editType) {
       case 'create':
-        getCypherCompatibleValue(action)
-        if (action.entityType === 'nodeProperty') {
-          cmd = `MATCH (a)
+        if (action.entityType === 'node') {
+          getCypherCompatibleValue(action)
+          if (action.entityType === 'nodeProperty') {
+            cmd = `MATCH (a)
         WHERE ID(a) = ${action.editPayload.id}
         SET a.${action.editPayload.key} = ${getCypherCompatibleValue(action)}
         RETURN a, ((a)-->()) , ((a)<--())`
-        }
-        if (action.entityType === 'node') {
-          cmd = `CREATE (a:${action.editPayload.nodeLabel}) RETURN a, ((a)-->()) , ((a)<--())`
+          }
+          if (action.entityType === 'node') {
+            cmd = `CREATE (a:${
+              action.editPayload.nodeLabel
+            }) RETURN a, ((a)-->()) , ((a)<--())`
+          }
+        } else if (action.entityType === 'relationship') {
+          if (action.editPayload.direction === '--->') {
+            // cmd = `MATCH `
+          } else if (action.editPayload.direction === '<---') {
+          }
         }
         break
       case 'update':
@@ -163,7 +181,9 @@ export const handleEditEntityEpic = (action$, store) =>
             matchParameter = '(a)<-[r]-(to)'
             setParameter = `(a)<-[r2:${action.editPayload.value}]-(to)`
           }
-          cmd = `MATCH ${matchParameter} WHERE ID(r)= ${action.editPayload.id} WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
+          cmd = `MATCH ${matchParameter} WHERE ID(r)= ${
+            action.editPayload.id
+          } WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'nodeLabel') {
           cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} 
         REMOVE a:${action.editPayload.previousLabelValue}
@@ -173,15 +193,25 @@ export const handleEditEntityEpic = (action$, store) =>
         break
       case 'delete':
         if (action.entityType === 'node') {
-          cmd = `MATCH (p:${action.editPayload.firstLabel}) where ID(p)=${action.editPayload.nodeId} OPTIONAL MATCH (p)-[r]-() DELETE r, p`
+          cmd = `MATCH (p:${action.editPayload.firstLabel}) where ID(p)=${
+            action.editPayload.nodeId
+          } OPTIONAL MATCH (p)-[r]-() DELETE r, p`
         } else if (action.entityType === 'relationship') {
-          cmd = `MATCH ()-[r]-() WHERE ID(r)=${action.editPayload.relationshipId} DELETE r WITH 1 as nothing
+          cmd = `MATCH ()-[r]-() WHERE ID(r)=${
+            action.editPayload.relationshipId
+          } DELETE r WITH 1 as nothing
           MATCH (a) WHERE ID(a)= ${action.editPayload.nodeId} 
           RETURN a,((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'nodeProperty') {
-          cmd = `MATCH (a:${action.editPayload.label}) where ID(a)=${action.editPayload.nodeId} REMOVE a.${action.editPayload.propertyKey} RETURN a, ((a)-->()) , ((a)<--())`
+          cmd = `MATCH (a:${action.editPayload.label}) where ID(a)=${
+            action.editPayload.nodeId
+          } REMOVE a.${
+            action.editPayload.propertyKey
+          } RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'relationshipProperty') {
-          cmd = `MATCH ()-[r:${action.editPayload.type}]-() WHERE ID(r)=${action.editPayload.relationshipId} REMOVE r.${action.editPayload.propertyKey} RETURN r`
+          cmd = `MATCH ()-[r:${action.editPayload.type}]-() WHERE ID(r)=${
+            action.editPayload.relationshipId
+          } REMOVE r.${action.editPayload.propertyKey} RETURN r`
         } else if (action.entityType === 'nodeLabel') {
           cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} 
            REMOVE a:${action.editPayload.labelName}
@@ -224,6 +254,8 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
       cmd = `MATCH ()-[r]-() RETURN distinct type(r)`
     } else if (action.serachOperation === 'label') {
       cmd = `MATCH (n) RETURN distinct labels(n)`
+    } else {
+      cmd = `MATCH (n:${action.serachOperation}) RETURN n`
     }
     let newAction = _.cloneDeep(action)
     newAction.cmd = cmd
@@ -249,6 +281,19 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
             store.dispatch({
               type: SET_LABEL_LIST,
               labelList: optionsList
+            })
+          } else {
+            let optionsList = res.records.map((record, index) => {
+              // console.log("properties - ",Object.values(record._fields[0].properties))
+              return {
+                label: Object.values(record._fields[0].properties)[0],
+                value: record._fields[0]
+              }
+            })
+            // console.log("result - ", optionsList)
+            store.dispatch({
+              type: SET_NODE_LIST,
+              nodeList: optionsList
             })
           }
         }
