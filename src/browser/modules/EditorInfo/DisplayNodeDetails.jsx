@@ -9,7 +9,12 @@ import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
-import { BinIcon, PlusIcon, CancelIcon } from 'browser-components/icons/Icons'
+import {
+  BinIcon,
+  PlusIcon,
+  CancelIcon,
+  TickMarkIcon
+} from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { DisplayProperties } from '../EditorInfo/DisplayProperties'
 import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
@@ -139,12 +144,15 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(() => {
-    updatePropertiesState({
-      ...propertiesState,
-      properties: { ...props.properties }
-    })
-  }, [props.properties])
+  useEffect(
+    () => {
+      updatePropertiesState({
+        ...propertiesState,
+        properties: { ...props.properties }
+      })
+    },
+    [props.properties]
+  )
 
   let content = []
   if (propertiesState.properties) {
@@ -278,10 +286,18 @@ export const RelationshipSection = props => {
             >
               <CancelIcon />
             </RelationshipIconButton>
+            <RelationshipIconButton
+              onClick={() => console.log('tick icon clicked')}
+            >
+              <TickMarkIcon />
+            </RelationshipIconButton>
             <CreateRelationship
               fetchSelectOptions={props.fetchSelectOptions}
               relationshipTypeList={props.relationshipTypeList}
               labelList={props.labelList}
+              nodeList={props.nodeList}
+              editEntityAction={props.editEntityAction}
+              node={props.node}
             />
           </React.Fragment>
         ) : (
