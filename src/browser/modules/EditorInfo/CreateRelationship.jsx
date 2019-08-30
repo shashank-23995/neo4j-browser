@@ -14,6 +14,9 @@ import {
   TickMarkIcon
 } from 'browser-components/icons/Icons'
 import styled from 'styled-components'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
 
 const IconButton = styled.button`
   margin-left: 4px;
@@ -33,13 +36,14 @@ export default class CreateRelationship extends Component {
   }
 
   state = {
+    direction: null,
     selectedType: null,
     selectedLabel: null,
     selectedNode: null
   }
 
   render () {
-    const { selectedType, selectedLabel, selectedNode } = this.state
+    const { direction, selectedType, selectedLabel, selectedNode } = this.state
     return (
       <React.Fragment>
         <DrawerSection>
@@ -47,12 +51,44 @@ export default class CreateRelationship extends Component {
             <StyledTable>
               <tbody>
                 <tr>
-                  <StyledKey>Direction:</StyledKey>
+                  {/* <StyledKey>Direction:</StyledKey>
                   <StyledValue data-testid='user-details-username'>
                     <CreateRelationshipSelectInput>
                       <option value='---->'>{'---->'}</option>
                       <option value='<----'>{'<----'}</option>
                     </CreateRelationshipSelectInput>
+                  </StyledValue> */}
+
+                  <StyledKey> Direction:</StyledKey>
+                  <StyledValue>
+                    <FormControl
+                      style={{
+                        marginTop: 16,
+                        marginBottom: 16,
+                        minWidth: 120
+                      }}
+                      variant='outlined'
+                    >
+                      <Select
+                        name='datatype'
+                        style={{
+                          background: '#fff',
+                          fontSize: '14px',
+                          textAlign: '-webkit-center',
+                          height: '34px',
+                          color: '#555',
+                          borderTop: '1px solid #ccc',
+                          borderRadius: '4px'
+                        }}
+                        value={direction}
+                        onChange={e => {
+                          this.setState({ direction: e.target.value })
+                        }}
+                      >
+                        <MenuItem value='<----'>{'<---- (Incoming)'}</MenuItem>
+                        <MenuItem value='---->'>{'----> (Outgoing)'}</MenuItem>
+                      </Select>
+                    </FormControl>
                   </StyledValue>
                 </tr>
                 <tr>
@@ -129,17 +165,21 @@ export default class CreateRelationship extends Component {
               }
               confirmIcon={<TickMarkIcon />}
               onConfirmed={() => {
-                console.log('start node', this.props.node.identity.toInt())
-                console.log(
-                  'end node',
-                  this.state.selectedNode.value.identity.toInt()
-                )
+                // console.log('start node', this.props.node.identity.toInt())
+                // console.log(
+                //   'end node',
+                //   this.state.selectedNode.value.identity.toInt()
+                // )
+                console.log('start', this.props.node)
+                console.log('end', this.state.selectedNode)
                 this.props.editEntityAction(
                   {
-                    direction: '',
-                    startNode: this.props.node.identity.toInt(),
-                    endeNode: '',
-                    relationshipType: ''
+                    direction: this.state.direction,
+                    startNodeId: this.props.node.identity.toInt(),
+                    startNodeLabel: this.props.node.labels[0],
+                    endNodeId: this.state.selectedNode.value.identity.toInt(),
+                    endNodeLabel: this.state.selectedNode.value.labels[0],
+                    relationshipType: this.state.selectedType.value
                   },
                   'create',
                   'relationship'

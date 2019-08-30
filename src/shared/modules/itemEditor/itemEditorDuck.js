@@ -178,6 +178,29 @@ export const handleEditEntityEpic = (action$, store) =>
               action.editPayload.label
             } RETURN a, ((a)-->()) , ((a)<--())`
           }
+        } else if (action.entityType === 'relationship') {
+          console.log('payload - ', action.editPayload)
+          if (action.editPayload.direction === '---->') {
+            cmd = `MATCH (a:${action.editPayload.startNodeLabel}),(b:${
+              action.editPayload.endNodeLabel
+            })
+            WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${
+  action.editPayload.endNodeId
+}
+            CREATE (a)-[r:${action.editPayload.relationshipType}]->(b)
+            RETURN  a, ((a)-->()) , ((a)<--())`
+            console.log('cmd - ', cmd)
+          } else if (action.editPayload.direction === '<----') {
+            cmd = `MATCH (a:${action.editPayload.startNodeLabel}),(b:${
+              action.editPayload.endNodeLabel
+            })
+            WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${
+  action.editPayload.endNodeId
+}
+            CREATE (b)-[r:${action.editPayload.relationshipType}]->(a)
+            RETURN  a, ((a)-->()) , ((a)<--())`
+            console.log('cmd - ', cmd)
+          }
         }
         break
       case 'update':
@@ -230,6 +253,7 @@ export const handleEditEntityEpic = (action$, store) =>
     if (cmd) {
       let newAction = _.cloneDeep(action)
       newAction.cmd = cmd
+      console.log('set record')
       let [id, request] = handleCypherCommand(newAction, store.dispatch)
       return request
         .then(res => {
