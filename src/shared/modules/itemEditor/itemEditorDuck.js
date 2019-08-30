@@ -177,10 +177,6 @@ export const handleEditEntityEpic = (action$, store) =>
             }) RETURN a, ((a)-->()) , ((a)<--())`
           }
         } else if (action.entityType === 'relationship') {
-          if (action.editPayload.direction === '--->') {
-            // cmd = `MATCH `
-          } else if (action.editPayload.direction === '<---') {
-          }
         }
         break
       case 'update':
@@ -294,13 +290,11 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
             })
           } else {
             let optionsList = res.records.map((record, index) => {
-              // console.log("properties - ",Object.values(record._fields[0].properties))
               return {
                 label: Object.values(record._fields[0].properties)[0],
                 value: record._fields[0]
               }
             })
-            // console.log("result - ", optionsList)
             store.dispatch({
               type: SET_NODE_LIST,
               nodeList: optionsList
