@@ -15,13 +15,13 @@ import styled from 'styled-components'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import FormControl from '@material-ui/core/FormControl'
-import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 import { v1 as neo4j } from 'neo4j-driver'
 import { Calendar } from 'styled-icons/boxicons-regular/Calendar'
 import DayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
 import { SpatialProperty } from './SpatialProperty'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
+import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 
 const IconButton = styled.button`
   margin-left: 4px;
@@ -164,9 +164,40 @@ function AddProperty (props) {
   return (
     <React.Fragment>
       <StyledFavFolderButtonSpan>
-        <IconButton onClick={() => handleToggle(!textField)}>
-          <PlusIcon />
-        </IconButton>
+        <ConfirmationButton
+          requestIcon={
+            <IconButton
+              onClick={() => {
+                handleToggle(!textField)
+              }}
+            >
+              <PlusIcon />
+            </IconButton>
+          }
+          cancelIcon={
+            <IconButton
+              onClick={() => {
+                handleToggle(textField)
+              }}
+            >
+              <CancelIcon />
+            </IconButton>
+          }
+          confirmIcon={<TickMarkIcon />}
+          onConfirmed={() => {
+            handleToggle(!textField)
+            props.editEntityAction(
+              {
+                id: props.id,
+                key: myState.newProperties.key,
+                value: myState.newProperties.propValue,
+                dataType: myState.newProperties.datatype
+              },
+              'create',
+              'nodeProperty'
+            )
+          }}
+        />
       </StyledFavFolderButtonSpan>
       {textField ? (
         <DrawerSection>
@@ -210,30 +241,6 @@ function AddProperty (props) {
                     />
                   ) : null}
                 </StyledValue>
-                <PartialConfirmationButtons
-                  cancelIcon={
-                    <IconButton onClick={() => handleToggle(textField)}>
-                      <CancelIcon />
-                    </IconButton>
-                  }
-                  onCanceled={() => {
-                    handleToggle(false)
-                  }}
-                  confirmIcon={<TickMarkIcon />}
-                  onConfirmed={() => {
-                    handleToggle(!textField)
-                    props.editEntityAction(
-                      {
-                        id: props.id,
-                        key: myState.newProperties.key,
-                        value: myState.newProperties.propValue,
-                        dataType: myState.newProperties.datatype
-                      },
-                      'create',
-                      'nodeProperty'
-                    )
-                  }}
-                />
               </tr>
             </StyledTable>
           </DrawerSectionBody>

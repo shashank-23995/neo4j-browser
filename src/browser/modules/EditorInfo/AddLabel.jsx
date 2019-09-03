@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { StyledTable, StyledValue, StyledKey } from '../DatabaseInfo/styled'
-import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 import {
   PlusIcon,
   TickMarkIcon,
@@ -10,6 +9,7 @@ import {
 import styled from 'styled-components'
 import { TextInput } from 'browser-components/Form'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
+import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 
 const IconButton = styled.button`
   margin-left: 4px;
@@ -28,9 +28,35 @@ function AddLabel (props) {
   return (
     <React.Fragment>
       <StyledFavFolderButtonSpan>
-        <IconButton onClick={() => handleToggle(!textField)}>
-          <PlusIcon />
-        </IconButton>
+        <ConfirmationButton
+          requestIcon={
+            <IconButton
+              onClick={() => {
+                handleToggle(!textField)
+              }}
+            >
+              <PlusIcon />
+            </IconButton>
+          }
+          cancelIcon={
+            <IconButton
+              onClick={() => {
+                handleToggle(textField)
+              }}
+            >
+              <CancelIcon />
+            </IconButton>
+          }
+          confirmIcon={<TickMarkIcon />}
+          onConfirmed={() => {
+            handleToggle(!textField)
+            props.editEntityAction(
+              { label: label, nodeId: nodeId },
+              'create',
+              'nodeLabel'
+            )
+          }}
+        />
       </StyledFavFolderButtonSpan>
       {textField ? (
         <StyledTable>
@@ -46,25 +72,6 @@ function AddLabel (props) {
               }}
             />
           </StyledValue>
-          <PartialConfirmationButtons
-            cancelIcon={
-              <IconButton onClick={() => handleToggle(textField)}>
-                <CancelIcon />
-              </IconButton>
-            }
-            onCanceled={() => {
-              handleToggle(false)
-            }}
-            confirmIcon={<TickMarkIcon />}
-            onConfirmed={() => {
-              handleToggle(!textField)
-              props.editEntityAction(
-                { label: label, nodeId: nodeId },
-                'create',
-                'nodeLabel'
-              )
-            }}
-          />
         </StyledTable>
       ) : null}
     </React.Fragment>
