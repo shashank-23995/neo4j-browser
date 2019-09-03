@@ -9,7 +9,12 @@ import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
-import { BinIcon, PlusIcon, CancelIcon } from 'browser-components/icons/Icons'
+import {
+  BinIcon,
+  PlusIcon,
+  CancelIcon,
+  TickMarkIcon
+} from 'browser-components/icons/Icons'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { DisplayProperties } from '../EditorInfo/DisplayProperties'
 import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
@@ -18,6 +23,16 @@ import { DisplayLabel } from './DisplayLabel'
 import AddProperty from './AddProperty'
 import AddLabel from './AddLabel'
 import CreateRelationship from './CreateRelationship'
+import styled from 'styled-components'
+import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
+const IconButton = styled.button`
+  margin-left: 4px;
+  border: 0;
+  background: transparent;
+  &:focus {
+    outline: none;
+  }
+`
 /**
  * Creates items to display in chip format
  * @param {*} originalList Item list
@@ -139,12 +154,15 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(() => {
-    updatePropertiesState({
-      ...propertiesState,
-      properties: { ...props.properties }
-    })
-  }, [props.properties])
+  useEffect(
+    () => {
+      updatePropertiesState({
+        ...propertiesState,
+        properties: { ...props.properties }
+      })
+    },
+    [props.properties]
+  )
 
   let content = []
   if (propertiesState.properties) {
@@ -267,32 +285,82 @@ export const RelationshipSection = props => {
     noRelationshipMessage = <p>{`There are no relationships for this node`}</p>
   }
   const [relationshipRequest, setRelationshipRequest] = useState(false)
+  const [direction, setDirection] = useState('')
+  const [selectedType, setSelectedType] = useState(null)
+  const [selectedLabel, setSelectedLabel] = useState(null)
+  const [selectedNode, setSelectedNode] = useState(null)
+
+  useEffect(
+    () => {
+      props.fetchSelectOptions('relationship', 'relationshipType')
+      props.fetchSelectOptions('relationship', 'label')
+      selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
+    },
+    [selectedLabel, relationshipRequest]
+  )
+
   return (
     <DrawerSection>
       <DrawerSubHeader>
         Relationships
-        {relationshipRequest ? (
-          <React.Fragment>
-            <RelationshipIconButton
-              onClick={() => setRelationshipRequest(!relationshipRequest)}
-            >
-              <CancelIcon />
-            </RelationshipIconButton>
+        <React.Fragment>
+          <StyledFavFolderButtonSpan>
+            <ConfirmationButton
+              requestIcon={
+                <IconButton
+                  onClick={() => {
+                    setRelationshipRequest(!relationshipRequest)
+                  }}
+                >
+                  <PlusIcon />
+                </IconButton>
+              }
+              cancelIcon={
+                <IconButton
+                  onClick={() => {
+                    setRelationshipRequest(relationshipRequest)
+                  }}
+                >
+                  <CancelIcon />
+                </IconButton>
+              }
+              confirmIcon={<TickMarkIcon />}
+              onConfirmed={() => {
+                setRelationshipRequest(!relationshipRequest)
+                props.editEntityAction(
+                  {
+                    direction: direction,
+                    startNodeId: props.node.identity.toInt(),
+                    startNodeLabel: props.node.labels[0],
+                    endNodeId: selectedNode.value.identity.toInt(),
+                    endNodeLabel: selectedNode.value.labels[0],
+                    relationshipType: selectedType.value
+                  },
+                  'create',
+                  'relationship'
+                )
+              }}
+            />
+          </StyledFavFolderButtonSpan>
+          {relationshipRequest ? (
             <CreateRelationship
               fetchSelectOptions={props.fetchSelectOptions}
               relationshipTypeList={props.relationshipTypeList}
               labelList={props.labelList}
+              nodeList={props.nodeList}
+              editEntityAction={props.editEntityAction}
+              node={props.node}
+              direction={direction}
+              setDirection={setDirection}
+              selectedType={selectedType}
+              setSelectedType={setSelectedType}
+              selectedLabel={selectedLabel}
+              setSelectedLabel={setSelectedLabel}
+              selectedNode={selectedNode}
+              setSelectedNode={setSelectedNode}
             />
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <RelationshipIconButton
-              onClick={() => setRelationshipRequest(!relationshipRequest)}
-            >
-              <PlusIcon />
-            </RelationshipIconButton>
-          </React.Fragment>
-        )}
+          ) : null}
+        </React.Fragment>
       </DrawerSubHeader>
       {showRelationshipDetails(
         props.fromSelectedNode,
