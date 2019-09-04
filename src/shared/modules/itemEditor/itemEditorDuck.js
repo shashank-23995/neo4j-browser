@@ -208,6 +208,19 @@ export const handleEditEntityEpic = (action$, store) =>
           cmd = `MATCH ${matchParameter} WHERE ID(r)= ${
             action.editPayload.id
           } WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
+        } else if (action.entityType === 'relationshipDirection') {
+          let matchParameter = '(a)-[r]->(to)'
+          let setParameter = `(to)-[r2:${action.editPayload.value}]->(a)`
+          if (action.editPayload.selectedDirection === '---->') {
+            matchParameter = '(a)-[r]->(to)'
+            setParameter = `(to)-[r2:${action.editPayload.value}]->(a)`
+          } else if (action.editPayload.selectedDirection === '<----') {
+            matchParameter = '(a)<-[r]-(to)'
+            setParameter = `(to)<-[r2:${action.editPayload.value}]-(a)`
+          }
+          cmd = `MATCH ${matchParameter} WHERE ID(r)= ${
+            action.editPayload.id
+          } WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'nodeLabel') {
           cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} 
         REMOVE a:${action.editPayload.previousLabelValue}

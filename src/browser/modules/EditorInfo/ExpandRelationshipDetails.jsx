@@ -23,6 +23,7 @@ import {
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import DisplayRelationshipType from './DisplayRelationshipType'
+import DisplayRelationshipDirection from './DisplayRelationshipDirection'
 
 /**
  * Component to Expand Relationship Details
@@ -81,6 +82,13 @@ export const ExpandRelationshipDetails = props => {
               <DrawerSubHeader>Relationship Type</DrawerSubHeader>
 
               <DisplayRelationshipType
+                {...props}
+                relationshipType={props.value.segments[0].relationship.type}
+                relationshipId={props.value.segments[0].relationship.identity.toInt()}
+              />
+
+              <DrawerSubHeader>Relationship Direction</DrawerSubHeader>
+              <DisplayRelationshipDirection
                 {...props}
                 relationshipType={props.value.segments[0].relationship.type}
                 relationshipId={props.value.segments[0].relationship.identity.toInt()}
