@@ -163,7 +163,7 @@ function AddProperty (props) {
           }}
           selectedValue={
             props.properties
-              ? Object.values(props.properties)
+              ? Object.values(props.properties)[0].toString()
               : myState.newProperties.propValue
           }
         />
