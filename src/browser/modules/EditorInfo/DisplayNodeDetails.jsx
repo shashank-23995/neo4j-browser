@@ -256,7 +256,9 @@ const showRelationshipDetails = (
   entityType,
   relationshipEndpoint,
   editEntityAction,
-  selectedNodeId
+  selectedNodeId,
+  fetchSelectOptions,
+  relationshipTypeList
 ) => {
   let relationShipArray = []
   if (selectedNodeRelationship) {
@@ -269,6 +271,8 @@ const showRelationshipDetails = (
           relationshipEndpoint={relationshipEndpoint}
           editEntityAction={editEntityAction}
           selectedNodeId={selectedNodeId}
+          fetchSelectOptions={fetchSelectOptions}
+          relationshipTypeList={relationshipTypeList}
         />
       )
     })
@@ -367,14 +371,18 @@ export const RelationshipSection = props => {
         props.entityType,
         'from',
         props.editEntityAction,
-        props.node.identity.toInt()
+        props.node.identity.toInt(),
+        props.fetchSelectOptions,
+        props.relationshipTypeList
       )}
       {showRelationshipDetails(
         props.toSelectedNode,
         props.entityType,
         'to',
         props.editEntityAction,
-        props.node.identity.toInt()
+        props.node.identity.toInt(),
+        props.fetchSelectOptions,
+        props.relationshipTypeList
       )}
       {noRelationshipMessage}
     </DrawerSection>

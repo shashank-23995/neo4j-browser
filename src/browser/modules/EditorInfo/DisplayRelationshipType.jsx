@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { EditPropertiesInput } from './styled'
-import { getStringValue } from './utils'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
+import CreatableSelect from 'react-select/creatable'
 
 /**
  * Component to display the relationship type
@@ -10,83 +9,52 @@ import PartialConfirmationButtons from 'browser-components/buttons/PartialConfir
  */
 
 function DisplayRelationshipType (props) {
-  const initState = {
-    relationshipTypeObj: {
-      relationshipType: props.relationshipType,
-      showButtons: false
-    }
-  }
-
-  const [relationshipTypeState, setrelationshipType] = useState(initState)
-
-  useEffect(
-    () => {
-      setrelationshipType({
-        relationshipTypeObj: {
-          relationshipType: props.relationshipType,
-          showButtons: false
-        }
-      })
-    },
-    [props.relationshipType]
-  )
-
-  const handleChange = e => {
-    let selectedNode
+  useEffect(() => {
+    props.fetchSelectOptions('relationship', 'relationshipType')
+    setButtonVisibility(false)
     if (
       props.selectedNodeId ===
       props.value.segments[0].relationship.start.toInt()
     ) {
-      selectedNode = 'start'
+      setSelectedNode('start')
     } else {
-      selectedNode = 'end'
+      setSelectedNode('end')
     }
-    let newState = _.cloneDeep(relationshipTypeState)
-    setrelationshipType({
-      ...newState,
-      relationshipTypeObj: {
-        ...newState.relationshipTypeObj,
-        relationshipType: e.target.value,
-        showButtons: true,
-        selectedNode: selectedNode
-      }
-    })
-  }
+  }, [])
+  const [selectedType, setSelectedType] = useState(props.relationshipType)
+  const [showButtons, setButtonVisibility] = useState(false)
+  const [selectedNode, setSelectedNode] = useState(null)
 
   const onConfirmed = () => {
     props.editEntityAction(
       {
         id: props.relationshipId,
-        value: relationshipTypeState.relationshipTypeObj.relationshipType,
-        selectedNode: relationshipTypeState.relationshipTypeObj.selectedNode
+        value: selectedType.value,
+        selectedNode: selectedNode
       },
       'update',
       'relationshipType'
     )
+    setButtonVisibility(false)
   }
 
   const onCanceled = () => {
-    setrelationshipType({
-      relationshipTypeObj: {
-        relationshipType: props.relationshipType,
-        showButtons: false
-      }
-    })
+    setButtonVisibility(false)
   }
 
   return (
     <div>
-      <EditPropertiesInput
-        id='item'
-        type='text'
-        onChange={e => {
-          handleChange(e)
+      <CreatableSelect
+        isClearable
+        defaultInputValue={selectedType}
+        value={selectedType}
+        onChange={selectedType => {
+          setSelectedType(selectedType)
+          setButtonVisibility(true)
         }}
-        value={getStringValue(
-          relationshipTypeState.relationshipTypeObj.relationshipType
-        )}
+        options={props.relationshipTypeList}
       />
-      {relationshipTypeState.relationshipTypeObj.showButtons ? (
+      {showButtons ? (
         <PartialConfirmationButtons
           onConfirmed={onConfirmed}
           onCanceled={onCanceled}
