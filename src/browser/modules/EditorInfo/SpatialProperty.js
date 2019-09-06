@@ -21,6 +21,26 @@ export const SpatialProperty = props => {
     z: undefined
   }
 
+  let srid = props.properties
+    ? Object.values(props.properties)[0].srid.toInt()
+    : null
+
+  const toGetcoordinateSystem = srid => {
+    if (srid == 7203) {
+      return 'cartesian2D'
+    }
+    if (srid == 9157) {
+      return 'cartesian3D'
+    }
+    if (srid == 4326) {
+      return 'geographic2D'
+    }
+    if (srid == 4979) {
+      return 'geographic3D'
+    }
+  }
+
+  let zProp = toGetcoordinateSystem(srid)
   const [state, updateState] = useState(initialState)
 
   const handleChange = (key, value) => {
@@ -62,7 +82,11 @@ export const SpatialProperty = props => {
                 borderTop: '1px solid #ccc',
                 borderRadius: '4px'
               }}
-              value={state.coordinateSystem}
+              value={
+                props.properties
+                  ? toGetcoordinateSystem(srid)
+                  : state.coordinateSystem
+              }
               onChange={e => {
                 handleChange(e.target.name, e.target.value)
               }}
@@ -85,6 +109,9 @@ export const SpatialProperty = props => {
             onChange={e => {
               handleChange(e.target.id, parseFloat(e.target.value))
             }}
+            value={
+              props.properties ? Object.values(props.properties)[0].x : null
+            }
           />
         </StyledValue>
       </tr>
@@ -98,11 +125,17 @@ export const SpatialProperty = props => {
             onChange={e => {
               handleChange(e.target.id, parseFloat(e.target.value))
             }}
+            value={
+              props.properties ? Object.values(props.properties)[0].y : null
+            }
           />
         </StyledValue>
       </tr>
+
       {state.coordinateSystem === 'cartesian3D' ||
-      state.coordinateSystem === 'geographic3D' ? (
+      state.coordinateSystem === 'geographic3D' ||
+      zProp === 'cartesian3D' ||
+      zProp === 'geographic3D' ? (
         <React.Fragment>
             <tr>
             <StyledKey>Z:</StyledKey>
@@ -114,6 +147,9 @@ export const SpatialProperty = props => {
                 onChange={e => {
                     handleChange(e.target.id, parseFloat(e.target.value))
                   }}
+                value={
+                    props.properties ? Object.values(props.properties)[0].z : null
+                  }
                 />
               </StyledValue>
           </tr>
