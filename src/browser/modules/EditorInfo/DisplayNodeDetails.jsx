@@ -154,12 +154,15 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(() => {
-    updatePropertiesState({
-      ...propertiesState,
-      properties: { ...props.properties }
-    })
-  }, [props.properties])
+  useEffect(
+    () => {
+      updatePropertiesState({
+        ...propertiesState,
+        properties: { ...props.properties }
+      })
+    },
+    [props.properties]
+  )
 
   let content = []
   if (propertiesState.properties) {
@@ -286,16 +289,19 @@ export const RelationshipSection = props => {
     noRelationshipMessage = <p>{`There are no relationships for this node`}</p>
   }
   const [relationshipRequest, setRelationshipRequest] = useState(false)
-  const [direction, setDirection] = useState('')
+  const [direction, setDirection] = useState(null)
   const [selectedType, setSelectedType] = useState(null)
   const [selectedLabel, setSelectedLabel] = useState(null)
   const [selectedNode, setSelectedNode] = useState(null)
 
-  useEffect(() => {
-    props.fetchSelectOptions('relationship', 'relationshipType')
-    props.fetchSelectOptions('relationship', 'label')
-    selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
-  }, [selectedLabel, relationshipRequest])
+  useEffect(
+    () => {
+      props.fetchSelectOptions('relationship', 'relationshipType')
+      props.fetchSelectOptions('relationship', 'label')
+      selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
+    },
+    [selectedLabel, relationshipRequest]
+  )
 
   return (
     <DrawerSection>
@@ -317,6 +323,10 @@ export const RelationshipSection = props => {
                 <IconButton
                   onClick={() => {
                     setRelationshipRequest(relationshipRequest)
+                    setDirection(null)
+                    setSelectedType(null)
+                    setSelectedLabel(null)
+                    setSelectedNode(null)
                   }}
                 >
                   <CancelIcon />
@@ -324,19 +334,26 @@ export const RelationshipSection = props => {
               }
               confirmIcon={<TickMarkIcon />}
               onConfirmed={() => {
+                if (
+                  direction &&
+                  selectedType &&
+                  selectedLabel &&
+                  selectedNode
+                ) {
+                  props.editEntityAction(
+                    {
+                      direction: direction,
+                      startNodeId: props.node.identity.toInt(),
+                      startNodeLabel: props.node.labels[0],
+                      endNodeId: selectedNode.value.identity.toInt(),
+                      endNodeLabel: selectedNode.value.labels[0],
+                      relationshipType: selectedType.value
+                    },
+                    'create',
+                    'relationship'
+                  )
+                }
                 setRelationshipRequest(!relationshipRequest)
-                props.editEntityAction(
-                  {
-                    direction: direction,
-                    startNodeId: props.node.identity.toInt(),
-                    startNodeLabel: props.node.labels[0],
-                    endNodeId: selectedNode.value.identity.toInt(),
-                    endNodeLabel: selectedNode.value.labels[0],
-                    relationshipType: selectedType.value
-                  },
-                  'create',
-                  'relationship'
-                )
               }}
             />
           </StyledFavFolderButtonSpan>

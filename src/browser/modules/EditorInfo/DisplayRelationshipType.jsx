@@ -26,16 +26,18 @@ function DisplayRelationshipType (props) {
   const [selectedNode, setSelectedNode] = useState(null)
 
   const onConfirmed = () => {
-    props.editEntityAction(
-      {
-        id: props.relationshipId,
-        value: selectedType.value,
-        selectedNode: selectedNode
-      },
-      'update',
-      'relationshipType'
-    )
-    setButtonVisibility(false)
+    if (selectedType) {
+      props.editEntityAction(
+        {
+          id: props.relationshipId,
+          value: selectedType.value,
+          selectedNode: selectedNode
+        },
+        'update',
+        'relationshipType'
+      )
+      setButtonVisibility(false)
+    }
   }
 
   const onCanceled = () => {
