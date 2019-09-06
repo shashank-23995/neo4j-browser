@@ -50,11 +50,15 @@ function AddLabel (props) {
           confirmIcon={<TickMarkIcon />}
           onConfirmed={() => {
             handleToggle(!textField)
-            props.editEntityAction(
-              { label: label, nodeId: nodeId },
-              'create',
-              'nodeLabel'
-            )
+            if (label.length > 0) {
+              props.editEntityAction(
+                { label: label, nodeId: nodeId },
+                'create',
+                'nodeLabel'
+              )
+            } else {
+              alert('plzz enter label')
+            }
           }}
         />
       </StyledFavFolderButtonSpan>
