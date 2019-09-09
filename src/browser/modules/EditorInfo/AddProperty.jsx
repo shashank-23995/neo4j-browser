@@ -22,6 +22,7 @@ import 'react-day-picker/lib/style.css'
 import { SpatialProperty } from './SpatialProperty'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
+import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 
 const IconButton = styled.button`
   margin-left: 4px;
@@ -92,11 +93,21 @@ const dataTypeChecker = value => {
 function AddProperty (props) {
   const [textField, handleToggle] = useState(false)
   const [calendarFlag, toggleCalendar] = useState(false)
-  useEffect(() => {
-    initialDatatype = props.properties
-      ? dataTypeChecker(Object.values(props.properties))
-      : null
-  }, [])
+  const [keyProperties, setKeyProperties] = useState(
+    props.properties ? Object.keys(props.properties)[0] : null
+  )
+  const [valueProperties, setValueProperties] = useState(
+    props.properties ? Object.values(props.properties)[0] : null
+  )
+  const [showButtons, setButtonVisibility] = useState(false)
+  useEffect(
+    () => {
+      initialDatatype = props.properties
+        ? dataTypeChecker(Object.values(props.properties))
+        : null
+    },
+    [keyProperties, valueProperties]
+  )
   const initialState = {
     newProperties: {}
   }
@@ -118,24 +129,31 @@ function AddProperty (props) {
     )
   }
 
+  const updateChange = (value, keyFlag = false) => {
+    if (keyFlag) {
+      setKeyProperties(value)
+    } else {
+      setValueProperties(value)
+    }
+    setButtonVisibility(true)
+  }
+
   let valueInput = null
   const options = ['true', 'false']
   let dataTypeValue = props.properties
     ? dataTypeChecker(Object.values(props.properties))
     : null
 
-  switch (
-    (props.dataTypeValue
-      ? props.dataTypeValue
-      : myState.newProperties.datatype) || initialDatatype
-  ) {
+  switch (dataTypeValue || myState.newProperties.datatype || initialDatatype) {
     case 'string':
       valueInput = (
         <TextInput
           id='propValue'
-          value={props.properties ? Object.values(props.properties) : null}
+          value={valueProperties || null}
           onChange={e => {
-            handleChange(e.target.id, e.target.value)
+            props.ToDisplay
+              ? updateChange(e.target.value)
+              : handleChange(e.target.id, e.target.value)
           }}
           style={{ width: '120px' }}
         />
@@ -145,10 +163,12 @@ function AddProperty (props) {
       valueInput = (
         <TextInput
           id='propValue'
-          value={props.properties ? Object.values(props.properties) : null}
+          value={valueProperties || null}
           type='number'
           onChange={e => {
-            handleChange(e.target.id, neo4j.int(e.target.value))
+            props.ToDisplay
+              ? updateChange(e.target.value)
+              : handleChange(e.target.id, e.target.value)
           }}
           style={{ width: '120px' }}
         />
@@ -211,6 +231,25 @@ function AddProperty (props) {
       break
   }
 
+  const onConfirmed = () => {
+    props.editEntityAction(
+      {
+        nodeId: props.nodeId,
+        key: keyProperties,
+        value: valueProperties,
+        oldProperties: Object.keys(props.properties)[0],
+        dataType: dataTypeValue
+      },
+      'update',
+      'nodeProperties'
+    )
+    setButtonVisibility(false)
+  }
+
+  const onCanceled = () => {
+    setButtonVisibility(false)
+  }
+
   return (
     <React.Fragment>
       {props.ToDisplay != 'view' ? (
@@ -253,6 +292,12 @@ function AddProperty (props) {
       ) : null}
       {props.ToDisplay == 'view' || textField ? (
         <DrawerSection>
+          {showButtons ? (
+            <PartialConfirmationButtons
+              onConfirmed={onConfirmed}
+              onCanceled={onCanceled}
+            />
+          ) : null}
           <DrawerSectionBody>
             <StyledTable>
               <tr>
@@ -260,11 +305,11 @@ function AddProperty (props) {
                 <StyledValue>
                   <TextInput
                     id='key'
-                    value={
-                      props.properties ? Object.keys(props.properties) : null
-                    }
+                    value={keyProperties || null}
                     onChange={e => {
-                      handleChange(e.target.id, e.target.value)
+                      props.ToDisplay
+                        ? updateChange(e.target.value, true)
+                        : handleChange(e.target.id, e.target.value)
                     }}
                     style={{ width: '120px' }}
                   />

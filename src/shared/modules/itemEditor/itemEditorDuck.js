@@ -95,7 +95,9 @@ export const handleFetchDataEpic = (action$, store) =>
         return noop
       })
     }
-    let cmd = `MATCH (a) where id(a)=${action.id} RETURN a, ((a)-->()) , ((a)<--())`
+    let cmd = `MATCH (a) where id(a)=${
+      action.id
+    } RETURN a, ((a)-->()) , ((a)<--())`
     if (action.entityType === 'relationship') {
       cmd = `MATCH ()-[r]->() where id(r)=${action.id} RETURN r`
     }
@@ -136,7 +138,9 @@ function getCypherCompatibleValue (action) {
       const zValue = action.editPayload.value.z
         ? `z: ${action.editPayload.value.z},`
         : ''
-      convertedValue = `point({ x: ${action.editPayload.value.x}, y: ${action.editPayload.value.y}, ${zValue} srid: ${action.editPayload.value.srid} })`
+      convertedValue = `point({ x: ${action.editPayload.value.x}, y: ${
+        action.editPayload.value.y
+      }, ${zValue} srid: ${action.editPayload.value.srid} })`
       break
     default:
       convertedValue = `'${action.editPayload.value}'`
@@ -164,18 +168,30 @@ export const handleEditEntityEpic = (action$, store) =>
         RETURN a, ((a)-->()) , ((a)<--())`
         }
         if (action.entityType === 'node') {
-          cmd = `CREATE (a:${action.editPayload.nodeLabel}) RETURN a, ((a)-->()) , ((a)<--())`
+          cmd = `CREATE (a:${
+            action.editPayload.nodeLabel
+          }) RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'nodeLabel') {
-          cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} SET a:${action.editPayload.label} RETURN a, ((a)-->()) , ((a)<--())`
+          cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} SET a:${
+            action.editPayload.label
+          } RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'relationship') {
           if (action.editPayload.direction === '---->') {
-            cmd = `MATCH (a:${action.editPayload.startNodeLabel}),(b:${action.editPayload.endNodeLabel})
-            WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${action.editPayload.endNodeId}
+            cmd = `MATCH (a:${action.editPayload.startNodeLabel}),(b:${
+              action.editPayload.endNodeLabel
+            })
+            WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${
+  action.editPayload.endNodeId
+}
             CREATE (a)-[r:${action.editPayload.relationshipType}]->(b)
             RETURN  a, ((a)-->()) , ((a)<--())`
           } else if (action.editPayload.direction === '<----') {
-            cmd = `MATCH (a:${action.editPayload.startNodeLabel}),(b:${action.editPayload.endNodeLabel})
-            WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${action.editPayload.endNodeId}
+            cmd = `MATCH (a:${action.editPayload.startNodeLabel}),(b:${
+              action.editPayload.endNodeLabel
+            })
+            WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${
+  action.editPayload.endNodeId
+}
             CREATE (b)-[r:${action.editPayload.relationshipType}]->(a)
             RETURN  a, ((a)-->()) , ((a)<--())`
           }
@@ -189,7 +205,9 @@ export const handleEditEntityEpic = (action$, store) =>
             matchParameter = '(a)<-[r]-(to)'
             setParameter = `(a)<-[r2:${action.editPayload.value}]-(to)`
           }
-          cmd = `MATCH ${matchParameter} WHERE ID(r)= ${action.editPayload.id} WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
+          cmd = `MATCH ${matchParameter} WHERE ID(r)= ${
+            action.editPayload.id
+          } WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'relationshipDirection') {
           let matchParameter = '(a)-[r]->(to)'
           let setParameter = `(to)-[r2:${action.editPayload.value}]->(a)`
@@ -200,25 +218,42 @@ export const handleEditEntityEpic = (action$, store) =>
             matchParameter = '(a)<-[r]-(to)'
             setParameter = `(to)<-[r2:${action.editPayload.value}]-(a)`
           }
-          cmd = `MATCH ${matchParameter} WHERE ID(r)= ${action.editPayload.id} WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
+          cmd = `MATCH ${matchParameter} WHERE ID(r)= ${
+            action.editPayload.id
+          } WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'nodeLabel') {
           cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} 
         REMOVE a:${action.editPayload.previousLabelValue}
         SET a:${action.editPayload.labelName}
         RETURN a, ((a)-->()), ((a)<--())`
+        } else if (action.entityType === 'nodeProperties') {
+          cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} 
+        REMOVE a.${action.editPayload.oldProperties}
+        SET a.${action.editPayload.key} = ${getCypherCompatibleValue(action)}
+        RETURN a, ((a)-->()), ((a)<--())`
         }
         break
       case 'delete':
         if (action.entityType === 'node') {
-          cmd = `MATCH (p:${action.editPayload.firstLabel}) where ID(p)=${action.editPayload.nodeId} OPTIONAL MATCH (p)-[r]-() DELETE r, p`
+          cmd = `MATCH (p:${action.editPayload.firstLabel}) where ID(p)=${
+            action.editPayload.nodeId
+          } OPTIONAL MATCH (p)-[r]-() DELETE r, p`
         } else if (action.entityType === 'relationship') {
-          cmd = `MATCH ()-[r]-() WHERE ID(r)=${action.editPayload.relationshipId} DELETE r WITH 1 as nothing
+          cmd = `MATCH ()-[r]-() WHERE ID(r)=${
+            action.editPayload.relationshipId
+          } DELETE r WITH 1 as nothing
           MATCH (a) WHERE ID(a)= ${action.editPayload.nodeId} 
           RETURN a,((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'nodeProperty') {
-          cmd = `MATCH (a:${action.editPayload.label}) where ID(a)=${action.editPayload.nodeId} REMOVE a.${action.editPayload.propertyKey} RETURN a, ((a)-->()) , ((a)<--())`
+          cmd = `MATCH (a:${action.editPayload.label}) where ID(a)=${
+            action.editPayload.nodeId
+          } REMOVE a.${
+            action.editPayload.propertyKey
+          } RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'relationshipProperty') {
-          cmd = `MATCH ()-[r:${action.editPayload.type}]-() WHERE ID(r)=${action.editPayload.relationshipId} REMOVE r.${action.editPayload.propertyKey} RETURN r`
+          cmd = `MATCH ()-[r:${action.editPayload.type}]-() WHERE ID(r)=${
+            action.editPayload.relationshipId
+          } REMOVE r.${action.editPayload.propertyKey} RETURN r`
         } else if (action.entityType === 'nodeLabel') {
           cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} 
            REMOVE a:${action.editPayload.labelName}
