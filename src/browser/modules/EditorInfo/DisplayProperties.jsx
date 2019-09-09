@@ -24,12 +24,15 @@ export const DisplayProperties = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(() => {
-    updatePropertiesState({
-      properties: { [displayPropertiesStateKey]: value },
-      requested: false
-    })
-  }, [value])
+  useEffect(
+    () => {
+      updatePropertiesState({
+        properties: { [displayPropertiesStateKey]: value },
+        requested: false
+      })
+    },
+    [value]
+  )
 
   const handleChange = (displayPropertiesStateKey, e) => {
     let newState = _.cloneDeep(propertiesState)
@@ -52,7 +55,12 @@ export const DisplayProperties = props => {
 
   return (
     <div>
-      <AddProperty ToDisplay='view' properties={propertiesState.properties} />
+      <AddProperty
+        ToDisplay='view'
+        properties={propertiesState.properties}
+        editEntityAction={props.editEntityAction}
+        nodeId={props.node.identity.toInt()}
+      />
 
       <ConfirmationButton
         requestIcon={<BinIcon />}
