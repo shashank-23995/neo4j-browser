@@ -67,6 +67,7 @@ function AddLabel (props) {
           <StyledKey>Label:</StyledKey>
           <StyledValue>
             <TextInput
+              value={label}
               id='label'
               style={{
                 width: '120px'
