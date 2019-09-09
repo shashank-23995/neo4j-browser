@@ -55,13 +55,23 @@ export const DisplayProperties = props => {
 
   return (
     <div>
+      {/* {Object.keys(props.properties).map(p => {
+        const pr = props.properties[p] */}
+      {/* return ( */}
       <AddProperty
+        ToDisplay='view'
+        p={{ key: props.displayPropertiesStateKey, value: props.value }}
+        editEntityAction={props.editEntityAction}
+        nodeId={props.node.identity.toInt()}
+      />
+      {/* )
+      })} */}
+      {/* <AddProperty
         ToDisplay='view'
         properties={propertiesState.properties}
         editEntityAction={props.editEntityAction}
         nodeId={props.node.identity.toInt()}
-      />
-
+      /> */}
       <ConfirmationButton
         requestIcon={<BinIcon />}
         confirmIcon={<BinIcon deleteAction />}

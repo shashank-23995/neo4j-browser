@@ -53,11 +53,7 @@ export function DropDownContents (props) {
           borderTop: '1px solid #ccc',
           borderRadius: '4px'
         }}
-        value={
-          props.dataTypeValue
-            ? props.dataTypeValue
-            : props.myState.newProperties.datatype
-        }
+        value={props.dataTypeValue}
         onChange={e => {
           props.handleChange(e.target.name, e.target.value)
         }}
@@ -99,34 +95,56 @@ function AddProperty (props) {
   const [valueProperties, setValueProperties] = useState(
     props.properties ? Object.values(props.properties)[0] : null
   )
+
+  const [dataType, setDatatype] = useState('')
   const [showButtons, setButtonVisibility] = useState(false)
+  const [p, setP] = useState({ key: null, value: null })
+  const [stateUpdatedWithProps, setFlag] = useState(false)
+
+  // effect to copy props to state. this is one time job
   useEffect(
     () => {
-      initialDatatype = props.properties
-        ? dataTypeChecker(Object.values(props.properties))
-        : null
+      if (!stateUpdatedWithProps) {
+        setP(props.p)
+        const dataTypeValue = dataTypeChecker(
+          Object.values({ value: props.p && props.p.value })
+        )
+        setDatatype(dataTypeValue)
+        setFlag(true)
+      }
     },
-    [keyProperties, valueProperties]
+    [props]
   )
+
+  // effect to show confirmation buttons
+  useEffect(
+    () => {
+      if (stateUpdatedWithProps && props.p && props.p.value !== p.value) {
+        setButtonVisibility(true)
+      } else {
+        setButtonVisibility(false)
+      }
+    },
+    [props, p && p.value, stateUpdatedWithProps]
+  )
+
   const initialState = {
     newProperties: {}
   }
-  let initialDatatype = props.properties
-    ? dataTypeChecker(Object.values(props.properties))
-    : null
   const [myState, updatePropertiesState] = useState(initialState)
   const handleChange = (key1, value) => {
     let newState = _.cloneDeep(myState)
-    updatePropertiesState(
-      {
-        ...newState,
-        newProperties: {
-          ...newState.newProperties,
-          [key1]: value
-        }
-      },
-      []
-    )
+    setP({ key: key1, value: value })
+    // updatePropertiesState(
+    //   {
+    //     ...newState,
+    //     newProperties: {
+    //       ...newState.newProperties,
+    //       [key1]: value
+    //     }
+    //   },
+    //   []
+    // )
   }
 
   const updateChange = (value, keyFlag = false) => {
@@ -143,17 +161,19 @@ function AddProperty (props) {
   let dataTypeValue = props.properties
     ? dataTypeChecker(Object.values(props.properties))
     : null
+  if (!dataTypeValue && p && p.key) {
+    dataTypeValue = dataTypeChecker(Object.values({ value: p.value }))
+  }
 
-  switch (dataTypeValue || myState.newProperties.datatype || initialDatatype) {
+  switch (dataType) {
     case 'string':
+      console.log('mySteate - ', myState)
       valueInput = (
         <TextInput
           id='propValue'
-          value={valueProperties || null}
+          value={p.value}
           onChange={e => {
-            props.ToDisplay
-              ? updateChange(e.target.value)
-              : handleChange(e.target.id, e.target.value)
+            handleChange(e.target.id, e.target.value)
           }}
           style={{ width: '120px' }}
         />
@@ -163,12 +183,10 @@ function AddProperty (props) {
       valueInput = (
         <TextInput
           id='propValue'
-          value={valueProperties || null}
+          value={p.value || ''}
           type='number'
           onChange={e => {
-            props.ToDisplay
-              ? updateChange(e.target.value)
-              : handleChange(e.target.id, e.target.value)
+            handleChange(e.target.id, e.target.value)
           }}
           style={{ width: '120px' }}
         />
@@ -179,12 +197,14 @@ function AddProperty (props) {
         <RadioSelector
           options={options}
           onChange={e => {
-            handleChange('propValue', e.target.value)
+            handleChange('propValue', Boolean(e.target.value))
           }}
           selectedValue={
-            props.properties
-              ? Object.values(props.properties)[0].toString()
-              : myState.newProperties.propValue
+            p
+              ? Object.values({
+                value: p.value !== null ? p.value : ''
+              })[0].toString()
+              : ''
           }
         />
       )
@@ -238,7 +258,7 @@ function AddProperty (props) {
         key: keyProperties,
         value: valueProperties,
         oldProperties: Object.keys(props.properties)[0],
-        dataType: dataTypeValue
+        dataType: dataType
       },
       'update',
       'nodeProperties'
@@ -305,7 +325,7 @@ function AddProperty (props) {
                 <StyledValue>
                   <TextInput
                     id='key'
-                    value={keyProperties || null}
+                    value={p.key || keyProperties || ''}
                     onChange={e => {
                       props.ToDisplay
                         ? updateChange(e.target.value, true)
@@ -319,9 +339,12 @@ function AddProperty (props) {
                 <StyledKey> Data Type:</StyledKey>
                 <StyledValue>
                   <DropDownContents
-                    dataTypeValue={dataTypeValue}
+                    dataTypeValue={dataType}
                     myState={myState}
-                    handleChange={handleChange}
+                    handleChange={(key, value) => {
+                      setDatatype(value)
+                      setP({ ...p, value: null })
+                    }}
                   />
                 </StyledValue>
               </tr>
