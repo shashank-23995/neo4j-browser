@@ -53,11 +53,7 @@ export function DropDownContents (props) {
           borderTop: '1px solid #ccc',
           borderRadius: '4px'
         }}
-        value={
-          props.dataTypeValue
-            ? props.dataTypeValue
-            : props.myState.newProperties.datatype
-        }
+        value={props.dataTypeValue}
         onChange={e => {
           props.handleChange(e.target.name, e.target.value)
         }}
@@ -93,67 +89,57 @@ const dataTypeChecker = value => {
 function AddProperty (props) {
   const [textField, handleToggle] = useState(false)
   const [calendarFlag, toggleCalendar] = useState(false)
-  const [keyProperties, setKeyProperties] = useState(
-    props.properties ? Object.keys(props.properties)[0] : null
-  )
-  const [valueProperties, setValueProperties] = useState(
-    props.properties ? Object.values(props.properties)[0] : null
-  )
   const [showButtons, setButtonVisibility] = useState(false)
+  const [dataType, setDatatype] = useState('')
+  const [p, setP] = useState({ key: null, value: null })
+  const [stateUpdatedWithProps, setFlag] = useState(false)
+
+  // effect to copy props to state. this is one time job
   useEffect(
     () => {
-      initialDatatype = props.properties
-        ? dataTypeChecker(Object.values(props.properties))
-        : null
+      if (!stateUpdatedWithProps) {
+        setP(props.p)
+        const dataTypeValue = dataTypeChecker(
+          Object.values({ value: props.p && props.p.value })
+        )
+        setDatatype(dataTypeValue)
+        setFlag(true)
+      }
     },
-    [keyProperties, valueProperties]
+    [props]
   )
-  const initialState = {
-    newProperties: {}
-  }
-  let initialDatatype = props.properties
-    ? dataTypeChecker(Object.values(props.properties))
-    : null
-  const [myState, updatePropertiesState] = useState(initialState)
-  const handleChange = (key1, value) => {
-    let newState = _.cloneDeep(myState)
-    updatePropertiesState(
-      {
-        ...newState,
-        newProperties: {
-          ...newState.newProperties,
-          [key1]: value
-        }
-      },
-      []
-    )
-  }
 
-  const updateChange = (value, keyFlag = false) => {
-    if (keyFlag) {
-      setKeyProperties(value)
-    } else {
-      setValueProperties(value)
-    }
-    setButtonVisibility(true)
+  // effect to show confirmation buttons
+  useEffect(
+    () => {
+      if (
+        stateUpdatedWithProps &&
+        props.p &&
+        (props.p.value !== p.value || props.p.key !== p.key)
+      ) {
+        setButtonVisibility(true)
+      } else {
+        setButtonVisibility(false)
+      }
+    },
+    [p && p.key, p && p.value, stateUpdatedWithProps]
+  )
+
+  const handleChange = (key1, value) => {
+    setP({ ...p, value: value })
   }
 
   let valueInput = null
   const options = ['true', 'false']
-  let dataTypeValue = props.properties
-    ? dataTypeChecker(Object.values(props.properties))
-    : null
 
-  switch (dataTypeValue || myState.newProperties.datatype || initialDatatype) {
+  switch (dataType) {
     case 'string':
       valueInput = (
         <TextInput
           id='propValue'
-          value={valueProperties || null}
+          value={p.value}
           onChange={e => {
-            props.ToDisplay
-              ? updateChange(e.target.value)
-              : handleChange(e.target.id, e.target.value)
+            handleChange(e.target.id, e.target.value)
           }}
           style={{ width: '120px' }}
         />
@@ -163,12 +149,10 @@ function AddProperty (props) {
       valueInput = (
         <TextInput
           id='propValue'
-          value={valueProperties || null}
+          value={p.value || ''}
           type='number'
           onChange={e => {
-            props.ToDisplay
-              ? updateChange(e.target.value)
-              : handleChange(e.target.id, e.target.value)
+            handleChange(e.target.id, e.target.value)
           }}
           style={{ width: '120px' }}
         />
@@ -179,12 +163,14 @@ function AddProperty (props) {
         <RadioSelector
           options={options}
           onChange={e => {
-            handleChange('propValue', e.target.value)
+            handleChange('propValue', Boolean(e.target.value))
           }}
           selectedValue={
-            props.properties
-              ? Object.values(props.properties)[0].toString()
-              : myState.newProperties.propValue
+            p
+              ? Object.values({
+                value: p.value !== null ? p.value : ''
+              })[0].toString()
+              : ''
           }
         />
       )
@@ -196,11 +182,7 @@ function AddProperty (props) {
             style={{
               width: '120px'
             }}
-            value={
-              props.properties
-                ? Object.values(props.properties)
-                : myState.newProperties.propValue
-            }
+            value={p.value || ''}
             disabled
           />
           <Calendar
@@ -235,19 +217,23 @@ function AddProperty (props) {
     props.editEntityAction(
       {
         nodeId: props.nodeId,
-        key: keyProperties,
-        value: valueProperties,
-        oldProperties: Object.keys(props.properties)[0],
-        dataType: dataTypeValue
+        key: p.key,
+        value: p.value,
+        oldProperties: Object.values(props.p)[0],
+        dataType: dataType
       },
       'update',
       'nodeProperties'
     )
     setButtonVisibility(false)
+    dataType === 'date' && toggleCalendar(false)
   }
 
   const onCanceled = () => {
     setButtonVisibility(false)
+    dataType === 'date' && toggleCalendar(false)
+    setDatatype(dataTypeChecker(Object.values({ value: props.p.value })))
+    setP(props.p)
   }
 
   return (
@@ -276,16 +262,22 @@ function AddProperty (props) {
             confirmIcon={<TickMarkIcon />}
             onConfirmed={() => {
               handleToggle(!textField)
-              props.editEntityAction(
-                {
-                  id: props.id,
-                  key: myState.newProperties.key,
-                  value: myState.newProperties.propValue,
-                  dataType: myState.newProperties.datatype
-                },
-                'create',
-                'nodeProperty'
-              )
+              if (p.key && p.value) {
+                props.editEntityAction(
+                  {
+                    id: props.id,
+                    key: p.key,
+                    value: p.value,
+                    dataType: dataType
+                  },
+                  'create',
+                  'nodeProperty'
+                )
+                setP({ key: null, value: null })
+                setDatatype('')
+              } else {
+                alert('Empty field')
+              }
             }}
           />
         </StyledFavFolderButtonSpan>
@@ -305,11 +297,9 @@ function AddProperty (props) {
                 <StyledValue>
                   <TextInput
                     id='key'
-                    value={keyProperties || null}
+                    value={(p && p.key) || ''}
                     onChange={e => {
-                      props.ToDisplay
-                        ? updateChange(e.target.value, true)
-                        : handleChange(e.target.id, e.target.value)
+                      setP({ ...p, key: e.target.value })
                     }}
                     style={{ width: '120px' }}
                   />
@@ -319,9 +309,11 @@ function AddProperty (props) {
                 <StyledKey> Data Type:</StyledKey>
                 <StyledValue>
                   <DropDownContents
-                    dataTypeValue={dataTypeValue}
-                    myState={myState}
-                    handleChange={handleChange}
+                    dataTypeValue={dataType}
+                    handleChange={(key, value) => {
+                      setDatatype(value)
+                      setP({ ...p, value: null })
+                    }}
                   />
                 </StyledValue>
               </tr>

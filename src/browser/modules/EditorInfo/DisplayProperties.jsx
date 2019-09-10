@@ -57,7 +57,7 @@ export const DisplayProperties = props => {
     <div>
       <AddProperty
         ToDisplay='view'
-        properties={propertiesState.properties}
+        p={{ key: props.displayPropertiesStateKey, value: props.value }}
         editEntityAction={props.editEntityAction}
         nodeId={props.node.identity.toInt()}
       />
