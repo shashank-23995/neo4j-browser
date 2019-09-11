@@ -64,16 +64,20 @@ export const DisplayLabel = props => {
             icon={<TickMarkIcon />}
             onCanceled={onCanceled}
             onConfirmed={() => {
-              props.editEntityAction(
-                {
-                  previousLabelValue: previousLabelValue,
-                  labelName: labelState.labelName[labelKey],
-                  nodeId: node.identity.toInt(),
-                  entityType: props.entityType
-                },
-                'update',
-                'nodeLabel'
-              )
+              if (labelState.labelName[labelKey].length > 0) {
+                props.editEntityAction(
+                  {
+                    previousLabelValue: previousLabelValue,
+                    labelName: labelState.labelName[labelKey],
+                    nodeId: node.identity.toInt(),
+                    entityType: props.entityType
+                  },
+                  'update',
+                  'nodeLabel'
+                )
+              } else {
+                alert('plzz enter label')
+              }
             }}
           />
         ) : null}
