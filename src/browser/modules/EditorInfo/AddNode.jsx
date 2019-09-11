@@ -42,7 +42,11 @@ function Node (props) {
         confirmIcon={<TickMarkIcon />}
         onConfirmed={() => {
           handleToggle(!textField)
-          props.editEntityAction({ nodeLabel: nodeLabel }, 'create', 'node')
+          if (nodeLabel.length > 0) {
+            props.editEntityAction({ nodeLabel: nodeLabel }, 'create', 'node')
+          } else {
+            alert('plzz enter node')
+          }
         }}
       />
       {textField ? (
@@ -52,6 +56,7 @@ function Node (props) {
               <StyledKey>Node with Label:</StyledKey>
               <StyledValue>
                 <TextInput
+                  value={nodeLabel}
                   id='nodeLabel'
                   style={{
                     width: '120px'
