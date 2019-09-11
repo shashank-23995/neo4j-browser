@@ -59,7 +59,9 @@ export const DisplayProperties = props => {
         ToDisplay='view'
         p={{ key: props.displayPropertiesStateKey, value: props.value }}
         editEntityAction={props.editEntityAction}
-        nodeId={props.node.identity.toInt()}
+        nodeId={
+          (props.node && props.node.identity.toInt()) || props.selectedNodeId
+        }
       />
 
       <ConfirmationButton
