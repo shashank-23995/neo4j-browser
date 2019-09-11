@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import FormControl from '@material-ui/core/FormControl'
 import { TextInput } from 'browser-components/Form'
 import { StyledValue, StyledKey } from '../DatabaseInfo/styled'
+import { v1 as neo4j } from 'neo4j-driver'
 
 const coordinateSystemSRIDMap = {
   cartesian2D: 7203,
@@ -12,50 +13,65 @@ const coordinateSystemSRIDMap = {
   geographic2D: 4326,
   geographic3D: 4979
 }
+const SRIDToCoordinateSystemMap = {
+  7203: 'cartesian2D',
+  9157: 'cartesian3D',
+  4326: 'geographic2D',
+  4979: 'geographic3D'
+}
 
 export const SpatialProperty = props => {
-  const initialState = {
-    coordinateSystem: '',
-    x: 0,
-    y: 0,
-    z: undefined
+  const point = props.value
+  let coordinateSystemName = ''
+
+  let x = 0
+  let y = 0
+  let z = 0
+  if (point && neo4j.isPoint(point) && point.srid) {
+    coordinateSystemName =
+      SRIDToCoordinateSystemMap[
+        neo4j.isInt(point.srid) ? point.srid.toInt() : point.srid
+      ]
+    x = point.x
+    y = point.y
+    z = point.z
   }
-
-  let srid = props.properties
-    ? Object.values(props.properties)[0].srid.toInt()
-    : null
-
-  const toGetcoordinateSystem = srid => {
-    if (srid == 7203) {
-      return 'cartesian2D'
-    }
-    if (srid == 9157) {
-      return 'cartesian3D'
-    }
-    if (srid == 4326) {
-      return 'geographic2D'
-    }
-    if (srid == 4979) {
-      return 'geographic3D'
-    }
-  }
-
-  let zProp = toGetcoordinateSystem(srid)
-  const [state, updateState] = useState(initialState)
 
   const handleChange = (key, value) => {
-    const newState = { ...state, [key]: value }
+    const emptyPoint = {
+      coordinateSystem: '',
+      x: 0,
+      y: 0,
+      z: undefined
+    }
+
+    if (props.value) {
+      emptyPoint.coordinateSystem =
+        SRIDToCoordinateSystemMap[
+          neo4j.isInt(props.value.srid)
+            ? props.value.srid.toInt()
+            : props.value.srid
+        ]
+      emptyPoint.x = props.value.x
+      emptyPoint.y = props.value.y
+      emptyPoint.z = props.value.z
+    }
+
+    const newPointValues = { ...emptyPoint, [key]: value }
     if (value === 'cartesian2D' || value === 'geographic2D') {
-      newState.z = undefined
+      newPointValues.z = undefined
     }
     if (value === 'cartesian3D' || value === 'geographic3D') {
-      newState.z = newState.z || 0
+      newPointValues.z = newPointValues.z || 0
     }
-    updateState(newState)
-    props.onChange({
-      ...newState,
-      coordinateSystem: coordinateSystemSRIDMap[newState.coordinateSystem]
-    })
+
+    const point = new neo4j.types.Point(
+      coordinateSystemSRIDMap[newPointValues.coordinateSystem],
+      newPointValues.x,
+      newPointValues.y,
+      newPointValues.z
+    )
+    props.onChange(point)
   }
 
   return (
@@ -82,11 +98,7 @@ export const SpatialProperty = props => {
                 borderTop: '1px solid #ccc',
                 borderRadius: '4px'
               }}
-              value={
-                props.properties
-                  ? toGetcoordinateSystem(srid)
-                  : state.coordinateSystem
-              }
+              value={coordinateSystemName}
               onChange={e => {
                 handleChange(e.target.name, e.target.value)
               }}
@@ -109,9 +121,7 @@ export const SpatialProperty = props => {
             onChange={e => {
               handleChange(e.target.id, parseFloat(e.target.value))
             }}
-            value={
-              props.properties ? Object.values(props.properties)[0].x : null
-            }
+            value={x}
           />
         </StyledValue>
       </tr>
@@ -125,17 +135,13 @@ export const SpatialProperty = props => {
             onChange={e => {
               handleChange(e.target.id, parseFloat(e.target.value))
             }}
-            value={
-              props.properties ? Object.values(props.properties)[0].y : null
-            }
+            value={y}
           />
         </StyledValue>
       </tr>
 
-      {state.coordinateSystem === 'cartesian3D' ||
-      state.coordinateSystem === 'geographic3D' ||
-      zProp === 'cartesian3D' ||
-      zProp === 'geographic3D' ? (
+      {coordinateSystemName === 'cartesian3D' ||
+      coordinateSystemName === 'geographic3D' ? (
         <React.Fragment>
             <tr>
             <StyledKey>Z:</StyledKey>
@@ -147,9 +153,7 @@ export const SpatialProperty = props => {
                 onChange={e => {
                     handleChange(e.target.id, parseFloat(e.target.value))
                   }}
-                value={
-                    props.properties ? Object.values(props.properties)[0].z : null
-                  }
+                value={z}
                 />
               </StyledValue>
           </tr>
