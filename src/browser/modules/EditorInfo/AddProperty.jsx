@@ -214,19 +214,23 @@ function AddProperty (props) {
   }
 
   const onConfirmed = () => {
-    props.editEntityAction(
-      {
-        nodeId: props.nodeId,
-        key: p.key,
-        value: p.value,
-        oldProperties: Object.values(props.p)[0],
-        dataType: dataType
-      },
-      'update',
-      'nodeProperties'
-    )
-    setButtonVisibility(false)
-    dataType === 'date' && toggleCalendar(false)
+    if (p && p.key && p.value) {
+      props.editEntityAction(
+        {
+          nodeId: props.nodeId,
+          key: p.key,
+          value: p.value,
+          oldProperties: Object.values(props.p)[0],
+          dataType: dataType
+        },
+        'update',
+        'nodeProperties'
+      )
+      setButtonVisibility(false)
+      dataType === 'date' && toggleCalendar(false)
+    } else {
+      alert('Empty field')
+    }
   }
 
   const onCanceled = () => {
@@ -262,7 +266,7 @@ function AddProperty (props) {
             confirmIcon={<TickMarkIcon />}
             onConfirmed={() => {
               handleToggle(!textField)
-              if (p.key && p.value) {
+              if (p && p.key && p.value) {
                 props.editEntityAction(
                   {
                     id: props.id,
