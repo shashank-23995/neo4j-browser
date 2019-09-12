@@ -95,31 +95,35 @@ function AddProperty (props) {
   const [stateUpdatedWithProps, setFlag] = useState(false)
 
   // effect to copy props to state. this is one time job
-  useEffect(() => {
-    if (!stateUpdatedWithProps) {
-      setP(props.p)
-      const dataTypeValue = dataTypeChecker(
-        Object.values({ value: props.p && props.p.value })
-      )
-      setDatatype(dataTypeValue)
-      setFlag(true)
-    }
-  }, [props])
+  useEffect(
+    () => {
+      if (!stateUpdatedWithProps) {
+        setP(props.p)
+        const dataTypeValue = dataTypeChecker(
+          Object.values({ value: props.p && props.p.value })
+        )
+        setDatatype(dataTypeValue)
+        setFlag(true)
+      }
+    },
+    [props]
+  )
 
   // effect to show confirmation buttons
-  useEffect(() => {
-    if (
-      (stateUpdatedWithProps &&
+  useEffect(
+    () => {
+      if (
+        stateUpdatedWithProps &&
         props.p &&
-        (props.p.value !== p.value || props.p.key !== p.key)) ||
-      dataTypeChecker(Object.values({ value: props.p && props.p.value })) !==
-        dataType
-    ) {
-      setButtonVisibility(true)
-    } else {
-      setButtonVisibility(false)
-    }
-  }, [p && p.key, p && p.value, dataType, stateUpdatedWithProps])
+        (props.p.value !== p.value || props.p.key !== p.key)
+      ) {
+        setButtonVisibility(true)
+      } else {
+        setButtonVisibility(false)
+      }
+    },
+    [p && p.key, p && p.value, stateUpdatedWithProps]
+  )
 
   const handleChange = (key1, value) => {
     setP({ ...p, value: value })
@@ -311,6 +315,7 @@ function AddProperty (props) {
                     dataTypeValue={dataType}
                     handleChange={(key, value) => {
                       setDatatype(value)
+                      setP({ ...p, value: null })
                     }}
                   />
                 </StyledValue>
