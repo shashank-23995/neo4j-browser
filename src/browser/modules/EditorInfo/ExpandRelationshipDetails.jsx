@@ -102,6 +102,7 @@ export const ExpandRelationshipDetails = props => {
                   {...props}
                   entityType='relationship'
                   editEntityAction={props.editEntityAction}
+                  relationshipId={props.value.segments[0].relationship.identity.toInt()}
                 />
               ))}
             </div>

@@ -93,6 +93,7 @@ function AddProperty (props) {
   const [dataType, setDatatype] = useState('')
   const [p, setP] = useState({ key: null, value: null })
   const [stateUpdatedWithProps, setFlag] = useState(false)
+  const [entityType, setEntityType] = useState('')
 
   // effect to copy props to state. this is one time job
   useEffect(
@@ -103,6 +104,11 @@ function AddProperty (props) {
           Object.values({ value: props.p && props.p.value })
         )
         setDatatype(dataTypeValue)
+        if (props.relationshipId !== null) {
+          setEntityType('relationship')
+        } else {
+          setEntityType('node')
+        }
         setFlag(true)
       }
     },
@@ -214,17 +220,32 @@ function AddProperty (props) {
 
   const onConfirmed = () => {
     if (p && p.key && p.value) {
-      props.editEntityAction(
-        {
-          nodeId: props.nodeId,
-          key: p.key,
-          value: p.value,
-          oldProperties: Object.values(props.p)[0],
-          dataType: dataType
-        },
-        'update',
-        'nodeProperties'
-      )
+      if (entityType === 'node') {
+        props.editEntityAction(
+          {
+            nodeId: props.nodeId,
+            key: p.key,
+            value: p.value,
+            oldProperties: Object.values(props.p)[0],
+            dataType: dataType
+          },
+          'update',
+          'nodeProperties'
+        )
+      } else if (entityType === 'relationship') {
+        props.editEntityAction(
+          {
+            nodeId: props.nodeId,
+            relationshipId: props.relationshipId,
+            key: p.key,
+            value: p.value,
+            oldProperties: Object.values(props.p)[0],
+            dataType: dataType
+          },
+          'update',
+          'relationshipProperties'
+        )
+      }
       setButtonVisibility(false)
       dataType === 'date' && toggleCalendar(false)
     } else {
@@ -266,16 +287,30 @@ function AddProperty (props) {
             onConfirmed={() => {
               handleToggle(!textField)
               if (p && p.key && p.value) {
-                props.editEntityAction(
-                  {
-                    id: props.id,
-                    key: p.key,
-                    value: p.value,
-                    dataType: dataType
-                  },
-                  'create',
-                  'nodeProperty'
-                )
+                if (entityType === 'node') {
+                  props.editEntityAction(
+                    {
+                      id: props.id,
+                      key: p.key,
+                      value: p.value,
+                      dataType: dataType
+                    },
+                    'create',
+                    'nodeProperty'
+                  )
+                } else if (entityType === 'relationship') {
+                  props.editEntityAction(
+                    {
+                      id: props.id,
+                      relationshipId: props.relationshipId,
+                      key: p.key,
+                      value: p.value,
+                      dataType: dataType
+                    },
+                    'create',
+                    'relationshipProperty'
+                  )
+                }
                 setP({ key: null, value: null })
                 setDatatype('')
               } else {

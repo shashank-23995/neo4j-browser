@@ -167,6 +167,14 @@ export const handleEditEntityEpic = (action$, store) =>
         SET a.${action.editPayload.key} = ${getCypherCompatibleValue(action)}
         RETURN a, ((a)-->()) , ((a)<--())`
         }
+        if (action.entityType === 'relationshipProperty') {
+          cmd = `MATCH (a)-[r]-(a)
+          WHERE id(r)=${action.editPayload.relationshipId} and id(a)=${
+  action.editPayload.id
+}
+          SET r.${action.editPayload.key} = ${getCypherCompatibleValue(action)}
+          RETURN a, ((a)-->()) , ((a)<--())`
+        }
         if (action.entityType === 'node') {
           cmd = `CREATE (a:${
             action.editPayload.nodeLabel
@@ -231,6 +239,14 @@ export const handleEditEntityEpic = (action$, store) =>
         REMOVE a.${action.editPayload.oldProperties}
         SET a.${action.editPayload.key} = ${getCypherCompatibleValue(action)}
         RETURN a, ((a)-->()), ((a)<--())`
+        } else if (action.entityType === 'relationshipProperties') {
+          cmd = `MATCH (a)-[r]-(a)
+          WHERE id(r)=${action.editPayload.relationshipId} AND id(a)=${
+  action.editPayload.nodeId
+}
+          REMOVE r.${action.editPayload.oldProperties}
+          SET r.${action.editPayload.key} = ${getCypherCompatibleValue(action)}
+          RETURN a, ((a)-->()), ((a)<--())`
         }
         break
       case 'delete':
