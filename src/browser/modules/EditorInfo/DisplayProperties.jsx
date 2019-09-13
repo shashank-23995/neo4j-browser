@@ -62,6 +62,7 @@ export const DisplayProperties = props => {
         nodeId={
           (props.node && props.node.identity.toInt()) || props.selectedNodeId
         }
+        relationshipId={props.relationshipId ? props.relationshipId : null}
       />
 
       <ConfirmationButton

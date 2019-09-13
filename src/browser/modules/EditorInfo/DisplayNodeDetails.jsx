@@ -196,6 +196,7 @@ export const PropertiesSection = props => {
         <AddProperty
           editEntityAction={props.editEntityAction}
           id={props.node ? props.node.identity.toInt() : props.selectedNodeId}
+          relationshipId={props.relationshipId ? props.relationshipId : null}
         />
       </DrawerSubHeader>
       {content}
