@@ -94,20 +94,34 @@ function AddProperty (props) {
   const [p, setP] = useState({ key: null, value: null })
   const [stateUpdatedWithProps, setFlag] = useState(false)
   const [entityType, setEntityType] = useState('')
+  const [arrayFlag, setArrayFlag] = useState(false)
+  const [arrayLength, setArrayLength] = useState(0)
+  const [a, setA] = useState([])
 
   // effect to copy props to state. this is one time job
   useEffect(
     () => {
       if (!stateUpdatedWithProps) {
         setP(props.p)
-        const dataTypeValue = dataTypeChecker(
-          Object.values({ value: props.p && props.p.value })
-        )
+        const dataTypeValue =
+          props.p && Array.isArray(props.p.value)
+            ? dataTypeChecker(props.p.value)
+            : dataTypeChecker(
+              Object.values({ value: props.p && props.p.value })
+            )
         setDatatype(dataTypeValue)
         if (props.relationshipId !== null) {
           setEntityType('relationship')
         } else {
           setEntityType('node')
+        }
+        if (props.p && Array.isArray(props.p.value)) {
+          setArrayFlag(true)
+          setArrayLength(props.p.value.length)
+          setA(props.p.value)
+        } else {
+          setArrayFlag(false)
+          setArrayLength(1)
         }
         setFlag(true)
       }
@@ -132,91 +146,104 @@ function AddProperty (props) {
   )
 
   const handleChange = (key1, value) => {
-    setP({ ...p, value: value })
+    if (arrayFlag) {
+      a[count] = value
+    } else {
+      setP({ ...p, value: value })
+    }
   }
 
   let valueInput = null
+  let valueInputArray = []
   const options = ['true', 'false']
-
-  switch (dataType) {
-    case 'string':
-      valueInput = (
-        <TextInput
-          id='propValue'
-          value={p.value}
-          onChange={e => {
-            handleChange(e.target.id, e.target.value)
-          }}
-          style={{ width: '120px' }}
-        />
-      )
-      break
-    case 'number':
-      valueInput = (
-        <TextInput
-          id='propValue'
-          value={p.value || ''}
-          type='number'
-          onChange={e => {
-            handleChange(e.target.id, e.target.value)
-          }}
-          style={{ width: '120px' }}
-        />
-      )
-      break
-    case 'boolean':
-      valueInput = (
-        <RadioSelector
-          options={options}
-          onChange={e => {
-            handleChange('propValue', e.target.value)
-          }}
-          selectedValue={
-            p
-              ? Object.values({
-                value: p.value !== null ? p.value : ''
-              })[0].toString()
-              : ''
-          }
-        />
-      )
-      break
-    case 'date':
-      valueInput = (
-        <React.Fragment>
+  let count = 0
+  do {
+    switch (dataType) {
+      case 'string':
+        valueInput = (
           <TextInput
-            style={{
-              width: '120px'
+            id='propValue'
+            value={arrayFlag ? a[count] : p.value || ''}
+            onChange={e => {
+              handleChange(e.target.id, e.target.value)
             }}
-            value={p.value || ''}
-            disabled
+            style={{ width: '120px' }}
           />
-          <Calendar
-            style={{
-              float: 'right',
-              height: '2em',
-              width: '2em',
-              color: 'ghostwhite'
+        )
+        break
+      case 'number':
+        valueInput = (
+          <TextInput
+            id='propValue'
+            value={arrayFlag ? a[count] : p.value || ''}
+            type='number'
+            onChange={e => {
+              handleChange(e.target.id, e.target.value)
             }}
-            onClick={() => {
-              toggleCalendar(!calendarFlag)
+            style={{ width: '120px' }}
+          />
+        )
+        break
+      case 'boolean':
+        valueInput = (
+          <RadioSelector
+            options={options}
+            onChange={e => {
+              handleChange('propValue', e.target.value)
+            }}
+            selectedValue={
+              arrayFlag
+                ? a[count].toString()
+                : p
+                  ? Object.values({
+                    value: p.value !== null ? p.value : ''
+                  })[0].toString()
+                  : ''
+            }
+          />
+        )
+        break
+      case 'date':
+        valueInput = (
+          <React.Fragment>
+            <TextInput
+              style={{
+                width: '120px'
+              }}
+              value={arrayFlag ? a[count] : p.value || ''}
+              disabled
+            />
+            <Calendar
+              style={{
+                float: 'right',
+                height: '2em',
+                width: '2em',
+                color: 'ghostwhite'
+              }}
+              onClick={() => {
+                toggleCalendar(!calendarFlag)
+              }}
+            />
+          </React.Fragment>
+        )
+        break
+      case 'spatial':
+        valueInput = (
+          <SpatialProperty
+            properties={props.properties}
+            value={arrayFlag ? a[count] : p.value}
+            onChange={point => {
+              handleChange('propValue', point)
             }}
           />
-        </React.Fragment>
-      )
-      break
-    case 'spatial':
-      valueInput = (
-        <SpatialProperty
-          properties={props.properties}
-          value={p.value}
-          onChange={point => {
-            handleChange('propValue', point)
-          }}
-        />
-      )
-      break
-  }
+        )
+        break
+    }
+    if (arrayFlag) {
+      valueInputArray.push(valueInput)
+    }
+    count++
+  } while (count < arrayLength)
 
   const onConfirmed = () => {
     if (p && p.key && p.value) {
@@ -225,7 +252,7 @@ function AddProperty (props) {
           {
             nodeId: props.nodeId,
             key: p.key,
-            value: p.value,
+            value: arrayFlag ? a : p.value,
             oldProperties: Object.values(props.p)[0],
             dataType: dataType
           },
@@ -238,7 +265,7 @@ function AddProperty (props) {
             nodeId: props.nodeId,
             relationshipId: props.relationshipId,
             key: p.key,
-            value: p.value,
+            value: arrayFlag ? a : p.value,
             oldProperties: Object.values(props.p)[0],
             dataType: dataType
           },
@@ -256,7 +283,11 @@ function AddProperty (props) {
   const onCanceled = () => {
     setButtonVisibility(false)
     dataType === 'date' && toggleCalendar(false)
-    setDatatype(dataTypeChecker(Object.values({ value: props.p.value })))
+    if (arrayFlag) {
+      setDatatype(dataTypeChecker(a))
+    } else {
+      setDatatype(dataTypeChecker(Object.values({ value: props.p.value })))
+    }
     setP(props.p)
   }
 
@@ -292,7 +323,7 @@ function AddProperty (props) {
                     {
                       id: props.id,
                       key: p.key,
-                      value: p.value,
+                      value: arrayFlag ? a : p.value,
                       dataType: dataType
                     },
                     'create',
@@ -304,7 +335,7 @@ function AddProperty (props) {
                       id: props.id,
                       relationshipId: props.relationshipId,
                       key: p.key,
-                      value: p.value,
+                      value: arrayFlag ? a : p.value,
                       dataType: dataType
                     },
                     'create',
@@ -349,8 +380,10 @@ function AddProperty (props) {
                   <DropDownContents
                     dataTypeValue={dataType}
                     handleChange={(key, value) => {
-                      setDatatype(value)
-                      setP({ ...p, value: null })
+                      if (dataType !== value) {
+                        setDatatype(value)
+                        setP({ ...p, value: null })
+                      }
                     }}
                   />
                 </StyledValue>
@@ -358,7 +391,9 @@ function AddProperty (props) {
               <tr>
                 <StyledKey>Value :</StyledKey>
                 <StyledValue>
-                  {valueInput}
+                  {arrayFlag
+                    ? valueInputArray.map(valueInput => valueInput)
+                    : valueInput}
                   {calendarFlag ? (
                     <DayPicker
                       style={{ float: 'right' }}
