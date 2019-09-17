@@ -323,7 +323,7 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
     } else if (action.serachOperation === 'label') {
       cmd = `CALL db.labels() YIELD label RETURN {name:'labels', data:COLLECT(label)} as result`
     } else {
-      cmd = `MATCH (n:${action.serachOperation}) RETURN n`
+      cmd = `MATCH (n:\`${action.serachOperation}\`) RETURN n`
     }
     let newAction = _.cloneDeep(action)
     newAction.cmd = cmd
