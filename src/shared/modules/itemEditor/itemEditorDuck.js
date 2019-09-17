@@ -267,9 +267,11 @@ export const handleEditEntityEpic = (action$, store) =>
             action.editPayload.propertyKey
           } RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'relationshipProperty') {
-          cmd = `MATCH ()-[r:${action.editPayload.type}]-() WHERE ID(r)=${
+          cmd = `MATCH (a)-[r:${action.editPayload.type}]-(a) WHERE ID(r)=${
             action.editPayload.relationshipId
-          } REMOVE r.${action.editPayload.propertyKey} RETURN r`
+          } AND id(a)=${action.editPayload.selectedNodeId} REMOVE r.${
+            action.editPayload.propertyKey
+          } RETURN a, ((a)-->()) , ((a)<--())`
         } else if (action.entityType === 'nodeLabel') {
           cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} 
            REMOVE a:${action.editPayload.labelName}
