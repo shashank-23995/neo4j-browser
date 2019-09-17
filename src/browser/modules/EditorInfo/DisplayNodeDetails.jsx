@@ -355,6 +355,10 @@ export const RelationshipSection = props => {
                   )
                 }
                 setRelationshipRequest(!relationshipRequest)
+                setDirection(null)
+                setSelectedType(null)
+                setSelectedLabel(null)
+                setSelectedNode(null)
               }}
             />
           </StyledFavFolderButtonSpan>
