@@ -317,11 +317,11 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
         return noop
       })
     }
-    let cmd = `MATCH ()-[r]-() RETURN distinct type(r)`
+    let cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
     if (action.serachOperation === 'relationshipType') {
-      cmd = `MATCH ()-[r]-() RETURN distinct type(r)`
+      cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
     } else if (action.serachOperation === 'label') {
-      cmd = `MATCH (n) RETURN distinct labels(n)`
+      cmd = `CALL db.labels() YIELD label RETURN {name:'labels', data:COLLECT(label)} as result`
     } else {
       cmd = `MATCH (n:${action.serachOperation}) RETURN n`
     }
@@ -332,20 +332,24 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
       .then(res => {
         if (res && res.records) {
           if (action.serachOperation === 'relationshipType') {
-            let optionsList = res.records.map((record, index) => {
-              return { label: record._fields[0], value: record._fields[0] }
-            })
+            let optionsList = res.records[0]._fields[0].data.map(
+              (item, index) => {
+                return { label: item, value: item }
+              }
+            )
             store.dispatch({
               type: SET_RELATIONSHIPTYPE_LIST,
               relationshipTypeList: optionsList
             })
           } else if (action.serachOperation === 'label') {
-            let optionsList = res.records.map((record, index) => {
-              return {
-                label: record._fields[0][0],
-                value: record._fields[0][0]
+            let optionsList = res.records[0]._fields[0].data.map(
+              (item, index) => {
+                return {
+                  label: item,
+                  value: item
+                }
               }
-            })
+            )
             store.dispatch({
               type: SET_LABEL_LIST,
               labelList: optionsList
