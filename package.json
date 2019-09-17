@@ -121,7 +121,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "@material-ui/core": "^4.3.3",
+    "@material-ui/core": "^4.4.2",
     "ascii-data-table": "^2.1.1",
     "classnames": "^2.2.5",
     "codemirror": "^5.29.0",
