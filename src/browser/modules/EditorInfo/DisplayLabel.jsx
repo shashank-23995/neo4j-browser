@@ -23,12 +23,15 @@ export const DisplayLabel = props => {
   }
   const [labelState, setToInitialState] = useState(initialState)
 
-  useEffect(() => {
-    setToInitialState({
-      labelName: { [labelKey]: label },
-      requested: false
-    })
-  }, [label])
+  useEffect(
+    () => {
+      setToInitialState({
+        labelName: { [labelKey]: label },
+        requested: false
+      })
+    },
+    [label]
+  )
 
   const handleChange = (event, labelKey) => {
     let newState = _.cloneDeep(labelState)
