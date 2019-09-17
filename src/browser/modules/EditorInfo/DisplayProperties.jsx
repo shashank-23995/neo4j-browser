@@ -77,7 +77,10 @@ export const DisplayProperties = props => {
               [props.node ? 'label' : 'type']: props.node
                 ? props.node.labels[0]
                 : props.relationship.type,
-              propertyKey: displayPropertiesStateKey
+              propertyKey: displayPropertiesStateKey,
+              selectedNodeId: props.node
+                ? props.node.identity.toInt()
+                : props.selectedNodeId
             },
             'delete',
             props.node ? 'nodeProperty' : 'relationshipProperty'
