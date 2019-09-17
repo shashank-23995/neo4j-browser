@@ -99,7 +99,7 @@ export default function CreateRelationship (props) {
                     onChange={selectedNode => {
                       props.setSelectedNode(selectedNode)
                     }}
-                    options={props.nodeList}
+                    options={selectedLabel ? props.nodeList : []}
                   />
                 </StyledValue>
               </tr>
