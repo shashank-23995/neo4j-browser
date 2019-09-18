@@ -35,7 +35,12 @@ function Node (props) {
           </IconButton>
         }
         cancelIcon={
-          <IconButton onClick={() => handleToggle(textField)}>
+          <IconButton
+            onClick={() => {
+              handleToggle(textField)
+              handleChange('')
+            }}
+          >
             <CancelIcon />
           </IconButton>
         }
