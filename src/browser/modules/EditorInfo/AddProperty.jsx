@@ -96,34 +96,40 @@ function AddProperty (props) {
   const [entityType, setEntityType] = useState('')
 
   // effect to copy props to state. this is one time job
-  useEffect(() => {
-    if (!stateUpdatedWithProps) {
-      setP(props.p)
-      const dataTypeValue = dataTypeChecker(
-        Object.values({ value: props.p && props.p.value })
-      )
-      setDatatype(dataTypeValue)
-      if (props.relationshipId !== null) {
-        setEntityType('relationship')
-      } else {
-        setEntityType('node')
+  useEffect(
+    () => {
+      if (!stateUpdatedWithProps) {
+        setP(props.p)
+        const dataTypeValue = dataTypeChecker(
+          Object.values({ value: props.p && props.p.value })
+        )
+        setDatatype(dataTypeValue)
+        if (props.relationshipId !== null) {
+          setEntityType('relationship')
+        } else {
+          setEntityType('node')
+        }
+        setFlag(true)
       }
-      setFlag(true)
-    }
-  }, [props])
+    },
+    [props]
+  )
 
   // effect to show confirmation buttons
-  useEffect(() => {
-    if (
-      stateUpdatedWithProps &&
-      props.p &&
-      (props.p.value !== p.value || props.p.key !== p.key)
-    ) {
-      setButtonVisibility(true)
-    } else {
-      setButtonVisibility(false)
-    }
-  }, [p && p.key, p && p.value, stateUpdatedWithProps])
+  useEffect(
+    () => {
+      if (
+        stateUpdatedWithProps &&
+        props.p &&
+        (props.p.value !== p.value || props.p.key !== p.key)
+      ) {
+        setButtonVisibility(true)
+      } else {
+        setButtonVisibility(false)
+      }
+    },
+    [p && p.key, p && p.value, stateUpdatedWithProps]
+  )
 
   const handleChange = (key1, value) => {
     setP({ ...p, value: value })
@@ -213,7 +219,13 @@ function AddProperty (props) {
   }
 
   const onConfirmed = () => {
-    if (p && p.key && p.value) {
+    let filledFlag = true
+    if (typeof p.value === 'object') {
+      if (Object.values(p.value).includes(null || NaN)) {
+        filledFlag = false
+      }
+    }
+    if (p && p.key && p.value && filledFlag) {
       if (entityType === 'node') {
         props.editEntityAction(
           {
@@ -281,8 +293,14 @@ function AddProperty (props) {
             }
             confirmIcon={<TickMarkIcon />}
             onConfirmed={() => {
+              let filledFlag = true
+              if (typeof p.value === 'object') {
+                if (Object.values(p.value).includes(null || NaN)) {
+                  filledFlag = false
+                }
+              }
               handleToggle(!textField)
-              if (p && p.key && p.value) {
+              if (p && p.key && p.value && filledFlag) {
                 if (entityType === 'node') {
                   props.editEntityAction(
                     {
