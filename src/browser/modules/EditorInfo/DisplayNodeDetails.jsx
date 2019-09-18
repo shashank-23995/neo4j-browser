@@ -169,17 +169,17 @@ export const PropertiesSection = props => {
     content = _.map(propertiesState.properties, (value, key) => {
       return (
         <div key={key}>
-          <StyledTable>
-            <tbody>
-              <tr>
-                <DisplayProperties
-                  {...props}
-                  value={value}
-                  displayPropertiesStateKey={key}
-                />
-              </tr>
-            </tbody>
-          </StyledTable>
+          {/* <StyledTable> */}
+          {/* <tbody> */}
+          {/* <tr> */}
+          <DisplayProperties
+            {...props}
+            value={value}
+            displayPropertiesStateKey={key}
+          />
+          {/* </tr> */}
+          {/* </tbody> */}
+          {/* </StyledTable> */}
         </div>
       )
     })

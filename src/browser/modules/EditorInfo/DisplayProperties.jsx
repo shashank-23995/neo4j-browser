@@ -4,6 +4,7 @@ import { getStringValue } from './utils'
 import { BinIcon } from 'browser-components/icons/Icons'
 import PropTypes from 'prop-types'
 import AddProperty from './AddProperty'
+import { ExpansionPanel } from './ExpansionPanel'
 
 /**
  * Component to display the properties of selected node
@@ -53,40 +54,47 @@ export const DisplayProperties = props => {
     })
   }
 
+  const panelActions = (
+    <ConfirmationButton
+      requestIcon={<BinIcon />}
+      confirmIcon={<BinIcon deleteAction />}
+      onConfirmed={() => {
+        props.editEntityAction(
+          {
+            [props.node ? 'nodeId' : 'relationshipId']: props.node
+              ? props.node.identity.toInt()
+              : props.relationship.identity.toInt(),
+            [props.node ? 'label' : 'type']: props.node
+              ? props.node.labels[0]
+              : props.relationship.type,
+            propertyKey: displayPropertiesStateKey,
+            selectedNodeId: props.node
+              ? props.node.identity.toInt()
+              : props.selectedNodeId
+          },
+          'delete',
+          props.node ? 'nodeProperty' : 'relationshipProperty'
+        )
+      }}
+    />
+  )
+
   return (
     <div>
-      <AddProperty
-        ToDisplay='view'
-        p={{ key: props.displayPropertiesStateKey, value: props.value }}
-        editEntityAction={props.editEntityAction}
-        nodeId={
-          (props.node && props.node.identity.toInt()) || props.selectedNodeId
-        }
-        relationshipId={props.relationshipId ? props.relationshipId : null}
-      />
-
-      <ConfirmationButton
-        requestIcon={<BinIcon />}
-        confirmIcon={<BinIcon deleteAction />}
-        onConfirmed={() => {
-          props.editEntityAction(
-            {
-              [props.node ? 'nodeId' : 'relationshipId']: props.node
-                ? props.node.identity.toInt()
-                : props.relationship.identity.toInt(),
-              [props.node ? 'label' : 'type']: props.node
-                ? props.node.labels[0]
-                : props.relationship.type,
-              propertyKey: displayPropertiesStateKey,
-              selectedNodeId: props.node
-                ? props.node.identity.toInt()
-                : props.selectedNodeId
-            },
-            'delete',
-            props.node ? 'nodeProperty' : 'relationshipProperty'
-          )
-        }}
-      />
+      <ExpansionPanel
+        title='property name and value'
+        panelActions={() => panelActions}
+      >
+        <AddProperty
+          ToDisplay='view'
+          p={{ key: props.displayPropertiesStateKey, value: props.value }}
+          editEntityAction={props.editEntityAction}
+          nodeId={
+            (props.node && props.node.identity.toInt()) || props.selectedNodeId
+          }
+          relationshipId={props.relationshipId ? props.relationshipId : null}
+        />
+      </ExpansionPanel>
     </div>
   )
 }
