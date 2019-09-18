@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import { TextInput } from 'browser-components/Form'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
+import TextField from '@material-ui/core/TextField'
 
 const IconButton = styled.div`
   margin-left: 4px;
@@ -64,21 +65,24 @@ function AddLabel (props) {
         />
       </StyledFavFolderButtonSpan>
       {textField ? (
-        <StyledTable>
-          <StyledKey>Label:</StyledKey>
-          <StyledValue>
-            <TextInput
-              value={label}
-              id='label'
-              style={{
-                width: '120px'
-              }}
-              onChange={() => {
-                handleChange(([event.target.id] = event.target.value))
-              }}
-            />
-          </StyledValue>
-        </StyledTable>
+        <div>
+          <TextField
+            label='Label'
+            margin='normal'
+            variant='outlined'
+            id='label'
+            value={label}
+            onChange={() => {
+              handleChange(([event.target.id] = event.target.value))
+            }}
+            style={{
+              backgroundColor: '#efeff4',
+              width: '93%',
+              marginLeft: '8px',
+              borderRadius: '5px'
+            }}
+          />
+        </div>
       ) : null}
     </React.Fragment>
   )
