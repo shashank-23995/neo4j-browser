@@ -11,7 +11,7 @@ import { TextInput } from 'browser-components/Form'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 
-const IconButton = styled.button`
+const IconButton = styled.div`
   margin-left: 4px;
   border: 0;
   background: transparent;

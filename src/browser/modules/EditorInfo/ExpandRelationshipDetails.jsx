@@ -72,6 +72,7 @@ export const ExpandRelationshipDetails = props => {
 
             {props.value.segments.map((item, index) => (
               <PropertiesSection
+                key={index}
                 properties={
                   item.relationship ? item.relationship.properties : null
                 }

@@ -25,7 +25,7 @@ import AddLabel from './AddLabel'
 import CreateRelationship from './CreateRelationship'
 import styled from 'styled-components'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
-const IconButton = styled.button`
+const IconButton = styled.div`
   margin-left: 4px;
   border: 0;
   background: transparent;

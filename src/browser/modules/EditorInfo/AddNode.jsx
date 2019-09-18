@@ -14,7 +14,7 @@ import {
 import { TextInput } from 'browser-components/Form'
 import styled from 'styled-components'
 
-const IconButton = styled.button`
+const IconButton = styled.div`
   margin-left: 4px;
   border: 0;
   background: transparent;

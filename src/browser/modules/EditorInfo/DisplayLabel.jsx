@@ -108,7 +108,7 @@ export const DisplayLabel = props => {
 }
 
 DisplayLabel.propTypes = {
-  labelKey: PropTypes.string,
+  labelKey: PropTypes.number,
   label: PropTypes.string,
   editEntityAction: PropTypes.func
 }

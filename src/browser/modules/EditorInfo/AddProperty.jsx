@@ -24,7 +24,7 @@ import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 
-const IconButton = styled.button`
+const IconButton = styled.div`
   margin-left: 4px;
   border: 0;
   background: transparent;
