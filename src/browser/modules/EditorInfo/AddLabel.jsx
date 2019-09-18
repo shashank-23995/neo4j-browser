@@ -42,6 +42,7 @@ function AddLabel (props) {
             <IconButton
               onClick={() => {
                 handleToggle(textField)
+                handleChange('')
               }}
             >
               <CancelIcon />
