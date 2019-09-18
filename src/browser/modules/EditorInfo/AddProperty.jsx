@@ -96,40 +96,34 @@ function AddProperty (props) {
   const [entityType, setEntityType] = useState('')
 
   // effect to copy props to state. this is one time job
-  useEffect(
-    () => {
-      if (!stateUpdatedWithProps) {
-        setP(props.p)
-        const dataTypeValue = dataTypeChecker(
-          Object.values({ value: props.p && props.p.value })
-        )
-        setDatatype(dataTypeValue)
-        if (props.relationshipId !== null) {
-          setEntityType('relationship')
-        } else {
-          setEntityType('node')
-        }
-        setFlag(true)
+  useEffect(() => {
+    if (!stateUpdatedWithProps) {
+      setP(props.p)
+      const dataTypeValue = dataTypeChecker(
+        Object.values({ value: props.p && props.p.value })
+      )
+      setDatatype(dataTypeValue)
+      if (props.relationshipId !== null) {
+        setEntityType('relationship')
+      } else {
+        setEntityType('node')
       }
-    },
-    [props]
-  )
+      setFlag(true)
+    }
+  }, [props])
 
   // effect to show confirmation buttons
-  useEffect(
-    () => {
-      if (
-        stateUpdatedWithProps &&
-        props.p &&
-        (props.p.value !== p.value || props.p.key !== p.key)
-      ) {
-        setButtonVisibility(true)
-      } else {
-        setButtonVisibility(false)
-      }
-    },
-    [p && p.key, p && p.value, stateUpdatedWithProps]
-  )
+  useEffect(() => {
+    if (
+      stateUpdatedWithProps &&
+      props.p &&
+      (props.p.value !== p.value || props.p.key !== p.key)
+    ) {
+      setButtonVisibility(true)
+    } else {
+      setButtonVisibility(false)
+    }
+  }, [p && p.key, p && p.value, stateUpdatedWithProps])
 
   const handleChange = (key1, value) => {
     setP({ ...p, value: value })
@@ -278,6 +272,8 @@ function AddProperty (props) {
               <IconButton
                 onClick={() => {
                   handleToggle(textField)
+                  setP({ key: null, value: null })
+                  setDatatype('')
                 }}
               >
                 <CancelIcon />
