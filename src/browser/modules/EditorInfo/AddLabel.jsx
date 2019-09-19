@@ -61,6 +61,7 @@ function AddLabel (props) {
             } else {
               alert('plzz enter label')
             }
+            handleChange('')
           }}
         />
       </StyledFavFolderButtonSpan>
