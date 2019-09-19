@@ -11,20 +11,40 @@ import { getSelectedItem } from 'shared/modules/selectors/itemEditor'
 import AddNode from './AddNode'
 import * as itemEditorActions from 'shared/modules/itemEditor/itemEditorDuck'
 import { CONNECTED_STATE } from 'shared/modules/connections/connectionsDuck'
+import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
+import { BinIcon } from 'browser-components/icons/Icons'
 /**
  * The Editor drawer.
  * Based on selection, either provides node editor or relationship editor.
  * If nothing is selected then it prompts to do so.
  */
 export class EditorInfo extends Component {
-  render (props) {
+  render(props) {
     return (
       <div>
         <Drawer>
           <DrawerHeader>
             Editor
             {this.props.neo4jConnectionState === CONNECTED_STATE ? (
-              <AddNode editEntityAction={this.props.editEntityAction} />
+              <>
+                <AddNode editEntityAction={this.props.editEntityAction} />
+                {this.props.selectedItem ? (
+                  <ConfirmationButton
+                    requestIcon={<BinIcon />}
+                    confirmIcon={<BinIcon deleteAction />}
+                    onConfirmed={() => {
+                      this.props.editEntityAction(
+                        {
+                          nodeId: this.props.selectedItem.node.identity.toInt(),
+                          firstLabel: this.props.selectedItem.node.labels[0]
+                        },
+                        'delete',
+                        'node'
+                      )
+                    }}
+                  />
+                ) : null}
+              </>
             ) : null}
           </DrawerHeader>
 

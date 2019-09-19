@@ -111,38 +111,6 @@ LabelSection.propTypes = {
 }
 
 /**
- * Entity Section
- */
-export const EntitySection = props => {
-  return (
-    <DrawerSection>
-      <DrawerSubHeader>Entity</DrawerSubHeader>
-      {props.type}
-      {props.type === 'Node' && (
-        <ConfirmationButton
-          requestIcon={<BinIcon />}
-          confirmIcon={<BinIcon deleteAction />}
-          onConfirmed={() => {
-            props.editEntityAction(
-              {
-                nodeId: props.node.identity.toInt(),
-                firstLabel: props.node.labels[0]
-              },
-              'delete',
-              'node'
-            )
-          }}
-        />
-      )}
-    </DrawerSection>
-  )
-}
-EntitySection.propTypes = {
-  node: PropTypes.object,
-  editEntityAction: PropTypes.func
-}
-
-/**
  * Properties section
  * @param {*} props
  */
@@ -238,7 +206,6 @@ PropertiesSection.propTypes = {
 const DisplayNodeDetails = props => {
   return (
     <React.Fragment>
-      <EntitySection {...props} type='Node' />
       <LabelSection {...props} />
       <PropertiesSection
         {...props}
