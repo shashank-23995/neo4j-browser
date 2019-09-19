@@ -13,6 +13,25 @@ import {
   ExpandMenuIcon,
   CollapseMenuIcon
 } from 'browser-components/icons/Icons'
+import { IconContainer } from 'browser-components/icons/IconContainer'
+const black = `
+  color: #000000;
+`
+export const CollapseMenuIconBlack = () => (
+  <IconContainer
+    activeStyle={black}
+    inactiveStyle={black}
+    className='fa fa-caret-down'
+  />
+)
+
+export const ExpandMenuIconBlack = () => (
+  <IconContainer
+    activeStyle={black}
+    inactiveStyle={black}
+    className='fa fa-caret-left'
+  />
+)
 
 /**
  * Expansion Panel
@@ -28,13 +47,16 @@ export const ExpansionPanel = props => {
           className={classNames({
             [styles['wrapper']]: true
           })}
+          style={{
+            color: '#30333a'
+          }}
         >
           {props.title}
         </DrawerSectionBody>
       </StyledFolderLabel>
       <FolderButtonContainer>
         <FoldersButton onClick={() => setOpen(!open)}>
-          {open === true ? <CollapseMenuIcon /> : <ExpandMenuIcon />}
+          {open === true ? <CollapseMenuIconBlack /> : <ExpandMenuIconBlack />}
         </FoldersButton>
         &nbsp;
         {props.panelActions && props.panelActions()}
