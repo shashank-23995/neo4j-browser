@@ -52,7 +52,17 @@ export const ExpandRelationshipDetails = props => {
   )
 
   return (
-    <div style={{ marginLeft: '8px', marginRight: '8px', padding: '0px 5px' }}>
+    // <div>
+    <div
+      style={{
+        marginLeft: 1,
+        marginRight: 1,
+        marginBottom: 5,
+        backgroundColor: '#efeff4',
+        padding: 5,
+        borderRadius: 5
+      }}
+    >
       <ExpansionPanel title={title} panelActions={() => panelActions}>
         <DrawerSubHeader>Relationship Type</DrawerSubHeader>
 
@@ -82,6 +92,7 @@ export const ExpandRelationshipDetails = props => {
         ))}
       </ExpansionPanel>
     </div>
+    // </div>
   )
 }
 

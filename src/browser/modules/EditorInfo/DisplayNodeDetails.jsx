@@ -285,16 +285,18 @@ const showRelationshipDetails = (
   if (selectedNodeRelationship) {
     relationShipArray = _.map(selectedNodeRelationship, (value, key) => {
       return (
-        <ExpandRelationshipDetails
-          key={key}
-          value={value}
-          entityType={entityType}
-          relationshipEndpoint={relationshipEndpoint}
-          editEntityAction={editEntityAction}
-          selectedNodeId={selectedNodeId}
-          fetchSelectOptions={fetchSelectOptions}
-          relationshipTypeList={relationshipTypeList}
-        />
+        <div style={{ marginLeft: '8px', marginRight: '8px' }}>
+          <ExpandRelationshipDetails
+            key={key}
+            value={value}
+            entityType={entityType}
+            relationshipEndpoint={relationshipEndpoint}
+            editEntityAction={editEntityAction}
+            selectedNodeId={selectedNodeId}
+            fetchSelectOptions={fetchSelectOptions}
+            relationshipTypeList={relationshipTypeList}
+          />
+        </div>
       )
     })
   }
