@@ -135,9 +135,10 @@ function getCypherCompatibleValue (action) {
       convertedValue = `date('${action.editPayload.value.toString()}')`
       break
     case 'spatial':
-      const zValue = action.editPayload.value.z
-        ? `z: ${action.editPayload.value.z},`
-        : ''
+      const zValue =
+        action.editPayload.value.z || action.editPayload.value.z === 0
+          ? `z: ${action.editPayload.value.z},`
+          : ''
       convertedValue = `point({ x: ${action.editPayload.value.x}, y: ${
         action.editPayload.value.y
       }, ${zValue} srid: ${action.editPayload.value.srid} })`
