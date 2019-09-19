@@ -27,7 +27,6 @@ export class EditorInfo extends Component {
             Editor
             {this.props.neo4jConnectionState === CONNECTED_STATE ? (
               <>
-                <AddNode editEntityAction={this.props.editEntityAction} />
                 {this.props.selectedItem ? (
                   <ConfirmationButton
                     requestIcon={<BinIcon />}
@@ -43,7 +42,9 @@ export class EditorInfo extends Component {
                       )
                     }}
                   />
-                ) : null}
+                ) : (
+                  <AddNode editEntityAction={this.props.editEntityAction} />
+                )}
               </>
             ) : null}
           </DrawerHeader>
