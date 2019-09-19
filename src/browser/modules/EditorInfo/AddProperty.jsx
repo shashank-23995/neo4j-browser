@@ -348,7 +348,21 @@ function AddProperty (props) {
               padding: ' 0px 2px'
             }}
           >
-            <div>
+            <div
+              style={
+                props.ToDisplay == 'view'
+                  ? {
+                    padding: ' 2px 5px',
+                    marginLeft: -1,
+                    marginRight: -1,
+                    marginBottom: -11,
+                    backgroundColor: '#d2d5da',
+                    borderBottomLeftRadius: 4,
+                    borderBottomRightRadius: 4
+                  }
+                  : {}
+              }
+            >
               <div style={{ display: 'flex' }}>
                 <TextField
                   label='Key'
@@ -360,9 +374,7 @@ function AddProperty (props) {
                     setP({ ...p, key: e.target.value })
                   }}
                   style={{
-                    backgroundColor: '#efeff4',
                     flex: 1,
-
                     borderRadius: '5px'
                   }}
                 />
