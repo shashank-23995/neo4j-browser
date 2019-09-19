@@ -63,8 +63,22 @@ const LabelSection = props => {
   }
   return (
     <div>
-      <DrawerSection>
-        <DrawerSubHeader>
+      <DrawerSection
+        style={{
+          backgroundColor: '#d2d5da',
+          padding: '5px',
+          borderRadius: '5px'
+          // margin: '2px'
+        }}
+      >
+        <DrawerSubHeader
+          style={{
+            padding: '0px 10px',
+            backgroundColor: '#424650',
+            textShadow: 'none',
+            borderRadius: 5
+          }}
+        >
           Labels
           <AddLabel
             editEntityAction={props.editEntityAction}
@@ -72,25 +86,26 @@ const LabelSection = props => {
           />
         </DrawerSubHeader>
         <DrawerSectionBody
+          style={{ marginLeft: 8, marginRight: 8 }}
           className={classNames({
             [styles['wrapper']]: true
           })}
         >
           {labels.map((label, labelKey) => {
             return (
-              <div key={labelKey}>
-                <StyledTable>
-                  <tbody>
-                    <tr>
-                      <DisplayLabel
-                        isDeletable={labels.length > 1}
-                        {...props}
-                        label={label}
-                        labelKey={labelKey}
-                      />
-                    </tr>
-                  </tbody>
-                </StyledTable>
+              <div key={labelKey} style={{ width: '100%' }}>
+                {/* <StyledTable> */}
+                {/* <tbody> */}
+                {/* <tr> */}
+                <DisplayLabel
+                  isDeletable={labels.length > 1}
+                  {...props}
+                  label={label}
+                  labelKey={labelKey}
+                />
+                {/* </tr> */}
+                {/* </tbody> */}
+                {/* </StyledTable> */}
               </div>
             )
           })}
@@ -152,15 +167,12 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        ...propertiesState,
-        properties: { ...props.properties }
-      })
-    },
-    [props.properties]
-  )
+  useEffect(() => {
+    updatePropertiesState({
+      ...propertiesState,
+      properties: { ...props.properties }
+    })
+  }, [props.properties])
 
   let content = []
   if (propertiesState.properties) {
@@ -293,14 +305,11 @@ export const RelationshipSection = props => {
   const [selectedLabel, setSelectedLabel] = useState(null)
   const [selectedNode, setSelectedNode] = useState(null)
 
-  useEffect(
-    () => {
-      props.fetchSelectOptions('relationship', 'relationshipType')
-      props.fetchSelectOptions('relationship', 'label')
-      selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
-    },
-    [selectedLabel, relationshipRequest]
-  )
+  useEffect(() => {
+    props.fetchSelectOptions('relationship', 'relationshipType')
+    props.fetchSelectOptions('relationship', 'label')
+    selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
+  }, [selectedLabel, relationshipRequest])
 
   return (
     <DrawerSection>

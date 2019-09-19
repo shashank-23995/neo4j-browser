@@ -65,7 +65,15 @@ function AddLabel (props) {
         />
       </StyledFavFolderButtonSpan>
       {textField ? (
-        <div>
+        <div
+          style={{
+            marginLeft: '-9px',
+            marginRight: '-9px',
+            backgroundColor: '#efeff4',
+            borderBottomLeftRadius: '4px',
+            borderBottomRightRadius: '4px'
+          }}
+        >
           <TextField
             label='Label'
             margin='normal'
