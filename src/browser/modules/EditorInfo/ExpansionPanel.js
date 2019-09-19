@@ -40,28 +40,57 @@ export const ExpandMenuIconBlack = () => (
 export const ExpansionPanel = props => {
   const [open, setOpen] = useState(false)
   return (
-    <div>
-      <StyledFolderLabel>
-        <DrawerSectionBody
-          style={{ color: 'black' }}
-          className={classNames({
-            [styles['wrapper']]: true
-          })}
+    <div
+      style={{
+        marginLeft: 1,
+        marginRight: 1,
+        marginBottom: 5,
+        backgroundColor: open ? '#424650' : '#efeff4',
+        padding: 5,
+        borderRadius: 5
+      }}
+    >
+      <div>
+        <StyledFolderLabel>
+          <DrawerSectionBody
+            className={classNames({
+              [styles['wrapper']]: true
+            })}
+            style={{
+              color: open ? 'white' : '#30333a'
+            }}
+          >
+            {props.title}
+          </DrawerSectionBody>
+        </StyledFolderLabel>
+        <FolderButtonContainer
+          style={{ color: open ? 'white !important' : '#30333a' }}
+        >
+          <FoldersButton onClick={() => setOpen(!open)}>
+            {open === true ? (
+              <CollapseMenuIconBlack />
+            ) : (
+              <ExpandMenuIconBlack />
+            )}
+          </FoldersButton>
+          &nbsp;
+          {props.panelActions && props.panelActions()}
+        </FolderButtonContainer>
+      </div>
+      {open === true && (
+        <div
           style={{
-            color: '#30333a'
+            backgroundColor: 'rgb(239, 239, 244)',
+
+            margin: '6px -4px -4px -4px',
+            borderBottomLeftRadius: 4,
+            borderBottomRightRadius: 4,
+            padding: 5
           }}
         >
-          {props.title}
-        </DrawerSectionBody>
-      </StyledFolderLabel>
-      <FolderButtonContainer>
-        <FoldersButton onClick={() => setOpen(!open)}>
-          {open === true ? <CollapseMenuIconBlack /> : <ExpandMenuIconBlack />}
-        </FoldersButton>
-        &nbsp;
-        {props.panelActions && props.panelActions()}
-      </FolderButtonContainer>
-      {open === true && <div>{props.children}</div>}
+          {props.children}
+        </div>
+      )}
     </div>
   )
 }

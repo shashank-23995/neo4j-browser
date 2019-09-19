@@ -66,7 +66,7 @@ const LabelSection = props => {
       <DrawerSection
         style={{
           backgroundColor: '#d2d5da',
-          padding: 5,
+          padding: 1,
           borderRadius: 5
         }}
       >
@@ -162,7 +162,7 @@ export const PropertiesSection = props => {
     <DrawerSection
       style={{
         backgroundColor: '#d2d5da',
-        padding: 5,
+        padding: 1,
         borderRadius: 5
       }}
     >
@@ -300,7 +300,7 @@ export const RelationshipSection = props => {
     <DrawerSection
       style={{
         backgroundColor: '#d2d5da',
-        padding: '5px',
+        padding: '1px',
         borderRadius: '5px'
         // margin: '2px'
       }}
