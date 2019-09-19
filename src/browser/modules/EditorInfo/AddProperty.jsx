@@ -23,6 +23,9 @@ import { SpatialProperty } from './SpatialProperty'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
+import TextField from '@material-ui/core/TextField'
+import InputLabel from '@material-ui/core/InputLabel'
+import OutlinedInput from '@material-ui/core/OutlinedInput'
 
 const IconButton = styled.div`
   margin-left: 4px;
@@ -35,28 +38,17 @@ const IconButton = styled.div`
 export function DropDownContents (props) {
   return (
     <FormControl
-      style={{
-        marginTop: 16,
-        marginBottom: 16,
-        minWidth: 120
-      }}
       variant='outlined'
+      style={{ width: '100px', marginTop: '16px', marginLeft: '16px' }}
     >
+      <InputLabel htmlFor='outlined-age-simple'>Data Type</InputLabel>
       <Select
         name='datatype'
-        style={{
-          background: '#fff',
-          fontSize: '14px',
-          textAlign: '-webkit-center',
-          height: '34px',
-          color: '#555',
-          borderTop: '1px solid #ccc',
-          borderRadius: '4px'
-        }}
         value={props.dataTypeValue}
         onChange={e => {
           props.handleChange(e.target.name, e.target.value)
         }}
+        input={<OutlinedInput id='outlined-age-simple' />}
       >
         <MenuItem value='string'>String</MenuItem>
         <MenuItem value='number'>Number</MenuItem>
@@ -96,40 +88,34 @@ function AddProperty (props) {
   const [entityType, setEntityType] = useState('')
 
   // effect to copy props to state. this is one time job
-  useEffect(
-    () => {
-      if (!stateUpdatedWithProps) {
-        setP(props.p)
-        const dataTypeValue = dataTypeChecker(
-          Object.values({ value: props.p && props.p.value })
-        )
-        setDatatype(dataTypeValue)
-        if (props.relationshipId !== null) {
-          setEntityType('relationship')
-        } else {
-          setEntityType('node')
-        }
-        setFlag(true)
+  useEffect(() => {
+    if (!stateUpdatedWithProps) {
+      setP(props.p)
+      const dataTypeValue = dataTypeChecker(
+        Object.values({ value: props.p && props.p.value })
+      )
+      setDatatype(dataTypeValue)
+      if (props.relationshipId !== null) {
+        setEntityType('relationship')
+      } else {
+        setEntityType('node')
       }
-    },
-    [props]
-  )
+      setFlag(true)
+    }
+  }, [props])
 
   // effect to show confirmation buttons
-  useEffect(
-    () => {
-      if (
-        stateUpdatedWithProps &&
-        props.p &&
-        (props.p.value !== p.value || props.p.key !== p.key)
-      ) {
-        setButtonVisibility(true)
-      } else {
-        setButtonVisibility(false)
-      }
-    },
-    [p && p.key, p && p.value, stateUpdatedWithProps]
-  )
+  useEffect(() => {
+    if (
+      stateUpdatedWithProps &&
+      props.p &&
+      (props.p.value !== p.value || props.p.key !== p.key)
+    ) {
+      setButtonVisibility(true)
+    } else {
+      setButtonVisibility(false)
+    }
+  }, [p && p.key, p && p.value, stateUpdatedWithProps])
 
   const handleChange = (key1, value) => {
     setP({ ...p, value: value })
@@ -362,53 +348,54 @@ function AddProperty (props) {
               padding: ' 0px 2px'
             }}
           >
-            <StyledTable>
-              <tr>
-                <StyledKey>key:</StyledKey>
-                <StyledValue>
-                  <TextInput
-                    id='key'
-                    value={(p && p.key) || ''}
-                    onChange={e => {
-                      setP({ ...p, key: e.target.value })
+            <div>
+              <div style={{ display: 'flex' }}>
+                <TextField
+                  label='Key'
+                  margin='normal'
+                  variant='outlined'
+                  id='key'
+                  value={(p && p.key) || ''}
+                  onChange={e => {
+                    setP({ ...p, key: e.target.value })
+                  }}
+                  style={{
+                    backgroundColor: '#efeff4',
+                    flex: 1,
+
+                    borderRadius: '5px'
+                  }}
+                />
+
+                <DropDownContents
+                  style={{ flex: 1 }}
+                  dataTypeValue={dataType}
+                  handleChange={(key, value) => {
+                    if (dataType !== value) {
+                      setDatatype(value)
+                      setP({ ...p, value: null })
+                    }
+                  }}
+                />
+              </div>
+
+              <StyledKey>Value :</StyledKey>
+              <StyledValue>
+                {valueInput}
+                {calendarFlag ? (
+                  <DayPicker
+                    style={{ float: 'right' }}
+                    id='date'
+                    onDayClick={day => {
+                      handleChange(
+                        'propValue',
+                        neo4j.types.Date.fromStandardDate(day)
+                      )
                     }}
-                    style={{ width: '120px' }}
                   />
-                </StyledValue>
-              </tr>
-              <tr>
-                <StyledKey> Data Type:</StyledKey>
-                <StyledValue>
-                  <DropDownContents
-                    dataTypeValue={dataType}
-                    handleChange={(key, value) => {
-                      if (dataType !== value) {
-                        setDatatype(value)
-                        setP({ ...p, value: null })
-                      }
-                    }}
-                  />
-                </StyledValue>
-              </tr>
-              <tr>
-                <StyledKey>Value :</StyledKey>
-                <StyledValue>
-                  {valueInput}
-                  {calendarFlag ? (
-                    <DayPicker
-                      style={{ float: 'right' }}
-                      id='date'
-                      onDayClick={day => {
-                        handleChange(
-                          'propValue',
-                          neo4j.types.Date.fromStandardDate(day)
-                        )
-                      }}
-                    />
-                  ) : null}
-                </StyledValue>
-              </tr>
-            </StyledTable>
+                ) : null}
+              </StyledValue>
+            </div>
           </DrawerSectionBody>
         </DrawerSection>
       ) : null}
