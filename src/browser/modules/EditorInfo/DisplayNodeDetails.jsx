@@ -76,26 +76,24 @@ const LabelSection = props => {
             [styles['wrapper']]: true
           })}
         >
-          <StyledValue data-testid='user-details-username'>
-            {labels.map((label, labelKey) => {
-              return (
-                <div key={labelKey}>
-                  <StyledTable>
-                    <tbody>
-                      <tr>
-                        <DisplayLabel
-                          isDeletable={labels.length > 1}
-                          {...props}
-                          label={label}
-                          labelKey={labelKey}
-                        />
-                      </tr>
-                    </tbody>
-                  </StyledTable>
-                </div>
-              )
-            })}
-          </StyledValue>
+          {labels.map((label, labelKey) => {
+            return (
+              <div key={labelKey}>
+                <StyledTable>
+                  <tbody>
+                    <tr>
+                      <DisplayLabel
+                        isDeletable={labels.length > 1}
+                        {...props}
+                        label={label}
+                        labelKey={labelKey}
+                      />
+                    </tr>
+                  </tbody>
+                </StyledTable>
+              </div>
+            )
+          })}
         </DrawerSectionBody>
       </DrawerSection>
     </div>
