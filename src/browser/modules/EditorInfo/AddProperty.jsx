@@ -329,14 +329,28 @@ function AddProperty (props) {
         </StyledFavFolderButtonSpan>
       ) : null}
       {props.ToDisplay == 'view' || textField ? (
-        <DrawerSection>
+        <DrawerSection
+          style={{
+            marginLeft: -9,
+            marginRight: -9,
+            backgroundColor: '#efeff4',
+            borderBottomLeftRadius: 4,
+            borderBottomRightRadius: 4,
+            marginBottom: 0
+          }}
+        >
           {showButtons ? (
             <PartialConfirmationButtons
               onConfirmed={onConfirmed}
               onCanceled={onCanceled}
             />
           ) : null}
-          <DrawerSectionBody>
+          <DrawerSectionBody
+            style={{
+              borderRadius: 5,
+              padding: ' 0px 2px'
+            }}
+          >
             <StyledTable>
               <tr>
                 <StyledKey>key:</StyledKey>
