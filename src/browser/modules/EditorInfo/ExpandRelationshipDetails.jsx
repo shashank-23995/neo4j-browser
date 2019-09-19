@@ -13,6 +13,7 @@ import {
 import DisplayRelationshipType from './DisplayRelationshipType'
 import DisplayRelationshipDirection from './DisplayRelationshipDirection'
 import { ExpansionPanel } from './ExpansionPanel'
+import { BinIconBlack } from './DisplayLabel'
 
 /**
  * Component to Expand Relationship Details
@@ -33,8 +34,8 @@ export const ExpandRelationshipDetails = props => {
   const panelActions = (
     <StyledFavFolderButtonSpan>
       <ConfirmationButton
-        requestIcon={<BinIcon />}
-        confirmIcon={<BinIcon deleteAction />}
+        requestIcon={<BinIconBlack />}
+        confirmIcon={<BinIconBlack deleteAction />}
         onConfirmed={() => {
           // delete the relationship based on ID
           props.editEntityAction(
@@ -51,41 +52,35 @@ export const ExpandRelationshipDetails = props => {
   )
 
   return (
-    <div>
-      <StyledList>
-        <StyledListHeaderItem>
-          <ExpansionPanel title={title} panelActions={() => panelActions}>
-            <DrawerSubHeader>Relationship Type</DrawerSubHeader>
+    <div style={{ marginLeft: '8px', marginRight: '8px', padding: '0px 5px' }}>
+      <ExpansionPanel title={title} panelActions={() => panelActions}>
+        <DrawerSubHeader>Relationship Type</DrawerSubHeader>
 
-            <DisplayRelationshipType
-              {...props}
-              relationshipType={props.value.segments[0].relationship.type}
-              relationshipId={props.value.segments[0].relationship.identity.toInt()}
-            />
+        <DisplayRelationshipType
+          {...props}
+          relationshipType={props.value.segments[0].relationship.type}
+          relationshipId={props.value.segments[0].relationship.identity.toInt()}
+        />
 
-            <DrawerSubHeader>Relationship Direction</DrawerSubHeader>
-            <DisplayRelationshipDirection
-              {...props}
-              relationshipType={props.value.segments[0].relationship.type}
-              relationshipId={props.value.segments[0].relationship.identity.toInt()}
-            />
+        <DrawerSubHeader>Relationship Direction</DrawerSubHeader>
+        <DisplayRelationshipDirection
+          {...props}
+          relationshipType={props.value.segments[0].relationship.type}
+          relationshipId={props.value.segments[0].relationship.identity.toInt()}
+        />
 
-            {props.value.segments.map((item, index) => (
-              <PropertiesSection
-                key={index}
-                properties={
-                  item.relationship ? item.relationship.properties : null
-                }
-                {...props}
-                entityType='relationship'
-                editEntityAction={props.editEntityAction}
-                relationship={props.value.segments[0].relationship}
-                relationshipId={props.value.segments[0].relationship.identity.toInt()}
-              />
-            ))}
-          </ExpansionPanel>
-        </StyledListHeaderItem>
-      </StyledList>
+        {props.value.segments.map((item, index) => (
+          <PropertiesSection
+            key={index}
+            properties={item.relationship ? item.relationship.properties : null}
+            {...props}
+            entityType='relationship'
+            editEntityAction={props.editEntityAction}
+            relationship={props.value.segments[0].relationship}
+            relationshipId={props.value.segments[0].relationship.identity.toInt()}
+          />
+        ))}
+      </ExpansionPanel>
     </div>
   )
 }
