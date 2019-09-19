@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withBus } from 'react-suber'
 import DisplayNodeDetails from './DisplayNodeDetails'
-import DisplayRelationshipDetails from './DisplayRelationshipDetails'
 import {
   Drawer,
   DrawerHeader,
@@ -43,12 +42,7 @@ export class EditorInfo extends Component {
                   labelList={this.props.labelList}
                   nodeList={this.props.nodeList}
                 />
-              ) : (
-                <DisplayRelationshipDetails
-                  relationship={this.props.selectedItem}
-                  editEntityAction={this.props.editEntityAction}
-                />
-              )
+              ) : null
             ) : null}
           </DrawerBody>
         </Drawer>
