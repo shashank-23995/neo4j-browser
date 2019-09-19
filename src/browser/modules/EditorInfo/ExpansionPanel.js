@@ -24,6 +24,7 @@ export const ExpansionPanel = props => {
     <div>
       <StyledFolderLabel>
         <DrawerSectionBody
+          style={{ color: 'black' }}
           className={classNames({
             [styles['wrapper']]: true
           })}

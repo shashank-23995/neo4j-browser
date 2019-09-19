@@ -66,9 +66,8 @@ const LabelSection = props => {
       <DrawerSection
         style={{
           backgroundColor: '#d2d5da',
-          padding: '5px',
-          borderRadius: '5px'
-          // margin: '2px'
+          padding: 5,
+          borderRadius: 5
         }}
       >
         <DrawerSubHeader
@@ -94,18 +93,12 @@ const LabelSection = props => {
           {labels.map((label, labelKey) => {
             return (
               <div key={labelKey} style={{ width: '100%' }}>
-                {/* <StyledTable> */}
-                {/* <tbody> */}
-                {/* <tr> */}
                 <DisplayLabel
                   isDeletable={labels.length > 1}
                   {...props}
                   label={label}
                   labelKey={labelKey}
                 />
-                {/* </tr> */}
-                {/* </tbody> */}
-                {/* </StyledTable> */}
               </div>
             )
           })}
@@ -179,17 +172,11 @@ export const PropertiesSection = props => {
     content = _.map(propertiesState.properties, (value, key) => {
       return (
         <div key={key}>
-          {/* <StyledTable> */}
-          {/* <tbody> */}
-          {/* <tr> */}
           <DisplayProperties
             {...props}
             value={value}
             displayPropertiesStateKey={key}
           />
-          {/* </tr> */}
-          {/* </tbody> */}
-          {/* </StyledTable> */}
         </div>
       )
     })
@@ -200,8 +187,20 @@ export const PropertiesSection = props => {
     )
   }
   return (
-    <DrawerSection>
-      <DrawerSubHeader>
+    <DrawerSection
+      style={{
+        backgroundColor: '#d2d5da',
+        padding: 5,
+        borderRadius: 5
+      }}
+    >
+      <DrawerSubHeader
+        style={{
+          padding: '0px 10px',
+          backgroundColor: '#424650',
+          borderRadius: 5
+        }}
+      >
         Properties
         <AddProperty
           editEntityAction={props.editEntityAction}
@@ -209,7 +208,15 @@ export const PropertiesSection = props => {
           relationshipId={props.relationshipId ? props.relationshipId : null}
         />
       </DrawerSubHeader>
-      {content}
+      <DrawerSectionBody
+        style={{ marginLeft: 8, marginRight: 8, display: 'block' }}
+        className={classNames({
+          [styles['wrapper']]: true
+        })}
+      >
+        {' '}
+        {content}
+      </DrawerSectionBody>
     </DrawerSection>
   )
 }

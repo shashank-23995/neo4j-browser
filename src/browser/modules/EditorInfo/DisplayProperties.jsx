@@ -5,6 +5,7 @@ import { BinIcon } from 'browser-components/icons/Icons'
 import PropTypes from 'prop-types'
 import AddProperty from './AddProperty'
 import { ExpansionPanel } from './ExpansionPanel'
+import { BinIconBlack } from './DisplayLabel'
 
 /**
  * Component to display the properties of selected node
@@ -53,8 +54,8 @@ export const DisplayProperties = props => {
 
   const panelActions = (
     <ConfirmationButton
-      requestIcon={<BinIcon />}
-      confirmIcon={<BinIcon deleteAction />}
+      requestIcon={<BinIconBlack />}
+      confirmIcon={<BinIconBlack deleteAction />}
       onConfirmed={() => {
         props.editEntityAction(
           {
@@ -77,7 +78,16 @@ export const DisplayProperties = props => {
   )
 
   return (
-    <div>
+    <div
+      style={{
+        marginLeft: 1,
+        marginRight: 1,
+        marginBottom: 5,
+        backgroundColor: '#efeff4',
+        padding: 5,
+        borderRadius: 5
+      }}
+    >
       <ExpansionPanel
         title={`${props.displayPropertiesStateKey}: ${props.value}`}
         panelActions={() => panelActions}
