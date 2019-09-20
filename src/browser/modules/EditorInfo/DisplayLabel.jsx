@@ -67,7 +67,7 @@ export const DisplayLabel = props => {
   }
 
   return (
-    <React.Fragment>
+    <div style={{ display: 'flex' }}>
       <EditPropertiesInput
         style={{ width: '80%', backgroundColor: '#efeff4', color: '#30333a' }}
         type='text'
@@ -77,30 +77,32 @@ export const DisplayLabel = props => {
         }}
       />
       {labelState.requested ? (
-        <PartialConfirmationButtons
-          icon={<TickMarkIcon />}
-          onCanceled={onCanceled}
-          onConfirmed={() => {
-            if (labelState.labelName[labelKey].length > 0) {
-              props.editEntityAction(
-                {
-                  previousLabelValue: previousLabelValue,
-                  labelName: labelState.labelName[labelKey],
-                  nodeId: node.identity.toInt(),
-                  entityType: props.entityType
-                },
-                'update',
-                'nodeLabel'
-              )
-            } else {
-              alert('plzz enter label')
-            }
-          }}
-        />
+        <div style={{ marginTop: 5 }}>
+          <PartialConfirmationButtons
+            icon={<TickMarkIcon />}
+            onCanceled={onCanceled}
+            onConfirmed={() => {
+              if (labelState.labelName[labelKey].length > 0) {
+                props.editEntityAction(
+                  {
+                    previousLabelValue: previousLabelValue,
+                    labelName: labelState.labelName[labelKey],
+                    nodeId: node.identity.toInt(),
+                    entityType: props.entityType
+                  },
+                  'update',
+                  'nodeLabel'
+                )
+              } else {
+                alert('plzz enter label')
+              }
+            }}
+          />
+        </div>
       ) : null}
 
       {isDeletable && (
-        <span style={{ float: 'right', marginTop: '5px' }}>
+        <span style={{ float: 'right', marginTop: '5px', marginRight: -15 }}>
           <ConfirmationButton
             requestIcon={<BinIconBlack />}
             confirmIcon={<BinIconBlack deleteAction />}
@@ -118,7 +120,7 @@ export const DisplayLabel = props => {
           />
         </span>
       )}
-    </React.Fragment>
+    </div>
   )
 }
 
