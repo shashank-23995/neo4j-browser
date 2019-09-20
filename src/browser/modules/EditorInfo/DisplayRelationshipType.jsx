@@ -53,8 +53,7 @@ function DisplayRelationshipType (props) {
         isClearable
         placeholder='Type'
         styles={colourStyles}
-        defaultInputValue={selectedType}
-        value={selectedType}
+        value={{ label: selectedType, value: selectedType }}
         onChange={selectedType => {
           setSelectedType(selectedType)
           setButtonVisibility(true)
