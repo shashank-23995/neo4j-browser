@@ -132,26 +132,36 @@ function AddProperty (props) {
   switch (dataType) {
     case 'string':
       valueInput = (
-        <TextInput
+        <TextField
+          margin='normal'
+          variant='outlined'
           id='propValue'
           value={p.value || ''}
           onChange={e => {
             handleChange(e.target.id, e.target.value)
           }}
-          style={{ width: '100%' }}
+          style={{
+            flex: 1,
+            borderRadius: '5px'
+          }}
         />
       )
       break
     case 'number':
       valueInput = (
-        <TextInput
+        <TextField
+          margin='normal'
+          variant='outlined'
           id='propValue'
-          value={p.value || ''}
           type='number'
+          value={p.value || ''}
           onChange={e => {
             handleChange(e.target.id, e.target.value)
           }}
-          style={{ width: '100%' }}
+          style={{
+            flex: 1,
+            borderRadius: '5px'
+          }}
         />
       )
       break
@@ -175,12 +185,15 @@ function AddProperty (props) {
     case 'date':
       valueInput = (
         <React.Fragment>
-          <TextInput
-            style={{
-              width: '100%'
-            }}
+          <TextField
+            margin='normal'
+            variant='outlined'
             value={p.value || ''}
             disabled
+            style={{
+              flex: 1,
+              borderRadius: '5px'
+            }}
           />
           <Calendar
             style={{
