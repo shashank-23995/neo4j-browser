@@ -43,39 +43,47 @@ function DisplayRelationshipDirection (props) {
   }
 
   return (
-    <div>
-      <FormControl
-        style={{
-          width: '100%',
-          marginBottom: 16
-        }}
-        variant='outlined'
-      >
-        <MaterialUISelect
-          name='datatype'
-          input={<OutlinedInput id='outlined-age-simple' />}
+    <div
+      style={{
+        display: 'flex',
+        marginLeft: 8,
+        marginRight: 8,
+        marginBottom: 16,
+        width: '100%'
+      }}
+    >
+      <div style={{ width: '100%' }}>
+        <FormControl
           style={{
-            backgroundColor: '#efeff4',
-            width: '93%',
-            marginLeft: '8px',
-            borderRadius: '5px',
-            height: 40
+            width: '100%'
           }}
-          value={selectedDirection}
-          onChange={e => {
-            setSelectedDirection(e.target.value)
-            setButtonVisibility(true)
-          }}
+          variant='outlined'
         >
-          <MenuItem value='<----'>{'<---- (Incoming)'}</MenuItem>
-          <MenuItem value='---->'>{'----> (Outgoing)'}</MenuItem>
-        </MaterialUISelect>
-      </FormControl>
+          <MaterialUISelect
+            name='datatype'
+            input={<OutlinedInput id='outlined-age-simple' />}
+            style={{
+              backgroundColor: '#efeff4',
+              width: '93%'
+            }}
+            value={selectedDirection}
+            onChange={e => {
+              setSelectedDirection(e.target.value)
+              setButtonVisibility(true)
+            }}
+          >
+            <MenuItem value='<----'>{'<---- (Incoming)'}</MenuItem>
+            <MenuItem value='---->'>{'----> (Outgoing)'}</MenuItem>
+          </MaterialUISelect>
+        </FormControl>
+      </div>
       {showButtons ? (
-        <PartialConfirmationButtons
-          onConfirmed={onConfirmed}
-          onCanceled={onCanceled}
-        />
+        <div style={{ float: 'right' }}>
+          <PartialConfirmationButtons
+            onConfirmed={onConfirmed}
+            onCanceled={onCanceled}
+          />
+        </div>
       ) : null}
     </div>
   )
