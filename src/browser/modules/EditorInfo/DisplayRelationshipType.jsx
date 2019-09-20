@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 import CreatableSelect from 'react-select/creatable'
+import { colourStyles } from './CreateRelationship'
 
 /**
  * Component to display the relationship type
@@ -45,9 +46,13 @@ function DisplayRelationshipType (props) {
   }
 
   return (
-    <div>
+    <div
+      style={{ marginLeft: 8, marginRight: 8, marginBottom: 16, width: '100%' }}
+    >
       <CreatableSelect
         isClearable
+        placeholder='Type'
+        styles={colourStyles}
         defaultInputValue={selectedType}
         value={selectedType}
         onChange={selectedType => {
