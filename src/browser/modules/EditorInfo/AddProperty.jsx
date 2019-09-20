@@ -200,7 +200,7 @@ function AddProperty (props) {
               float: 'right',
               height: '2em',
               width: '2em',
-              color: 'ghostwhite'
+              color: '#30333a'
             }}
             onClick={() => {
               toggleCalendar(!calendarFlag)
