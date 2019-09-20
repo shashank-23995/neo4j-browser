@@ -37,12 +37,15 @@ export const DisplayLabel = props => {
   }
   const [labelState, setToInitialState] = useState(initialState)
 
-  useEffect(() => {
-    setToInitialState({
-      labelName: { [labelKey]: label },
-      requested: false
-    })
-  }, [label])
+  useEffect(
+    () => {
+      setToInitialState({
+        labelName: { [labelKey]: label },
+        requested: false
+      })
+    },
+    [label]
+  )
 
   const handleChange = (event, labelKey) => {
     let newState = _.cloneDeep(labelState)
@@ -66,7 +69,7 @@ export const DisplayLabel = props => {
   return (
     <React.Fragment>
       <EditPropertiesInput
-        style={{ width: '80%' }}
+        style={{ width: '80%', backgroundColor: '#efeff4', color: '#30333a' }}
         type='text'
         value={getStringValue(labelState.labelName[labelKey])}
         onChange={event => {

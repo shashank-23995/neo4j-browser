@@ -74,7 +74,6 @@ const LabelSection = props => {
           style={{
             padding: '0px 10px',
             backgroundColor: '#424650',
-            textShadow: 'none',
             borderRadius: 5
           }}
         >
@@ -109,38 +108,6 @@ const LabelSection = props => {
 }
 LabelSection.propTypes = {
   node: PropTypes.object
-}
-
-/**
- * Entity Section
- */
-export const EntitySection = props => {
-  return (
-    <DrawerSection>
-      <DrawerSubHeader>Entity</DrawerSubHeader>
-      {props.type}
-      {props.type === 'Node' && (
-        <ConfirmationButton
-          requestIcon={<BinIcon />}
-          confirmIcon={<BinIcon deleteAction />}
-          onConfirmed={() => {
-            props.editEntityAction(
-              {
-                nodeId: props.node.identity.toInt(),
-                firstLabel: props.node.labels[0]
-              },
-              'delete',
-              'node'
-            )
-          }}
-        />
-      )}
-    </DrawerSection>
-  )
-}
-EntitySection.propTypes = {
-  node: PropTypes.object,
-  editEntityAction: PropTypes.func
 }
 
 /**
@@ -186,7 +153,9 @@ export const PropertiesSection = props => {
   }
   if (!content.length) {
     content.push(
-      <p>{`There are no properties for this ${props.entityType}`}</p>
+      <p style={{ color: '#30333a' }}>{`There are no properties for this ${
+        props.entityType
+      }`}</p>
     )
   }
   return (
@@ -237,7 +206,6 @@ PropertiesSection.propTypes = {
 const DisplayNodeDetails = props => {
   return (
     <React.Fragment>
-      <EntitySection {...props} type='Node' />
       <LabelSection {...props} />
       <PropertiesSection
         {...props}
@@ -309,7 +277,11 @@ const showRelationshipDetails = (
 export const RelationshipSection = props => {
   let noRelationshipMessage = null
   if (!props.toSelectedNode.length && !props.fromSelectedNode.length) {
-    noRelationshipMessage = <p>{`There are no relationships for this node`}</p>
+    noRelationshipMessage = (
+      <p
+        style={{ color: '#30333a' }}
+      >{`There are no relationships for this node`}</p>
+    )
   }
   const [relationshipRequest, setRelationshipRequest] = useState(false)
   const [direction, setDirection] = useState(null)
