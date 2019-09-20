@@ -53,10 +53,14 @@ function DisplayRelationshipType (props) {
         isClearable
         placeholder='Type'
         styles={colourStyles}
-        value={{ label: selectedType, value: selectedType }}
+        defaultValue={{ label: selectedType, value: selectedType }}
         onChange={selectedType => {
-          setSelectedType(selectedType)
-          setButtonVisibility(true)
+          if (selectedType && selectedType.value !== props.relationshipType) {
+            setSelectedType(selectedType)
+            setButtonVisibility(true)
+          } else {
+            setButtonVisibility(false)
+          }
         }}
         options={props.relationshipTypeList}
       />
