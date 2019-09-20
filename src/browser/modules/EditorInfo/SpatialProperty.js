@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import FormControl from '@material-ui/core/FormControl'
-import { TextInput } from 'browser-components/Form'
-import { StyledValue, StyledKey } from '../DatabaseInfo/styled'
 import { v1 as neo4j } from 'neo4j-driver'
+import TextField from '@material-ui/core/TextField'
+import InputLabel from '@material-ui/core/InputLabel'
+import OutlinedInput from '@material-ui/core/OutlinedInput'
 
 const coordinateSystemSRIDMap = {
   cartesian2D: 7203,
@@ -76,87 +77,76 @@ export const SpatialProperty = props => {
 
   return (
     <React.Fragment>
-      <tr>
-        <StyledKey>System:</StyledKey>
-        <StyledValue>
-          <FormControl
-            style={{
-              marginTop: 16,
-              marginBottom: 16,
-              minWidth: 120
-            }}
-            variant='outlined'
-          >
-            <Select
-              name='coordinateSystem'
-              style={{
-                background: '#fff',
-                fontSize: '14px',
-                textAlign: '-webkit-center',
-                height: '34px',
-                color: '#555',
-                borderTop: '1px solid #ccc',
-                borderRadius: '4px'
-              }}
-              value={coordinateSystemName}
-              onChange={e => {
-                handleChange(e.target.name, e.target.value)
-              }}
-            >
-              <MenuItem value='cartesian2D'>Cartesian-2D</MenuItem>
-              <MenuItem value='cartesian3D'>Cartesian-3D</MenuItem>
-              <MenuItem value='geographic2D'>Geographic-2D</MenuItem>
-              <MenuItem value='geographic3D'>Geographic-3D</MenuItem>
-            </Select>
-          </FormControl>
-        </StyledValue>
-      </tr>
-      <tr>
-        <StyledKey>X:</StyledKey>
-        <StyledValue>
-          <TextInput
-            type='number'
-            style={{ width: '120px' }}
-            id='x'
-            onChange={e => {
-              handleChange(e.target.id, parseFloat(e.target.value))
-            }}
-            value={x}
-          />
-        </StyledValue>
-      </tr>
-      <tr>
-        <StyledKey>Y:</StyledKey>
-        <StyledValue>
-          <TextInput
-            type='number'
-            style={{ width: '120px' }}
-            id='y'
-            onChange={e => {
-              handleChange(e.target.id, parseFloat(e.target.value))
-            }}
-            value={y}
-          />
-        </StyledValue>
-      </tr>
+      <FormControl variant='outlined' style={{ flex: 1, width: '100%' }}>
+        <InputLabel>System</InputLabel>
+        <Select
+          name='coordinateSystem'
+          value={coordinateSystemName}
+          onChange={e => {
+            handleChange(e.target.name, e.target.value)
+          }}
+          input={<OutlinedInput />}
+        >
+          <MenuItem value='cartesian2D'>Cartesian-2D</MenuItem>
+          <MenuItem value='cartesian3D'>Cartesian-3D</MenuItem>
+          <MenuItem value='geographic2D'>Geographic-2D</MenuItem>
+          <MenuItem value='geographic3D'>Geographic-3D</MenuItem>
+        </Select>
+      </FormControl>
+
+      <TextField
+        type='number'
+        label='X'
+        margin='normal'
+        variant='outlined'
+        id='x'
+        value={x}
+        onChange={e => {
+          handleChange(e.target.id, parseFloat(e.target.value))
+        }}
+        style={{
+          flex: 1,
+
+          borderRadius: '5px'
+        }}
+      />
+
+      <TextField
+        type='number'
+        label='Y'
+        margin='normal'
+        variant='outlined'
+        id='y'
+        value={y}
+        onChange={e => {
+          handleChange(e.target.id, parseFloat(e.target.value))
+        }}
+        style={{
+          flex: 1,
+
+          borderRadius: '5px'
+        }}
+      />
 
       {coordinateSystemName === 'cartesian3D' ||
       coordinateSystemName === 'geographic3D' ? (
         <React.Fragment>
-            <tr>
-            <StyledKey>Z:</StyledKey>
-            <StyledValue>
-                <TextInput
-                type='number'
-                style={{ width: '120px' }}
-                id='z'
-                onChange={e => {
-                    handleChange(e.target.id, parseFloat(e.target.value))
-                  }}
-                value={z}
-                />
-              </StyledValue>
-          </tr>
+            <TextField
+            type='number'
+            label='Z'
+            margin='normal'
+            variant='outlined'
+            id='z'
+            value={z}
+            onChange={e => {
+                handleChange(e.target.id, parseFloat(e.target.value))
+              }}
+            style={{
+                flex: 1,
+
+                borderRadius: '5px'
+              }}
+            />
           </React.Fragment>
         ) : null}
     </React.Fragment>
