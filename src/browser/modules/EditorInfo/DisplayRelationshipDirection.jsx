@@ -4,6 +4,7 @@ import PartialConfirmationButtons from 'browser-components/buttons/PartialConfir
 import FormControl from '@material-ui/core/FormControl'
 import { Select as MaterialUISelect } from '@material-ui/core'
 import MenuItem from '@material-ui/core/MenuItem'
+import OutlinedInput from '@material-ui/core/OutlinedInput'
 
 /**
  * Component to display the relationship direction
@@ -45,21 +46,20 @@ function DisplayRelationshipDirection (props) {
     <div>
       <FormControl
         style={{
-          marginBottom: 16,
-          minWidth: 205
+          width: '100%',
+          marginBottom: 16
         }}
         variant='outlined'
       >
         <MaterialUISelect
           name='datatype'
+          input={<OutlinedInput id='outlined-age-simple' />}
           style={{
-            background: '#fff',
-            fontSize: '14px',
-            textAlign: '-webkit-center',
-            height: '34px',
-            color: '#555',
-            borderTop: '1px solid #ccc',
-            borderRadius: '4px'
+            backgroundColor: '#efeff4',
+            width: '93%',
+            marginLeft: '8px',
+            borderRadius: '5px',
+            height: 40
           }}
           value={selectedDirection}
           onChange={e => {

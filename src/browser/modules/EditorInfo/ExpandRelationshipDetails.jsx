@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { PropertiesSection } from './DisplayNodeDetails'
-import { DrawerSubHeader } from 'browser-components/drawer/index'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { BinIcon } from 'browser-components/icons/Icons'
 import {
@@ -64,15 +63,11 @@ export const ExpandRelationshipDetails = props => {
       }}
     >
       <ExpansionPanel title={title} panelActions={() => panelActions}>
-        <DrawerSubHeader>Relationship Type</DrawerSubHeader>
-
         <DisplayRelationshipType
           {...props}
           relationshipType={props.value.segments[0].relationship.type}
           relationshipId={props.value.segments[0].relationship.identity.toInt()}
         />
-
-        <DrawerSubHeader>Relationship Direction</DrawerSubHeader>
         <DisplayRelationshipDirection
           {...props}
           relationshipType={props.value.segments[0].relationship.type}

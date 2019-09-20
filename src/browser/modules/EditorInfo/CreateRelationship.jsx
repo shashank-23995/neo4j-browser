@@ -1,9 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  DrawerSection,
-  DrawerSectionBody
-} from 'browser-components/drawer/index'
 import { StyledTable, StyledKey, StyledValue } from '../DatabaseInfo/styled'
 import CreatableSelect from 'react-select/creatable'
 import Select from 'react-select'
@@ -13,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 
-const colourStyles = {
+export const colourStyles = {
   control: provided => ({
     ...provided,
     backgroundColor: '#efeff4',
@@ -57,8 +53,7 @@ export default function CreateRelationship (props) {
           padding: 5
         }}
       >
-        <div style={{ marginLeft: 8, marginRight: 8 }}>
-          {/* <div> */}
+        <div style={{ marginLeft: 8, marginRight: 8, width: '100%' }}>
           <FormControl
             variant='outlined'
             style={{ width: '100%', marginTop: '16px', marginLeft: -8 }}
@@ -82,7 +77,6 @@ export default function CreateRelationship (props) {
               <MenuItem value='---->'>{'----> (Outgoing)'}</MenuItem>
             </MaterialUISelect>
           </FormControl>
-          {/* </div> */}
           <div style={{ width: '100%', marginTop: '16px' }}>
             <CreatableSelect
               isClearable
