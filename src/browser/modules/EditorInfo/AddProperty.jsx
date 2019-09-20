@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { StyledTable, StyledValue, StyledKey } from '../DatabaseInfo/styled'
 import {
   PlusIcon,
   TickMarkIcon,
@@ -139,7 +138,7 @@ function AddProperty (props) {
           onChange={e => {
             handleChange(e.target.id, e.target.value)
           }}
-          style={{ width: '120px' }}
+          style={{ width: '100%' }}
         />
       )
       break
@@ -152,7 +151,7 @@ function AddProperty (props) {
           onChange={e => {
             handleChange(e.target.id, e.target.value)
           }}
-          style={{ width: '120px' }}
+          style={{ width: '100%' }}
         />
       )
       break
@@ -178,7 +177,7 @@ function AddProperty (props) {
         <React.Fragment>
           <TextInput
             style={{
-              width: '120px'
+              width: '100%'
             }}
             value={p.value || ''}
             disabled
@@ -383,23 +382,33 @@ function AddProperty (props) {
                   }}
                 />
               </div>
+              <div style={{ display: 'flex' }}>
+                <div
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
 
-              <StyledKey>Value :</StyledKey>
-              <StyledValue>
-                {valueInput}
-                {calendarFlag ? (
-                  <DayPicker
-                    style={{ float: 'right' }}
-                    id='date'
-                    onDayClick={day => {
-                      handleChange(
-                        'propValue',
-                        neo4j.types.Date.fromStandardDate(day)
-                      )
-                    }}
-                  />
-                ) : null}
-              </StyledValue>
+                    alignSelf: 'center'
+                  }}
+                >
+                  Value :
+                </div>
+                <div style={{ flex: 2, width: '100%' }}>
+                  {valueInput}
+                  {calendarFlag ? (
+                    <DayPicker
+                      style={{ float: 'right' }}
+                      id='date'
+                      onDayClick={day => {
+                        handleChange(
+                          'propValue',
+                          neo4j.types.Date.fromStandardDate(day)
+                        )
+                      }}
+                    />
+                  ) : null}
+                </div>
+              </div>
             </div>
           </DrawerSectionBody>
         </DrawerSection>
