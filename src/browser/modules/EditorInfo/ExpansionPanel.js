@@ -47,7 +47,8 @@ export const ExpansionPanel = props => {
         marginBottom: 5,
         backgroundColor: open ? '#424650' : '#efeff4',
         padding: 5,
-        borderRadius: 5
+        borderRadius: 5,
+        color: '#30333a'
       }}
     >
       <div>
