@@ -28,20 +28,22 @@ export class EditorInfo extends Component {
             {this.props.neo4jConnectionState === CONNECTED_STATE ? (
               <>
                 {this.props.selectedItem ? (
-                  <ConfirmationButton
-                    requestIcon={<BinIcon />}
-                    confirmIcon={<BinIcon deleteAction />}
-                    onConfirmed={() => {
-                      this.props.editEntityAction(
-                        {
-                          nodeId: this.props.selectedItem.node.identity.toInt(),
-                          firstLabel: this.props.selectedItem.node.labels[0]
-                        },
-                        'delete',
-                        'node'
-                      )
-                    }}
-                  />
+                  this.props.selectedItem.node && (
+                    <ConfirmationButton
+                      requestIcon={<BinIcon />}
+                      confirmIcon={<BinIcon deleteAction />}
+                      onConfirmed={() => {
+                        this.props.editEntityAction(
+                          {
+                            nodeId: this.props.selectedItem.node.identity.toInt(),
+                            firstLabel: this.props.selectedItem.node.labels[0]
+                          },
+                          'delete',
+                          'node'
+                        )
+                      }}
+                    />
+                  )
                 ) : (
                   <AddNode editEntityAction={this.props.editEntityAction} />
                 )}

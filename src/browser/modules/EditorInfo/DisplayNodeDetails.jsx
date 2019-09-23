@@ -66,7 +66,7 @@ const LabelSection = props => {
       <DrawerSection
         style={{
           backgroundColor: '#d2d5da',
-          padding: 5,
+          padding: 1,
           borderRadius: 5
         }}
       >
@@ -162,7 +162,7 @@ export const PropertiesSection = props => {
     <DrawerSection
       style={{
         backgroundColor: '#d2d5da',
-        padding: 5,
+        padding: 1,
         borderRadius: 5
       }}
     >
@@ -253,16 +253,18 @@ const showRelationshipDetails = (
   if (selectedNodeRelationship) {
     relationShipArray = _.map(selectedNodeRelationship, (value, key) => {
       return (
-        <ExpandRelationshipDetails
-          key={key}
-          value={value}
-          entityType={entityType}
-          relationshipEndpoint={relationshipEndpoint}
-          editEntityAction={editEntityAction}
-          selectedNodeId={selectedNodeId}
-          fetchSelectOptions={fetchSelectOptions}
-          relationshipTypeList={relationshipTypeList}
-        />
+        <div style={{ marginLeft: '8px', marginRight: '8px' }}>
+          <ExpandRelationshipDetails
+            key={key}
+            value={value}
+            entityType={entityType}
+            relationshipEndpoint={relationshipEndpoint}
+            editEntityAction={editEntityAction}
+            selectedNodeId={selectedNodeId}
+            fetchSelectOptions={fetchSelectOptions}
+            relationshipTypeList={relationshipTypeList}
+          />
+        </div>
       )
     })
   }
@@ -300,7 +302,7 @@ export const RelationshipSection = props => {
     <DrawerSection
       style={{
         backgroundColor: '#d2d5da',
-        padding: '5px',
+        padding: '1px',
         borderRadius: '5px'
         // margin: '2px'
       }}

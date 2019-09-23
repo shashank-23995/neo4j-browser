@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { StyledTable, StyledValue, StyledKey } from '../DatabaseInfo/styled'
 import {
   PlusIcon,
   TickMarkIcon,
@@ -39,7 +38,7 @@ export function DropDownContents (props) {
   return (
     <FormControl
       variant='outlined'
-      style={{ width: '100px', marginTop: '16px', marginLeft: '16px' }}
+      style={{ flex: 1, marginTop: '16px', marginLeft: '16px' }}
     >
       <InputLabel htmlFor='outlined-age-simple'>Data Type</InputLabel>
       <Select
@@ -88,34 +87,40 @@ function AddProperty (props) {
   const [entityType, setEntityType] = useState('')
 
   // effect to copy props to state. this is one time job
-  useEffect(() => {
-    if (!stateUpdatedWithProps) {
-      setP(props.p)
-      const dataTypeValue = dataTypeChecker(
-        Object.values({ value: props.p && props.p.value })
-      )
-      setDatatype(dataTypeValue)
-      if (props.relationshipId !== null) {
-        setEntityType('relationship')
-      } else {
-        setEntityType('node')
+  useEffect(
+    () => {
+      if (!stateUpdatedWithProps) {
+        setP(props.p)
+        const dataTypeValue = dataTypeChecker(
+          Object.values({ value: props.p && props.p.value })
+        )
+        setDatatype(dataTypeValue)
+        if (props.relationshipId !== null) {
+          setEntityType('relationship')
+        } else {
+          setEntityType('node')
+        }
+        setFlag(true)
       }
-      setFlag(true)
-    }
-  }, [props])
+    },
+    [props]
+  )
 
   // effect to show confirmation buttons
-  useEffect(() => {
-    if (
-      stateUpdatedWithProps &&
-      props.p &&
-      (props.p.value !== p.value || props.p.key !== p.key)
-    ) {
-      setButtonVisibility(true)
-    } else {
-      setButtonVisibility(false)
-    }
-  }, [p && p.key, p && p.value, stateUpdatedWithProps])
+  useEffect(
+    () => {
+      if (
+        stateUpdatedWithProps &&
+        props.p &&
+        (props.p.value !== p.value || props.p.key !== p.key)
+      ) {
+        setButtonVisibility(true)
+      } else {
+        setButtonVisibility(false)
+      }
+    },
+    [p && p.key, p && p.value, stateUpdatedWithProps]
+  )
 
   const handleChange = (key1, value) => {
     setP({ ...p, value: value })
@@ -127,26 +132,36 @@ function AddProperty (props) {
   switch (dataType) {
     case 'string':
       valueInput = (
-        <TextInput
+        <TextField
+          margin='normal'
+          variant='outlined'
           id='propValue'
           value={p.value || ''}
           onChange={e => {
             handleChange(e.target.id, e.target.value)
           }}
-          style={{ width: '120px' }}
+          style={{
+            flex: 1,
+            borderRadius: '5px'
+          }}
         />
       )
       break
     case 'number':
       valueInput = (
-        <TextInput
+        <TextField
+          margin='normal'
+          variant='outlined'
           id='propValue'
-          value={p.value || ''}
           type='number'
+          value={p.value || ''}
           onChange={e => {
             handleChange(e.target.id, e.target.value)
           }}
-          style={{ width: '120px' }}
+          style={{
+            flex: 1,
+            borderRadius: '5px'
+          }}
         />
       )
       break
@@ -170,19 +185,22 @@ function AddProperty (props) {
     case 'date':
       valueInput = (
         <React.Fragment>
-          <TextInput
-            style={{
-              width: '120px'
-            }}
+          <TextField
+            margin='normal'
+            variant='outlined'
             value={p.value || ''}
             disabled
+            style={{
+              flex: 1,
+              borderRadius: '5px'
+            }}
           />
           <Calendar
             style={{
               float: 'right',
               height: '2em',
               width: '2em',
-              color: 'ghostwhite'
+              color: '#30333a'
             }}
             onClick={() => {
               toggleCalendar(!calendarFlag)
@@ -360,7 +378,6 @@ function AddProperty (props) {
                     setP({ ...p, key: e.target.value })
                   }}
                   style={{
-                    backgroundColor: '#efeff4',
                     flex: 1,
 
                     borderRadius: '5px'
@@ -378,23 +395,33 @@ function AddProperty (props) {
                   }}
                 />
               </div>
+              <div style={{ display: 'flex' }}>
+                <div
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
 
-              <StyledKey>Value :</StyledKey>
-              <StyledValue>
-                {valueInput}
-                {calendarFlag ? (
-                  <DayPicker
-                    style={{ float: 'right' }}
-                    id='date'
-                    onDayClick={day => {
-                      handleChange(
-                        'propValue',
-                        neo4j.types.Date.fromStandardDate(day)
-                      )
-                    }}
-                  />
-                ) : null}
-              </StyledValue>
+                    alignSelf: 'center'
+                  }}
+                >
+                  Value :
+                </div>
+                <div style={{ flex: 2, width: '100%' }}>
+                  {valueInput}
+                  {calendarFlag ? (
+                    <DayPicker
+                      style={{ float: 'right' }}
+                      id='date'
+                      onDayClick={day => {
+                        handleChange(
+                          'propValue',
+                          neo4j.types.Date.fromStandardDate(day)
+                        )
+                      }}
+                    />
+                  ) : null}
+                </div>
+              </div>
             </div>
           </DrawerSectionBody>
         </DrawerSection>

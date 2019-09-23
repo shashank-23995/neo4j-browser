@@ -26,12 +26,15 @@ export const DisplayProperties = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(() => {
-    updatePropertiesState({
-      properties: { [displayPropertiesStateKey]: value },
-      requested: false
-    })
-  }, [value])
+  useEffect(
+    () => {
+      updatePropertiesState({
+        properties: { [displayPropertiesStateKey]: value },
+        requested: false
+      })
+    },
+    [value]
+  )
 
   const handleChange = (displayPropertiesStateKey, e) => {
     let newState = _.cloneDeep(propertiesState)
@@ -78,31 +81,31 @@ export const DisplayProperties = props => {
   )
 
   return (
-    <div
-      style={{
-        marginLeft: 1,
-        marginRight: 1,
-        marginBottom: 5,
-        backgroundColor: '#efeff4',
-        padding: 5,
-        borderRadius: 5
-      }}
+    // <div
+    //   style={{
+    //     marginLeft: 1,
+    //     marginRight: 1,
+    //     marginBottom: 5,
+    //     backgroundColor: '#efeff4',
+    //     padding: 5,
+    //     borderRadius: 5
+    //   }}
+    // >
+    <ExpansionPanel
+      title={`${props.displayPropertiesStateKey}: ${props.value}`}
+      panelActions={() => panelActions}
     >
-      <ExpansionPanel
-        title={`${props.displayPropertiesStateKey}: ${props.value}`}
-        panelActions={() => panelActions}
-      >
-        <AddProperty
-          ToDisplay='view'
-          p={{ key: props.displayPropertiesStateKey, value: props.value }}
-          editEntityAction={props.editEntityAction}
-          nodeId={
-            (props.node && props.node.identity.toInt()) || props.selectedNodeId
-          }
-          relationshipId={props.relationshipId ? props.relationshipId : null}
-        />
-      </ExpansionPanel>
-    </div>
+      <AddProperty
+        ToDisplay='view'
+        p={{ key: props.displayPropertiesStateKey, value: props.value }}
+        editEntityAction={props.editEntityAction}
+        nodeId={
+          (props.node && props.node.identity.toInt()) || props.selectedNodeId
+        }
+        relationshipId={props.relationshipId ? props.relationshipId : null}
+      />
+    </ExpansionPanel>
+    // </div>
   )
 }
 

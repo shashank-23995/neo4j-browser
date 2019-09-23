@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 import CreatableSelect from 'react-select/creatable'
+import { colourStyles } from './CreateRelationship'
 
 /**
  * Component to display the relationship type
@@ -45,22 +46,40 @@ function DisplayRelationshipType (props) {
   }
 
   return (
-    <div>
-      <CreatableSelect
-        isClearable
-        defaultInputValue={selectedType}
-        value={selectedType}
-        onChange={selectedType => {
-          setSelectedType(selectedType)
-          setButtonVisibility(true)
-        }}
-        options={props.relationshipTypeList}
-      />
-      {showButtons ? (
-        <PartialConfirmationButtons
-          onConfirmed={onConfirmed}
-          onCanceled={onCanceled}
+    <div
+      style={{
+        display: 'flex',
+        marginLeft: 8,
+        marginRight: 8,
+        marginBottom: 16,
+        width: '100%'
+      }}
+    >
+      <div style={{ width: '100%' }}>
+        <CreatableSelect
+          isClearable
+          placeholder='Type'
+          styles={colourStyles}
+          defaultValue={{ label: selectedType, value: selectedType }}
+          onChange={selectedType => {
+            if (selectedType && selectedType.value !== props.relationshipType) {
+              setSelectedType(selectedType)
+              setButtonVisibility(true)
+            } else {
+              setButtonVisibility(false)
+            }
+          }}
+          options={props.relationshipTypeList}
         />
+      </div>
+
+      {showButtons ? (
+        <div style={{ float: 'right' }}>
+          <PartialConfirmationButtons
+            onConfirmed={onConfirmed}
+            onCanceled={onCanceled}
+          />
+        </div>
       ) : null}
     </div>
   )
