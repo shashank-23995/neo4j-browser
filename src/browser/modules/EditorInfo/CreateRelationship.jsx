@@ -53,7 +53,15 @@ export default function CreateRelationship (props) {
           padding: 5
         }}
       >
-        <div style={{ marginLeft: 8, marginRight: 8, width: '100%' }}>
+        <div
+          style={{
+            marginLeft: 8,
+            marginRight: 8,
+            width: '100%',
+            color: '#30333a',
+            fontWeight: 'normal'
+          }}
+        >
           <FormControl
             variant='outlined'
             style={{ width: '100%', marginTop: '16px', marginLeft: -8 }}
@@ -77,7 +85,14 @@ export default function CreateRelationship (props) {
               <MenuItem value='---->'>{'----> (Outgoing)'}</MenuItem>
             </MaterialUISelect>
           </FormControl>
-          <div style={{ width: '100%', marginTop: '16px' }}>
+          <div
+            style={{
+              width: '100%',
+              marginTop: '16px',
+              color: '#30333a',
+              fontWeight: 'normal'
+            }}
+          >
             <CreatableSelect
               isClearable
               placeholder='Type'
@@ -89,7 +104,14 @@ export default function CreateRelationship (props) {
               options={props.relationshipTypeList}
             />
           </div>
-          <div style={{ width: '100%', marginTop: '16px' }}>
+          <div
+            style={{
+              width: '100%',
+              marginTop: '16px',
+              color: '#30333a',
+              fontWeight: 'normal'
+            }}
+          >
             <Select
               isClearable
               placeholder='Label'
@@ -101,7 +123,14 @@ export default function CreateRelationship (props) {
               options={props.labelList}
             />
           </div>
-          <div style={{ width: '100%', marginTop: '16px' }}>
+          <div
+            style={{
+              width: '100%',
+              marginTop: '16px',
+              color: '#30333a',
+              fontWeight: 'normal'
+            }}
+          >
             <Select
               isClearable
               placeholder='Node'
