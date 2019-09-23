@@ -8,19 +8,17 @@ import {
 import { DrawerSectionBody } from 'browser-components/drawer/index'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
-
-import {
-  ExpandMenuIcon,
-  CollapseMenuIcon
-} from 'browser-components/icons/Icons'
 import { IconContainer } from 'browser-components/icons/IconContainer'
 const black = `
   color: #000000;
 `
-export const CollapseMenuIconBlack = () => (
+const white = `
+  color: #ffffff;
+`
+export const CollapseMenuIconWhite = () => (
   <IconContainer
-    activeStyle={black}
-    inactiveStyle={black}
+    activeStyle={white}
+    inactiveStyle={white}
     className='fa fa-caret-down'
   />
 )
@@ -69,7 +67,7 @@ export const ExpansionPanel = props => {
         >
           <FoldersButton onClick={() => setOpen(!open)}>
             {open === true ? (
-              <CollapseMenuIconBlack />
+              <CollapseMenuIconWhite />
             ) : (
               <ExpandMenuIconBlack />
             )}
