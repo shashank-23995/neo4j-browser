@@ -95,7 +95,9 @@ export const handleFetchDataEpic = (action$, store) =>
         return noop
       })
     }
-    let cmd = `MATCH (a) where id(a)=${action.id} RETURN a, ((a)-->()) , ((a)<--())`
+    let cmd = `MATCH (a) where id(a)=${
+      action.id
+    } RETURN a, ((a)-->()) , ((a)<--())`
     if (action.entityType === 'relationship') {
       cmd = `MATCH ()-[r]->() where id(r)=${action.id} RETURN r`
     }
@@ -137,7 +139,9 @@ function getCypherCompatibleValue (action) {
         action.editPayload.value.z || action.editPayload.value.z === 0
           ? `z: ${action.editPayload.value.z},`
           : ''
-      convertedValue = `point({ x: ${action.editPayload.value.x}, y: ${action.editPayload.value.y}, ${zValue} srid: ${action.editPayload.value.srid} })`
+      convertedValue = `point({ x: ${action.editPayload.value.x}, y: ${
+        action.editPayload.value.y
+      }, ${zValue} srid: ${action.editPayload.value.srid} })`
       break
     default:
       convertedValue = `'${action.editPayload.value}'`
@@ -159,10 +163,14 @@ export const handleEditEntityEpic = (action$, store) =>
       case 'create':
         switch (action.entityType) {
           case 'node':
-            cmd = `CREATE (a:\`${action.editPayload.nodeLabel}\`) RETURN a, ((a)-->()) , ((a)<--())`
+            cmd = `CREATE (a:\`${
+              action.editPayload.nodeLabel
+            }\`) RETURN a, ((a)-->()) , ((a)<--())`
             break
           case 'nodeLabel':
-            cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} SET a:\`${action.editPayload.label}\` RETURN a, ((a)-->()) , ((a)<--())`
+            cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} SET a:\`${
+              action.editPayload.label
+            }\` RETURN a, ((a)-->()) , ((a)<--())`
             break
           case 'nodeProperty':
             cmd = `MATCH (a)
@@ -174,13 +182,21 @@ export const handleEditEntityEpic = (action$, store) =>
             break
           case 'relationship':
             if (action.editPayload.direction === '---->') {
-              cmd = `MATCH (a:\`${action.editPayload.startNodeLabel}\`),(b:\`${action.editPayload.endNodeLabel}\`)
-                WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${action.editPayload.endNodeId}
+              cmd = `MATCH (a:\`${action.editPayload.startNodeLabel}\`),(b:\`${
+                action.editPayload.endNodeLabel
+              }\`)
+                WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${
+  action.editPayload.endNodeId
+}
                 CREATE (a)-[r:\`${action.editPayload.relationshipType}\`]->(b)
                 RETURN  a, ((a)-->()) , ((a)<--())`
             } else if (action.editPayload.direction === '<----') {
-              cmd = `MATCH (a:\`${action.editPayload.startNodeLabel}\`),(b:\`${action.editPayload.endNodeLabel}\`)
-                WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${action.editPayload.endNodeId}
+              cmd = `MATCH (a:\`${action.editPayload.startNodeLabel}\`),(b:\`${
+                action.editPayload.endNodeLabel
+              }\`)
+                WHERE ID(a) = ${action.editPayload.startNodeId} AND ID(b) = ${
+  action.editPayload.endNodeId
+}
                 CREATE (b)-[r:\`${action.editPayload.relationshipType}\`]->(a)
                 RETURN  a, ((a)-->()) , ((a)<--())`
             }
@@ -215,26 +231,22 @@ export const handleEditEntityEpic = (action$, store) =>
 )}
               RETURN a, ((a)-->()), ((a)<--())`
             break
-          case 'relationshipType':
-            let typeMatchParameter = '(a)-[r]->(to)'
-            let typeSetParameter = `(a)-[r2:\`${action.editPayload.value}\`]->(to)`
-            if (action.editPayload.selectedNode === 'end') {
-              typeMatchParameter = '(a)<-[r]-(to)'
-              typeSetParameter = `(a)<-[r2:\`${action.editPayload.value}\`]-(to)`
-            }
-            cmd = `MATCH ${typeMatchParameter} WHERE ID(r)= ${action.editPayload.id} WITH a, r, to CREATE ${typeSetParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
-            break
-          case 'relationshipDirection':
+          case 'relationship':
+            // relationship type
             let matchParameter = '(a)-[r]->(to)'
-            let setParameter = `(to)-[r2:\`${action.editPayload.value}\`]->(a)`
-            if (action.editPayload.selectedDirection === '---->') {
-              matchParameter = '(a)-[r]->(to)'
-              setParameter = `(to)-[r2:\`${action.editPayload.value}\`]->(a)`
-            } else if (action.editPayload.selectedDirection === '<----') {
+            if (action.editPayload.selectedNodeEndpoint === 'end') {
               matchParameter = '(a)<-[r]-(to)'
-              setParameter = `(to)<-[r2:\`${action.editPayload.value}\`]-(a)`
             }
-            cmd = `MATCH ${matchParameter} WHERE ID(r)= ${action.editPayload.id} WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
+            // relationship direction
+            let setParameter = `(a)-[r2:\`${action.editPayload.value}\`]->(to)`
+            if (action.editPayload.selectedDirection === '---->') {
+              setParameter = `(a)-[r2:\`${action.editPayload.value}\`]->(to)`
+            } else if (action.editPayload.selectedDirection === '<----') {
+              setParameter = `(a)<-[r2:\`${action.editPayload.value}\`]-(to)`
+            }
+            cmd = `MATCH ${matchParameter} WHERE ID(r)= ${
+              action.editPayload.id
+            } WITH a, r, to CREATE ${setParameter} SET r2 = r WITH r, a DELETE r  RETURN a, ((a)-->()) , ((a)<--())`
             break
           case 'relationshipProperties':
             cmd = `MATCH (a)-[r]-(a)
@@ -254,7 +266,9 @@ export const handleEditEntityEpic = (action$, store) =>
       case 'delete':
         switch (action.entityType) {
           case 'node':
-            cmd = `MATCH (p:\`${action.editPayload.firstLabel}\`) where ID(p)=${action.editPayload.nodeId} OPTIONAL MATCH (p)-[r]-() DELETE r, p`
+            cmd = `MATCH (p:\`${action.editPayload.firstLabel}\`) where ID(p)=${
+              action.editPayload.nodeId
+            } OPTIONAL MATCH (p)-[r]-() DELETE r, p`
             break
           case 'nodeLabel':
             cmd = `MATCH (a) WHERE id(a)=${action.editPayload.nodeId} 
@@ -262,15 +276,27 @@ export const handleEditEntityEpic = (action$, store) =>
               RETURN a, ((a)-->()), ((a)<--())`
             break
           case 'nodeProperty':
-            cmd = `MATCH (a:\`${action.editPayload.label}\`) where ID(a)=${action.editPayload.nodeId} REMOVE a.\`${action.editPayload.propertyKey}\` RETURN a, ((a)-->()) , ((a)<--())`
+            cmd = `MATCH (a:\`${action.editPayload.label}\`) where ID(a)=${
+              action.editPayload.nodeId
+            } REMOVE a.\`${
+              action.editPayload.propertyKey
+            }\` RETURN a, ((a)-->()) , ((a)<--())`
             break
           case 'relationship':
-            cmd = `MATCH ()-[r]-() WHERE ID(r)=${action.editPayload.relationshipId} DELETE r WITH 1 as nothing
+            cmd = `MATCH ()-[r]-() WHERE ID(r)=${
+              action.editPayload.relationshipId
+            } DELETE r WITH 1 as nothing
               MATCH (a) WHERE ID(a)= ${action.editPayload.nodeId} 
               RETURN a,((a)-->()) , ((a)<--())`
             break
           case 'relationshipProperty':
-            cmd = `MATCH (a)-[r:\`${action.editPayload.type}\`]-(a) WHERE ID(r)=${action.editPayload.relationshipId} AND id(a)=${action.editPayload.selectedNodeId} REMOVE r.\`${action.editPayload.propertyKey}\` RETURN a, ((a)-->()) , ((a)<--())`
+            cmd = `MATCH (a)-[r:\`${
+              action.editPayload.type
+            }\`]-(a) WHERE ID(r)=${
+              action.editPayload.relationshipId
+            } AND id(a)=${action.editPayload.selectedNodeId} REMOVE r.\`${
+              action.editPayload.propertyKey
+            }\` RETURN a, ((a)-->()) , ((a)<--())`
             break
           default:
             break

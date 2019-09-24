@@ -68,12 +68,6 @@ export const ExpandRelationshipDetails = props => {
           relationshipType={props.value.segments[0].relationship.type}
           relationshipId={props.value.segments[0].relationship.identity.toInt()}
         />
-        <DisplayRelationshipDirection
-          {...props}
-          relationshipType={props.value.segments[0].relationship.type}
-          relationshipId={props.value.segments[0].relationship.identity.toInt()}
-        />
-
         {props.value.segments.map((item, index) => (
           <PropertiesSection
             key={index}
