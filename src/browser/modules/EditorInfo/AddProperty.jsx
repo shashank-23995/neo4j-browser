@@ -369,7 +369,15 @@ function AddProperty (props) {
                   id='key'
                   value={(p && p.key) || ''}
                   onChange={e => {
-                    setP({ ...p, key: e.target.value })
+                    if (dataType === 'boolean') {
+                      setP({
+                        ...p,
+                        value: p.value.toString(),
+                        key: e.target.value
+                      })
+                    } else {
+                      setP({ ...p, key: e.target.value })
+                    }
                   }}
                   style={{
                     flex: 1,
