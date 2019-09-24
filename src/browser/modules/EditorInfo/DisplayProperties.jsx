@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { getStringValue } from './utils'
-import { BinIcon } from 'browser-components/icons/Icons'
 import PropTypes from 'prop-types'
 import AddProperty from './AddProperty'
 import { ExpansionPanel } from './ExpansionPanel'
@@ -26,15 +25,12 @@ export const DisplayProperties = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        properties: { [displayPropertiesStateKey]: value },
-        requested: false
-      })
-    },
-    [value]
-  )
+  useEffect(() => {
+    updatePropertiesState({
+      properties: { [displayPropertiesStateKey]: value },
+      requested: false
+    })
+  }, [value])
 
   const handleChange = (displayPropertiesStateKey, e) => {
     let newState = _.cloneDeep(propertiesState)
@@ -81,16 +77,6 @@ export const DisplayProperties = props => {
   )
 
   return (
-    // <div
-    //   style={{
-    //     marginLeft: 1,
-    //     marginRight: 1,
-    //     marginBottom: 5,
-    //     backgroundColor: '#efeff4',
-    //     padding: 5,
-    //     borderRadius: 5
-    //   }}
-    // >
     <ExpansionPanel
       title={`${props.displayPropertiesStateKey}: ${props.value}`}
       panelActions={() => panelActions}
@@ -105,7 +91,6 @@ export const DisplayProperties = props => {
         relationshipId={props.relationshipId ? props.relationshipId : null}
       />
     </ExpansionPanel>
-    // </div>
   )
 }
 

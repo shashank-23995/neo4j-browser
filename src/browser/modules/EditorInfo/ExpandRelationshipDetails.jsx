@@ -2,12 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { PropertiesSection } from './DisplayNodeDetails'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-import { BinIcon } from 'browser-components/icons/Icons'
-import {
-  StyledList,
-  StyledListHeaderItem,
-  StyledFavFolderButtonSpan
-} from '../Sidebar/styled'
+import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 
 import DisplayRelationshipType from './DisplayRelationshipType'
 import { ExpansionPanel } from './ExpansionPanel'
@@ -50,7 +45,6 @@ export const ExpandRelationshipDetails = props => {
   )
 
   return (
-    // <div>
     <div
       style={{
         marginLeft: 1,
@@ -80,7 +74,6 @@ export const ExpandRelationshipDetails = props => {
         ))}
       </ExpansionPanel>
     </div>
-    // </div>
   )
 }
 
