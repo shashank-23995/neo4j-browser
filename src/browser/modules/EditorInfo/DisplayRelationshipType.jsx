@@ -65,6 +65,11 @@ function DisplayRelationshipType (props) {
   }
 
   const onCanceled = () => {
+    setSelectedDirection(propsToStateMap(props.relationshipEndpoint))
+    setSelectedType({
+      label: props.relationshipType,
+      value: props.relationshipType
+    })
     setButtonVisibility(false)
   }
 
@@ -92,6 +97,7 @@ function DisplayRelationshipType (props) {
             isClearable
             placeholder='Type'
             styles={colourStyles}
+            value={selectedType}
             defaultValue={selectedType}
             onChange={selectedType => {
               if (
