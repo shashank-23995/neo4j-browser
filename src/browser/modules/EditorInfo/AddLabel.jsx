@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { StyledTable, StyledValue, StyledKey } from '../DatabaseInfo/styled'
 import {
   PlusIcon,
   TickMarkIcon,
   CancelIcon
 } from 'browser-components/icons/Icons'
 import styled from 'styled-components'
-import { TextInput } from 'browser-components/Form'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import TextField from '@material-ui/core/TextField'

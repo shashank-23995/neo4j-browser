@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { StyledTable, StyledKey, StyledValue } from '../DatabaseInfo/styled'
 import CreatableSelect from 'react-select/creatable'
 import Select from 'react-select'
 import FormControl from '@material-ui/core/FormControl'

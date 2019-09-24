@@ -8,9 +8,7 @@ import {
 import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
-import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
 import {
-  BinIcon,
   PlusIcon,
   CancelIcon,
   TickMarkIcon
@@ -18,7 +16,7 @@ import {
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { DisplayProperties } from '../EditorInfo/DisplayProperties'
 import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
-import { EditPropertiesInput, RelationshipIconButton } from './styled'
+import { EditPropertiesInput } from './styled'
 import { DisplayLabel } from './DisplayLabel'
 import AddProperty from './AddProperty'
 import AddLabel from './AddLabel'
@@ -127,15 +125,12 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        ...propertiesState,
-        properties: { ...props.properties }
-      })
-    },
-    [props.properties]
-  )
+  useEffect(() => {
+    updatePropertiesState({
+      ...propertiesState,
+      properties: { ...props.properties }
+    })
+  }, [props.properties])
 
   let content = []
   if (propertiesState.properties) {
@@ -153,9 +148,9 @@ export const PropertiesSection = props => {
   }
   if (!content.length) {
     content.push(
-      <p style={{ color: '#30333a' }}>{`There are no properties for this ${
-        props.entityType
-      }`}</p>
+      <p
+        style={{ color: '#30333a' }}
+      >{`There are no properties for this ${props.entityType}`}</p>
     )
   }
   return (
@@ -289,14 +284,11 @@ export const RelationshipSection = props => {
   const [selectedLabel, setSelectedLabel] = useState(null)
   const [selectedNode, setSelectedNode] = useState(null)
 
-  useEffect(
-    () => {
-      props.fetchSelectOptions('relationship', 'relationshipType')
-      props.fetchSelectOptions('relationship', 'label')
-      selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
-    },
-    [selectedLabel, relationshipRequest]
-  )
+  useEffect(() => {
+    props.fetchSelectOptions('relationship', 'relationshipType')
+    props.fetchSelectOptions('relationship', 'label')
+    selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
+  }, [selectedLabel, relationshipRequest])
 
   return (
     <DrawerSection
@@ -304,7 +296,6 @@ export const RelationshipSection = props => {
         backgroundColor: '#d2d5da',
         padding: '1px',
         borderRadius: '5px'
-        // margin: '2px'
       }}
     >
       <DrawerSubHeader
