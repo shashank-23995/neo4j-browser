@@ -10,7 +10,6 @@ import {
 } from '../Sidebar/styled'
 
 import DisplayRelationshipType from './DisplayRelationshipType'
-import DisplayRelationshipDirection from './DisplayRelationshipDirection'
 import { ExpansionPanel } from './ExpansionPanel'
 import { BinIconBlack } from './DisplayLabel'
 
