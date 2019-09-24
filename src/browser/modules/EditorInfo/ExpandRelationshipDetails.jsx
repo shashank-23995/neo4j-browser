@@ -10,7 +10,6 @@ import {
 } from '../Sidebar/styled'
 
 import DisplayRelationshipType from './DisplayRelationshipType'
-import DisplayRelationshipDirection from './DisplayRelationshipDirection'
 import { ExpansionPanel } from './ExpansionPanel'
 import { BinIconBlack } from './DisplayLabel'
 
@@ -68,12 +67,6 @@ export const ExpandRelationshipDetails = props => {
           relationshipType={props.value.segments[0].relationship.type}
           relationshipId={props.value.segments[0].relationship.identity.toInt()}
         />
-        <DisplayRelationshipDirection
-          {...props}
-          relationshipType={props.value.segments[0].relationship.type}
-          relationshipId={props.value.segments[0].relationship.identity.toInt()}
-        />
-
         {props.value.segments.map((item, index) => (
           <PropertiesSection
             key={index}
