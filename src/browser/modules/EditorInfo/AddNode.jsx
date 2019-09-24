@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { StyledTable, StyledValue, StyledKey } from '../DatabaseInfo/styled'
 import { TickMarkIcon } from 'browser-components/icons/Icons'
 import {
   DrawerSection,
@@ -24,44 +23,50 @@ function Node (props) {
   const [nodeLabel, handleChange] = useState('')
   return (
     <React.Fragment>
-      <button onClick={() => handleToggle(!textField)}>Create Node</button>
+      <button
+        onClick={() => handleToggle(!textField)}
+        style={{ color: '#30333a', fontSize: 16 }}
+      >
+        Create Node
+      </button>
       {textField ? (
         <DrawerSection>
           <DrawerSectionBody>
-            <PartialConfirmationButtons
-              icon={<TickMarkIcon />}
-              onCanceled={() => {
-                handleToggle(!textField)
-                handleChange('')
-              }}
-              onConfirmed={() => {
-                handleToggle(!textField)
-                if (nodeLabel.length > 0) {
-                  props.editEntityAction(
-                    { nodeLabel: nodeLabel },
-                    'create',
-                    'node'
-                  )
-                } else {
-                  alert('plzz enter node')
-                }
-              }}
-            />
-            <StyledTable>
-              <StyledKey>Node with Label:</StyledKey>
-              <StyledValue>
-                <TextInput
-                  value={nodeLabel}
-                  id='nodeLabel'
-                  style={{
-                    width: '120px'
+            <div style={{ display: 'flex', marginTop: 20 }}>
+              <div style={{ flex: 3, fontSize: 16 }}>Node with Label:</div>
+              <TextInput
+                value={nodeLabel}
+                id='nodeLabel'
+                style={{
+                  width: '120px',
+                  flex: 4
+                }}
+                onChange={() => {
+                  handleChange(([event.target.id] = event.target.value))
+                }}
+              />
+              <div style={{ flex: 1 }}>
+                <PartialConfirmationButtons
+                  icon={<TickMarkIcon />}
+                  onCanceled={() => {
+                    handleToggle(!textField)
+                    handleChange('')
                   }}
-                  onChange={() => {
-                    handleChange(([event.target.id] = event.target.value))
+                  onConfirmed={() => {
+                    handleToggle(!textField)
+                    if (nodeLabel.length > 0) {
+                      props.editEntityAction(
+                        { nodeLabel: nodeLabel },
+                        'create',
+                        'node'
+                      )
+                    } else {
+                      alert('plzz enter node')
+                    }
                   }}
                 />
-              </StyledValue>
-            </StyledTable>
+              </div>
+            </div>
           </DrawerSectionBody>
         </DrawerSection>
       ) : null}
