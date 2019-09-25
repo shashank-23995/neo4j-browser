@@ -26,13 +26,6 @@ export class EditorInfo extends Component {
         <Drawer>
           <DrawerHeader>
             Editor
-            <Divider
-              style={{
-                backgroundColor: '#4c4957',
-                marginBottom: 4,
-                marginTop: 8
-              }}
-            />
             {this.props.neo4jConnectionState === CONNECTED_STATE ? (
               <>
                 {this.props.selectedItem ? (
@@ -53,7 +46,16 @@ export class EditorInfo extends Component {
                     />
                   )
                 ) : (
-                  <AddNode editEntityAction={this.props.editEntityAction} />
+                  <React.Fragment>
+                    <Divider
+                      style={{
+                        backgroundColor: '#4c4957',
+                        marginBottom: 4,
+                        marginTop: 8
+                      }}
+                    />
+                    <AddNode editEntityAction={this.props.editEntityAction} />
+                  </React.Fragment>
                 )}
               </>
             ) : null}
