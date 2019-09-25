@@ -12,6 +12,7 @@ import { BinIconBlack } from './DisplayLabel'
  */
 
 export const DisplayProperties = props => {
+  const [open, setOpen] = useState(false)
   let { displayPropertiesStateKey, value } = props
   const initState = {
     properties: { [displayPropertiesStateKey]: value },
@@ -64,6 +65,8 @@ export const DisplayProperties = props => {
     <ExpansionPanel
       title={`${props.displayPropertiesStateKey}: ${props.value}`}
       panelActions={() => panelActions}
+      open={open}
+      setOpen={setOpen}
     >
       <AddProperty
         ToDisplay='view'

@@ -36,7 +36,7 @@ export const ExpandMenuIconBlack = () => (
  * @param {*} props
  */
 export const ExpansionPanel = props => {
-  const [open, setOpen] = useState(false)
+  const { open } = props
   return (
     <div
       style={{
@@ -65,7 +65,7 @@ export const ExpansionPanel = props => {
         <FolderButtonContainer
           style={{ color: open ? 'white !important' : '#30333a' }}
         >
-          <FoldersButton onClick={() => setOpen(!open)}>
+          <FoldersButton onClick={() => props.setOpen(!open)}>
             {open === true ? (
               <CollapseMenuIconWhite />
             ) : (

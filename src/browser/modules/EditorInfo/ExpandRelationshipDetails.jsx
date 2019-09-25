@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { PropertiesSection } from './DisplayNodeDetails'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
@@ -12,6 +12,7 @@ import { BinIconBlack } from './DisplayLabel'
  * @param {*} props
  */
 export const ExpandRelationshipDetails = props => {
+  const [open, setOpen] = useState(false)
   let title = ''
   if (props.relationshipEndpoint === 'from') {
     title = `-- ${props.value.segments[0].relationship.type} --> 
@@ -54,11 +55,18 @@ export const ExpandRelationshipDetails = props => {
         borderRadius: 5
       }}
     >
-      <ExpansionPanel title={title} panelActions={() => panelActions}>
+      <ExpansionPanel
+        title={title}
+        panelActions={() => panelActions}
+        open={open}
+        setOpen={setOpen}
+      >
         <DisplayRelationshipType
           {...props}
           relationshipType={props.value.segments[0].relationship.type}
           relationshipId={props.value.segments[0].relationship.identity.toInt()}
+          open={open}
+          setOpen={setOpen}
         />
         {props.value.segments.map((item, index) => (
           <PropertiesSection

@@ -62,6 +62,7 @@ function DisplayRelationshipType (props) {
       'relationship'
     )
     setButtonVisibility(false)
+    props.setOpen(!props.open)
   }
 
   const onCanceled = () => {
