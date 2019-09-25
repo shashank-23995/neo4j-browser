@@ -13,6 +13,7 @@ import * as itemEditorActions from 'shared/modules/itemEditor/itemEditorDuck'
 import { CONNECTED_STATE } from 'shared/modules/connections/connectionsDuck'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { BinIcon } from 'browser-components/icons/Icons'
+import Divider from '@material-ui/core/Divider'
 /**
  * The Editor drawer.
  * Based on selection, either provides node editor or relationship editor.
@@ -25,6 +26,13 @@ export class EditorInfo extends Component {
         <Drawer>
           <DrawerHeader>
             Editor
+            <Divider
+              style={{
+                backgroundColor: '#4c4957',
+                marginBottom: 4,
+                marginTop: 8
+              }}
+            />
             {this.props.neo4jConnectionState === CONNECTED_STATE ? (
               <>
                 {this.props.selectedItem ? (
