@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { PropertiesSection } from './DisplayNodeDetails'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
-
 import DisplayRelationshipType from './DisplayRelationshipType'
 import { ExpansionPanel } from './ExpansionPanel'
 import { BinIconBlack } from './DisplayLabel'

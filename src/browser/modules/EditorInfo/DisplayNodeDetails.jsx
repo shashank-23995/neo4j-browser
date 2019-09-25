@@ -16,7 +16,6 @@ import {
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { DisplayProperties } from '../EditorInfo/DisplayProperties'
 import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
-import { EditPropertiesInput } from './styled'
 import { DisplayLabel } from './DisplayLabel'
 import AddProperty from './AddProperty'
 import AddLabel from './AddLabel'
@@ -55,10 +54,6 @@ const createItems = (originalList, RenderType) => {
 const LabelSection = props => {
   let { node } = props
   let labels = [...node.labels]
-  let labelItems = <p>There are no labels for this node</p>
-  if (node.labels.length) {
-    labelItems = createItems(node.labels, { component: EditPropertiesInput })
-  }
   return (
     <div>
       <DrawerSection
@@ -125,12 +120,15 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(() => {
-    updatePropertiesState({
-      ...propertiesState,
-      properties: { ...props.properties }
-    })
-  }, [props.properties])
+  useEffect(
+    () => {
+      updatePropertiesState({
+        ...propertiesState,
+        properties: { ...props.properties }
+      })
+    },
+    [props.properties]
+  )
 
   let content = []
   if (propertiesState.properties) {
@@ -148,9 +146,9 @@ export const PropertiesSection = props => {
   }
   if (!content.length) {
     content.push(
-      <p
-        style={{ color: '#30333a' }}
-      >{`There are no properties for this ${props.entityType}`}</p>
+      <p style={{ color: '#30333a' }}>{`There are no properties for this ${
+        props.entityType
+      }`}</p>
     )
   }
   return (
@@ -284,11 +282,14 @@ export const RelationshipSection = props => {
   const [selectedLabel, setSelectedLabel] = useState(null)
   const [selectedNode, setSelectedNode] = useState(null)
 
-  useEffect(() => {
-    props.fetchSelectOptions('relationship', 'relationshipType')
-    props.fetchSelectOptions('relationship', 'label')
-    selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
-  }, [selectedLabel, relationshipRequest])
+  useEffect(
+    () => {
+      props.fetchSelectOptions('relationship', 'relationshipType')
+      props.fetchSelectOptions('relationship', 'label')
+      selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
+    },
+    [selectedLabel, relationshipRequest]
+  )
 
   return (
     <DrawerSection
