@@ -120,15 +120,12 @@ export const PropertiesSection = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        ...propertiesState,
-        properties: { ...props.properties }
-      })
-    },
-    [props.properties]
-  )
+  useEffect(() => {
+    updatePropertiesState({
+      ...propertiesState,
+      properties: { ...props.properties }
+    })
+  }, [props.properties])
 
   let content = []
   if (propertiesState.properties) {
@@ -146,9 +143,9 @@ export const PropertiesSection = props => {
   }
   if (!content.length) {
     content.push(
-      <p style={{ color: '#30333a' }}>{`There are no properties for this ${
-        props.entityType
-      }`}</p>
+      <p
+        style={{ color: '#30333a' }}
+      >{`There are no properties for this ${props.entityType}`}</p>
     )
   }
   return (
@@ -179,7 +176,6 @@ export const PropertiesSection = props => {
           [styles['wrapper']]: true
         })}
       >
-        {' '}
         {content}
       </DrawerSectionBody>
     </DrawerSection>
@@ -282,14 +278,11 @@ export const RelationshipSection = props => {
   const [selectedLabel, setSelectedLabel] = useState(null)
   const [selectedNode, setSelectedNode] = useState(null)
 
-  useEffect(
-    () => {
-      props.fetchSelectOptions('relationship', 'relationshipType')
-      props.fetchSelectOptions('relationship', 'label')
-      selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
-    },
-    [selectedLabel, relationshipRequest]
-  )
+  useEffect(() => {
+    props.fetchSelectOptions('relationship', 'relationshipType')
+    props.fetchSelectOptions('relationship', 'label')
+    selectedLabel ? props.fetchSelectOptions('Node', selectedLabel.value) : ''
+  }, [selectedLabel, relationshipRequest])
 
   return (
     <DrawerSection

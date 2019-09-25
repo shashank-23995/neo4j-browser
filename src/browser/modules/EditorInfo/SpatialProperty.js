@@ -152,3 +152,8 @@ export const SpatialProperty = props => {
     </React.Fragment>
   )
 }
+
+SpatialProperty.propTypes = {
+  value: PropTypes.object,
+  onChange: PropTypes.func
+}
