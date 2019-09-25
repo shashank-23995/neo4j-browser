@@ -13,7 +13,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput'
  * @param {*} props
  */
 
-function DisplayRelationshipType (props) {
+function DisplayRelationship (props) {
   useEffect(() => {
     props.fetchSelectOptions('relationship', 'relationshipType')
     setButtonVisibility(false)
@@ -156,8 +156,8 @@ function DisplayRelationshipType (props) {
   )
 }
 
-DisplayRelationshipType.propTypes = {
+DisplayRelationship.propTypes = {
   relationshipType: PropTypes.string
 }
 
-export default DisplayRelationshipType
+export default DisplayRelationship
