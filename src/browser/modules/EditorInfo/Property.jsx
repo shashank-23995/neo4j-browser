@@ -21,8 +21,6 @@ import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 import TextField from '@material-ui/core/TextField'
-import InputLabel from '@material-ui/core/InputLabel'
-import OutlinedInput from '@material-ui/core/OutlinedInput'
 
 const IconButton = styled.div`
   margin-left: 4px;
@@ -43,6 +41,7 @@ export function DropDownContents (props) {
       value={props.dataTypeValue}
       onChange={e => {
         props.handleChange(e.target.name, e.target.value)
+        e.target.value !== 'date' && props.toggleCalendar(false)
       }}
       variant='outlined'
     >
@@ -397,6 +396,7 @@ function Property (props) {
                       setP({ ...p, value: null })
                     }
                   }}
+                  toggleCalendar={toggleCalendar}
                 />
               </div>
               <div style={{ display: 'flex', color: '#30333a' }}>
