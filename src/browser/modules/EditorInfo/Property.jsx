@@ -403,7 +403,7 @@ function Property (props) {
                   }}
                 />
               </div>
-              <div style={{ display: 'flex' }}>
+              <div style={{ display: 'flex', color: '#30333a' }}>
                 <div
                   style={{
                     flex: 1,
