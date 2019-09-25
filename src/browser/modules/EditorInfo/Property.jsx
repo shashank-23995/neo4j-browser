@@ -12,8 +12,6 @@ import {
 import { RadioSelector } from 'browser-components/Form'
 import styled from 'styled-components'
 import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import FormControl from '@material-ui/core/FormControl'
 import { v1 as neo4j } from 'neo4j-driver'
 import { Calendar } from 'styled-icons/boxicons-regular/Calendar'
 import DayPicker from 'react-day-picker'
@@ -36,26 +34,24 @@ const IconButton = styled.div`
 `
 export function DropDownContents (props) {
   return (
-    <FormControl
+    <TextField
+      style={{ flex: 1, marginTop: '8px', marginLeft: '16px' }}
+      name='datatype'
+      margin='dense'
+      select
+      label='Data Type'
+      value={props.dataTypeValue}
+      onChange={e => {
+        props.handleChange(e.target.name, e.target.value)
+      }}
       variant='outlined'
-      style={{ flex: 1, marginTop: '16px', marginLeft: '16px' }}
     >
-      <InputLabel htmlFor='outlined-age-simple'>Data Type</InputLabel>
-      <Select
-        name='datatype'
-        value={props.dataTypeValue}
-        onChange={e => {
-          props.handleChange(e.target.name, e.target.value)
-        }}
-        input={<OutlinedInput id='outlined-age-simple' />}
-      >
-        <MenuItem value='string'>String</MenuItem>
-        <MenuItem value='number'>Number</MenuItem>
-        <MenuItem value='boolean'>Boolean</MenuItem>
-        <MenuItem value='date'>Date</MenuItem>
-        <MenuItem value='spatial'>Spatial</MenuItem>
-      </Select>
-    </FormControl>
+      <MenuItem value='string'>String</MenuItem>
+      <MenuItem value='number'>Number</MenuItem>
+      <MenuItem value='boolean'>Boolean</MenuItem>
+      <MenuItem value='date'>Date</MenuItem>
+      <MenuItem value='spatial'>Spatial</MenuItem>
+    </TextField>
   )
 }
 
@@ -133,7 +129,7 @@ function Property (props) {
     case 'string':
       valueInput = (
         <TextField
-          margin='normal'
+          margin='dense'
           variant='outlined'
           id='propValue'
           value={p.value || ''}
@@ -150,7 +146,7 @@ function Property (props) {
     case 'number':
       valueInput = (
         <TextField
-          margin='normal'
+          margin='dense'
           variant='outlined'
           id='propValue'
           type='number'
@@ -186,7 +182,7 @@ function Property (props) {
       valueInput = (
         <React.Fragment>
           <TextField
-            margin='normal'
+            margin='dense'
             variant='outlined'
             value={p.value || ''}
             disabled
@@ -370,7 +366,7 @@ function Property (props) {
               <div style={{ display: 'flex' }}>
                 <TextField
                   label='Key'
-                  margin='normal'
+                  margin='dense'
                   variant='outlined'
                   id='key'
                   value={(p && p.key) || ''}
@@ -408,7 +404,6 @@ function Property (props) {
                   style={{
                     flex: 1,
                     flexDirection: 'column',
-
                     alignSelf: 'center'
                   }}
                 >
