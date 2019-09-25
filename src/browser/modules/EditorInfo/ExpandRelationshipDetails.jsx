@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { PropertiesSection } from './DisplayNodeDetails'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
-import DisplayRelationshipType from './DisplayRelationshipType'
+import DisplayRelationship from './DisplayRelationship'
 import { ExpansionPanel } from './ExpansionPanel'
 import { BinIconBlack } from './DisplayLabel'
 
@@ -61,7 +61,7 @@ export const ExpandRelationshipDetails = props => {
         open={open}
         setOpen={setOpen}
       >
-        <DisplayRelationshipType
+        <DisplayRelationship
           {...props}
           relationshipType={props.value.segments[0].relationship.type}
           relationshipId={props.value.segments[0].relationship.identity.toInt()}

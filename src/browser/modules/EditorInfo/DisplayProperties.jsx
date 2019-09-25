@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { getStringValue } from './utils'
 import PropTypes from 'prop-types'
-import AddProperty from './AddProperty'
+import Property from './Property'
 import { ExpansionPanel } from './ExpansionPanel'
 import { BinIconBlack } from './DisplayLabel'
 
@@ -68,7 +68,7 @@ export const DisplayProperties = props => {
       open={open}
       setOpen={setOpen}
     >
-      <AddProperty
+      <Property
         ToDisplay='view'
         p={{ key: props.displayPropertiesStateKey, value: props.value }}
         editEntityAction={props.editEntityAction}

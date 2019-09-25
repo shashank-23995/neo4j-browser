@@ -17,7 +17,7 @@ import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButto
 import { DisplayProperties } from '../EditorInfo/DisplayProperties'
 import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
 import { DisplayLabel } from './DisplayLabel'
-import AddProperty from './AddProperty'
+import Property from './Property'
 import AddLabel from './AddLabel'
 import CreateRelationship from './CreateRelationship'
 import styled from 'styled-components'
@@ -167,7 +167,7 @@ export const PropertiesSection = props => {
         }}
       >
         Properties
-        <AddProperty
+        <Property
           editEntityAction={props.editEntityAction}
           id={props.node ? props.node.identity.toInt() : props.selectedNodeId}
           relationshipId={props.relationshipId ? props.relationshipId : null}
