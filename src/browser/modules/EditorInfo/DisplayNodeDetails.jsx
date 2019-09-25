@@ -30,22 +30,6 @@ const IconButton = styled.div`
     outline: none;
   }
 `
-/**
- * Creates items to display in chip format
- * @param {*} originalList Item list
- * @param {*} RenderType The render type
- */
-const createItems = (originalList, RenderType) => {
-  let items = [...originalList]
-
-  return items.map((text, index) => {
-    return (
-      <RenderType.component data-testid='sidebarMetaItem' key={index}>
-        {text}
-      </RenderType.component>
-    )
-  })
-}
 
 /**
  * Label section
