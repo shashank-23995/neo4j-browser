@@ -35,18 +35,6 @@ export const DisplayProperties = props => {
     [value]
   )
 
-  const handleChange = (displayPropertiesStateKey, e) => {
-    let newState = _.cloneDeep(propertiesState)
-    updatePropertiesState({
-      ...newState,
-      properties: {
-        ...newState.properties,
-        [displayPropertiesStateKey]: getStringValue(e.target.value)
-      },
-      requested: true
-    })
-  }
-
   const panelActions = (
     <ConfirmationButton
       requestIcon={<BinIconBlack />}
