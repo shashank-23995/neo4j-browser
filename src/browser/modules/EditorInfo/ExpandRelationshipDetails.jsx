@@ -1,15 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { PropertiesSection } from './DisplayNodeDetails'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-import { BinIcon } from 'browser-components/icons/Icons'
-import {
-  StyledList,
-  StyledListHeaderItem,
-  StyledFavFolderButtonSpan
-} from '../Sidebar/styled'
-
-import DisplayRelationshipType from './DisplayRelationshipType'
+import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
+import DisplayRelationship from './DisplayRelationship'
 import { ExpansionPanel } from './ExpansionPanel'
 import { BinIconBlack } from './DisplayLabel'
 
@@ -18,6 +12,7 @@ import { BinIconBlack } from './DisplayLabel'
  * @param {*} props
  */
 export const ExpandRelationshipDetails = props => {
+  const [open, setOpen] = useState(false)
   let title = ''
   if (props.relationshipEndpoint === 'from') {
     title = `-- ${props.value.segments[0].relationship.type} --> 
@@ -50,7 +45,6 @@ export const ExpandRelationshipDetails = props => {
   )
 
   return (
-    // <div>
     <div
       style={{
         marginLeft: 1,
@@ -61,11 +55,18 @@ export const ExpandRelationshipDetails = props => {
         borderRadius: 5
       }}
     >
-      <ExpansionPanel title={title} panelActions={() => panelActions}>
-        <DisplayRelationshipType
+      <ExpansionPanel
+        title={title}
+        panelActions={() => panelActions}
+        open={open}
+        setOpen={setOpen}
+      >
+        <DisplayRelationship
           {...props}
           relationshipType={props.value.segments[0].relationship.type}
           relationshipId={props.value.segments[0].relationship.identity.toInt()}
+          open={open}
+          setOpen={setOpen}
         />
         {props.value.segments.map((item, index) => (
           <PropertiesSection
@@ -80,7 +81,6 @@ export const ExpandRelationshipDetails = props => {
         ))}
       </ExpansionPanel>
     </div>
-    // </div>
   )
 }
 

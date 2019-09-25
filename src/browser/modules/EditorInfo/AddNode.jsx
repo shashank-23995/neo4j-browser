@@ -1,67 +1,69 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { StyledTable, StyledValue, StyledKey } from '../DatabaseInfo/styled'
 import { TickMarkIcon } from 'browser-components/icons/Icons'
 import {
   DrawerSection,
   DrawerSectionBody
 } from 'browser-components/drawer/index'
 import { TextInput } from 'browser-components/Form'
-import styled from 'styled-components'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
-
-const IconButton = styled.div`
-  margin-left: 4px;
-  border: 0;
-  background: transparent;
-  &:focus {
-    outline: none;
-  }
-`
+import Link from '@material-ui/core/Link'
 
 function Node (props) {
   const [textField, handleToggle] = useState(false)
   const [nodeLabel, handleChange] = useState('')
   return (
     <React.Fragment>
-      <button onClick={() => handleToggle(!textField)}>Create Node</button>
+      <div>
+        <Link
+          style={{ fontSize: 16 }}
+          component='button'
+          variant='body2'
+          onClick={() => {
+            handleToggle(!textField)
+          }}
+        >
+          I want to create a node
+        </Link>
+      </div>
       {textField ? (
         <DrawerSection>
           <DrawerSectionBody>
-            <PartialConfirmationButtons
-              icon={<TickMarkIcon />}
-              onCanceled={() => {
-                handleToggle(!textField)
-                handleChange('')
-              }}
-              onConfirmed={() => {
-                handleToggle(!textField)
-                if (nodeLabel.length > 0) {
-                  props.editEntityAction(
-                    { nodeLabel: nodeLabel },
-                    'create',
-                    'node'
-                  )
-                } else {
-                  alert('plzz enter node')
-                }
-              }}
-            />
-            <StyledTable>
-              <StyledKey>Node with Label:</StyledKey>
-              <StyledValue>
-                <TextInput
-                  value={nodeLabel}
-                  id='nodeLabel'
-                  style={{
-                    width: '120px'
+            <div style={{ display: 'flex', marginTop: 20 }}>
+              <div style={{ flex: 3, fontSize: 16 }}>Node with Label:</div>
+              <TextInput
+                value={nodeLabel}
+                id='nodeLabel'
+                style={{
+                  width: '120px',
+                  flex: 4
+                }}
+                onChange={() => {
+                  handleChange(([event.target.id] = event.target.value))
+                }}
+              />
+              <div style={{ flex: 1 }}>
+                <PartialConfirmationButtons
+                  icon={<TickMarkIcon />}
+                  onCanceled={() => {
+                    handleToggle(!textField)
+                    handleChange('')
                   }}
-                  onChange={() => {
-                    handleChange(([event.target.id] = event.target.value))
+                  onConfirmed={() => {
+                    handleToggle(!textField)
+                    if (nodeLabel.length > 0) {
+                      props.editEntityAction(
+                        { nodeLabel: nodeLabel },
+                        'create',
+                        'node'
+                      )
+                    } else {
+                      alert('plzz enter node')
+                    }
                   }}
                 />
-              </StyledValue>
-            </StyledTable>
+              </div>
+            </div>
           </DrawerSectionBody>
         </DrawerSection>
       ) : null}

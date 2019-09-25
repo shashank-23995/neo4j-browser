@@ -1,12 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import FormControl from '@material-ui/core/FormControl'
 import { v1 as neo4j } from 'neo4j-driver'
 import TextField from '@material-ui/core/TextField'
-import InputLabel from '@material-ui/core/InputLabel'
-import OutlinedInput from '@material-ui/core/OutlinedInput'
 
 const coordinateSystemSRIDMap = {
   cartesian2D: 7203,
@@ -77,27 +73,28 @@ export const SpatialProperty = props => {
 
   return (
     <React.Fragment>
-      <FormControl variant='outlined' style={{ flex: 1, width: '100%' }}>
-        <InputLabel>System</InputLabel>
-        <Select
-          name='coordinateSystem'
-          value={coordinateSystemName}
-          onChange={e => {
-            handleChange(e.target.name, e.target.value)
-          }}
-          input={<OutlinedInput />}
-        >
-          <MenuItem value='cartesian2D'>Cartesian-2D</MenuItem>
-          <MenuItem value='cartesian3D'>Cartesian-3D</MenuItem>
-          <MenuItem value='geographic2D'>Geographic-2D</MenuItem>
-          <MenuItem value='geographic3D'>Geographic-3D</MenuItem>
-        </Select>
-      </FormControl>
+      <TextField
+        style={{ flex: 1, width: '100%' }}
+        name='coordinateSystem'
+        margin='dense'
+        select
+        label='System'
+        value={coordinateSystemName}
+        onChange={e => {
+          handleChange(e.target.name, e.target.value)
+        }}
+        variant='outlined'
+      >
+        <MenuItem value='cartesian2D'>Cartesian-2D</MenuItem>
+        <MenuItem value='cartesian3D'>Cartesian-3D</MenuItem>
+        <MenuItem value='geographic2D'>Geographic-2D</MenuItem>
+        <MenuItem value='geographic3D'>Geographic-3D</MenuItem>
+      </TextField>
 
       <TextField
         type='number'
         label='X'
-        margin='normal'
+        margin='dense'
         variant='outlined'
         id='x'
         value={x}
@@ -114,7 +111,7 @@ export const SpatialProperty = props => {
       <TextField
         type='number'
         label='Y'
-        margin='normal'
+        margin='dense'
         variant='outlined'
         id='y'
         value={y}
@@ -134,7 +131,7 @@ export const SpatialProperty = props => {
             <TextField
             type='number'
             label='Z'
-            margin='normal'
+            margin='dense'
             variant='outlined'
             id='z'
             value={z}
@@ -151,4 +148,9 @@ export const SpatialProperty = props => {
         ) : null}
     </React.Fragment>
   )
+}
+
+SpatialProperty.propTypes = {
+  value: PropTypes.object,
+  onChange: PropTypes.func
 }

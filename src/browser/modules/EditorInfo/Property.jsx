@@ -9,11 +9,9 @@ import {
   DrawerSection,
   DrawerSectionBody
 } from 'browser-components/drawer/index'
-import { TextInput, RadioSelector } from 'browser-components/Form'
+import { RadioSelector } from 'browser-components/Form'
 import styled from 'styled-components'
 import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import FormControl from '@material-ui/core/FormControl'
 import { v1 as neo4j } from 'neo4j-driver'
 import { Calendar } from 'styled-icons/boxicons-regular/Calendar'
 import DayPicker from 'react-day-picker'
@@ -23,8 +21,6 @@ import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 import TextField from '@material-ui/core/TextField'
-import InputLabel from '@material-ui/core/InputLabel'
-import OutlinedInput from '@material-ui/core/OutlinedInput'
 
 const IconButton = styled.div`
   margin-left: 4px;
@@ -36,26 +32,25 @@ const IconButton = styled.div`
 `
 export function DropDownContents (props) {
   return (
-    <FormControl
+    <TextField
+      style={{ flex: 1, marginTop: '8px', marginLeft: '16px' }}
+      name='datatype'
+      margin='dense'
+      select
+      label='Data Type'
+      value={props.dataTypeValue}
+      onChange={e => {
+        props.handleChange(e.target.name, e.target.value)
+        e.target.value !== 'date' && props.toggleCalendar(false)
+      }}
       variant='outlined'
-      style={{ flex: 1, marginTop: '16px', marginLeft: '16px' }}
     >
-      <InputLabel htmlFor='outlined-age-simple'>Data Type</InputLabel>
-      <Select
-        name='datatype'
-        value={props.dataTypeValue}
-        onChange={e => {
-          props.handleChange(e.target.name, e.target.value)
-        }}
-        input={<OutlinedInput id='outlined-age-simple' />}
-      >
-        <MenuItem value='string'>String</MenuItem>
-        <MenuItem value='number'>Number</MenuItem>
-        <MenuItem value='boolean'>Boolean</MenuItem>
-        <MenuItem value='date'>Date</MenuItem>
-        <MenuItem value='spatial'>Spatial</MenuItem>
-      </Select>
-    </FormControl>
+      <MenuItem value='string'>String</MenuItem>
+      <MenuItem value='number'>Number</MenuItem>
+      <MenuItem value='boolean'>Boolean</MenuItem>
+      <MenuItem value='date'>Date</MenuItem>
+      <MenuItem value='spatial'>Spatial</MenuItem>
+    </TextField>
   )
 }
 
@@ -77,7 +72,7 @@ const dataTypeChecker = value => {
   }
 }
 
-function AddProperty (props) {
+function Property (props) {
   const [textField, handleToggle] = useState(false)
   const [calendarFlag, toggleCalendar] = useState(false)
   const [showButtons, setButtonVisibility] = useState(false)
@@ -133,7 +128,7 @@ function AddProperty (props) {
     case 'string':
       valueInput = (
         <TextField
-          margin='normal'
+          margin='dense'
           variant='outlined'
           id='propValue'
           value={p.value || ''}
@@ -150,7 +145,7 @@ function AddProperty (props) {
     case 'number':
       valueInput = (
         <TextField
-          margin='normal'
+          margin='dense'
           variant='outlined'
           id='propValue'
           type='number'
@@ -186,7 +181,7 @@ function AddProperty (props) {
       valueInput = (
         <React.Fragment>
           <TextField
-            margin='normal'
+            margin='dense'
             variant='outlined'
             value={p.value || ''}
             disabled
@@ -370,12 +365,20 @@ function AddProperty (props) {
               <div style={{ display: 'flex' }}>
                 <TextField
                   label='Key'
-                  margin='normal'
+                  margin='dense'
                   variant='outlined'
                   id='key'
                   value={(p && p.key) || ''}
                   onChange={e => {
-                    setP({ ...p, key: e.target.value })
+                    if (dataType === 'boolean') {
+                      setP({
+                        ...p,
+                        value: p.value.toString(),
+                        key: e.target.value
+                      })
+                    } else {
+                      setP({ ...p, key: e.target.value })
+                    }
                   }}
                   style={{
                     flex: 1,
@@ -393,14 +396,14 @@ function AddProperty (props) {
                       setP({ ...p, value: null })
                     }
                   }}
+                  toggleCalendar={toggleCalendar}
                 />
               </div>
-              <div style={{ display: 'flex' }}>
+              <div style={{ display: 'flex', color: '#30333a' }}>
                 <div
                   style={{
                     flex: 1,
                     flexDirection: 'column',
-
                     alignSelf: 'center'
                   }}
                 >
@@ -430,8 +433,8 @@ function AddProperty (props) {
   )
 }
 
-AddProperty.propTypes = {
+Property.propTypes = {
   editEntityAction: PropTypes.func
 }
 
-export default AddProperty
+export default Property

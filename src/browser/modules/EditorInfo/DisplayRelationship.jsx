@@ -13,7 +13,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput'
  * @param {*} props
  */
 
-function DisplayRelationshipType (props) {
+function DisplayRelationship (props) {
   useEffect(() => {
     props.fetchSelectOptions('relationship', 'relationshipType')
     setButtonVisibility(false)
@@ -40,6 +40,14 @@ function DisplayRelationshipType (props) {
   const [selectedNode, setSelectedNode] = useState(null)
   const [selectedDirection, setSelectedDirection] = useState(selectedDirection)
 
+  const propsToStateMap = value => {
+    if (value === 'to') {
+      return '<----'
+    } else {
+      return '---->'
+    }
+  }
+
   const onConfirmed = () => {
     props.editEntityAction(
       {
@@ -54,9 +62,15 @@ function DisplayRelationshipType (props) {
       'relationship'
     )
     setButtonVisibility(false)
+    props.setOpen(!props.open)
   }
 
   const onCanceled = () => {
+    setSelectedDirection(propsToStateMap(props.relationshipEndpoint))
+    setSelectedType({
+      label: props.relationshipType,
+      value: props.relationshipType
+    })
     setButtonVisibility(false)
   }
 
@@ -84,15 +98,19 @@ function DisplayRelationshipType (props) {
             isClearable
             placeholder='Type'
             styles={colourStyles}
+            value={selectedType}
             defaultValue={selectedType}
             onChange={selectedType => {
               if (
-                selectedType &&
-                selectedType.value !== props.relationshipType
+                (selectedType &&
+                  selectedType.value !== props.relationshipType) ||
+                selectedDirection !==
+                  propsToStateMap(props.relationshipEndpoint)
               ) {
                 setSelectedType(selectedType)
                 setButtonVisibility(true)
               } else {
+                setSelectedType(selectedType)
                 setButtonVisibility(false)
               }
             }}
@@ -114,8 +132,18 @@ function DisplayRelationshipType (props) {
               }}
               value={selectedDirection}
               onChange={e => {
-                setSelectedDirection(e.target.value)
-                setButtonVisibility(true)
+                if (
+                  (e &&
+                    e.target.value !==
+                      propsToStateMap(props.relationshipEndpoint)) ||
+                  selectedType.value !== props.relationshipType
+                ) {
+                  setSelectedDirection(e.target.value)
+                  setButtonVisibility(true)
+                } else {
+                  setSelectedDirection(e.target.value)
+                  setButtonVisibility(false)
+                }
               }}
             >
               <MenuItem value='<----'>{'<---- (Incoming)'}</MenuItem>
@@ -128,8 +156,8 @@ function DisplayRelationshipType (props) {
   )
 }
 
-DisplayRelationshipType.propTypes = {
+DisplayRelationship.propTypes = {
   relationshipType: PropTypes.string
 }
 
-export default DisplayRelationshipType
+export default DisplayRelationship

@@ -8,9 +8,7 @@ import {
 import * as _ from 'lodash'
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
-import { StyledTable, StyledValue } from '../DatabaseInfo/styled'
 import {
-  BinIcon,
   PlusIcon,
   CancelIcon,
   TickMarkIcon
@@ -18,9 +16,8 @@ import {
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { DisplayProperties } from '../EditorInfo/DisplayProperties'
 import { ExpandRelationshipDetails } from './ExpandRelationshipDetails'
-import { EditPropertiesInput, RelationshipIconButton } from './styled'
 import { DisplayLabel } from './DisplayLabel'
-import AddProperty from './AddProperty'
+import Property from './Property'
 import AddLabel from './AddLabel'
 import CreateRelationship from './CreateRelationship'
 import styled from 'styled-components'
@@ -33,22 +30,6 @@ const IconButton = styled.div`
     outline: none;
   }
 `
-/**
- * Creates items to display in chip format
- * @param {*} originalList Item list
- * @param {*} RenderType The render type
- */
-const createItems = (originalList, RenderType) => {
-  let items = [...originalList]
-
-  return items.map((text, index) => {
-    return (
-      <RenderType.component data-testid='sidebarMetaItem' key={index}>
-        {text}
-      </RenderType.component>
-    )
-  })
-}
 
 /**
  * Label section
@@ -57,10 +38,6 @@ const createItems = (originalList, RenderType) => {
 const LabelSection = props => {
   let { node } = props
   let labels = [...node.labels]
-  let labelItems = <p>There are no labels for this node</p>
-  if (node.labels.length) {
-    labelItems = createItems(node.labels, { component: EditPropertiesInput })
-  }
   return (
     <div>
       <DrawerSection
@@ -74,7 +51,8 @@ const LabelSection = props => {
           style={{
             padding: '0px 10px',
             backgroundColor: '#424650',
-            borderRadius: 5
+            borderRadius: 5,
+            textShadow: 'none'
           }}
         >
           Labels
@@ -170,11 +148,12 @@ export const PropertiesSection = props => {
         style={{
           padding: '0px 10px',
           backgroundColor: '#424650',
-          borderRadius: 5
+          borderRadius: 5,
+          textShadow: 'none'
         }}
       >
         Properties
-        <AddProperty
+        <Property
           editEntityAction={props.editEntityAction}
           id={props.node ? props.node.identity.toInt() : props.selectedNodeId}
           relationshipId={props.relationshipId ? props.relationshipId : null}
@@ -186,7 +165,6 @@ export const PropertiesSection = props => {
           [styles['wrapper']]: true
         })}
       >
-        {' '}
         {content}
       </DrawerSectionBody>
     </DrawerSection>
@@ -304,7 +282,6 @@ export const RelationshipSection = props => {
         backgroundColor: '#d2d5da',
         padding: '1px',
         borderRadius: '5px'
-        // margin: '2px'
       }}
     >
       <DrawerSubHeader

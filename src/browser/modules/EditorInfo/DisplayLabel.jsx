@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { BinIcon, TickMarkIcon } from 'browser-components/icons/Icons'
+import { TickMarkIcon } from 'browser-components/icons/Icons'
 import { IconContainer } from 'browser-components/icons/IconContainer'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
 import { getStringValue } from './utils'
-import { StyledValue } from '../DatabaseInfo/styled'
 import { EditPropertiesInput } from './styled'
 import PropTypes from 'prop-types'
 
@@ -37,15 +36,12 @@ export const DisplayLabel = props => {
   }
   const [labelState, setToInitialState] = useState(initialState)
 
-  useEffect(
-    () => {
-      setToInitialState({
-        labelName: { [labelKey]: label },
-        requested: false
-      })
-    },
-    [label]
-  )
+  useEffect(() => {
+    setToInitialState({
+      labelName: { [labelKey]: label },
+      requested: false
+    })
+  }, [label])
 
   const handleChange = (event, labelKey) => {
     let newState = _.cloneDeep(labelState)

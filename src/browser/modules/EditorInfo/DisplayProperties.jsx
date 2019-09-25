@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-import { getStringValue } from './utils'
-import { BinIcon } from 'browser-components/icons/Icons'
 import PropTypes from 'prop-types'
-import AddProperty from './AddProperty'
+import Property from './Property'
 import { ExpansionPanel } from './ExpansionPanel'
 import { BinIconBlack } from './DisplayLabel'
 
@@ -13,47 +11,8 @@ import { BinIconBlack } from './DisplayLabel'
  */
 
 export const DisplayProperties = props => {
-  let { displayPropertiesStateKey, value } = props
-  const initState = {
-    properties: { [displayPropertiesStateKey]: value },
-    requested: false
-  }
-
-  const [propertiesState, updatePropertiesState] = useState(initState)
-
-  /**
-   * useEffect accepts a function that updates the state whenever the props change
-   * @param updatePropertiesState — Function that returns an updated state everytime props change
-   * @param deps —  Will activate when the props change
-   */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        properties: { [displayPropertiesStateKey]: value },
-        requested: false
-      })
-    },
-    [value]
-  )
-
-  const handleChange = (displayPropertiesStateKey, e) => {
-    let newState = _.cloneDeep(propertiesState)
-    updatePropertiesState({
-      ...newState,
-      properties: {
-        ...newState.properties,
-        [displayPropertiesStateKey]: getStringValue(e.target.value)
-      },
-      requested: true
-    })
-  }
-
-  const onCanceled = () => {
-    updatePropertiesState({
-      properties: { [displayPropertiesStateKey]: value },
-      requested: false
-    })
-  }
+  const [open, setOpen] = useState(false)
+  let { displayPropertiesStateKey } = props
 
   const panelActions = (
     <ConfirmationButton
@@ -81,21 +40,13 @@ export const DisplayProperties = props => {
   )
 
   return (
-    // <div
-    //   style={{
-    //     marginLeft: 1,
-    //     marginRight: 1,
-    //     marginBottom: 5,
-    //     backgroundColor: '#efeff4',
-    //     padding: 5,
-    //     borderRadius: 5
-    //   }}
-    // >
     <ExpansionPanel
       title={`${props.displayPropertiesStateKey}: ${props.value}`}
       panelActions={() => panelActions}
+      open={open}
+      setOpen={setOpen}
     >
-      <AddProperty
+      <Property
         ToDisplay='view'
         p={{ key: props.displayPropertiesStateKey, value: props.value }}
         editEntityAction={props.editEntityAction}
@@ -105,7 +56,6 @@ export const DisplayProperties = props => {
         relationshipId={props.relationshipId ? props.relationshipId : null}
       />
     </ExpansionPanel>
-    // </div>
   )
 }
 
