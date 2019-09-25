@@ -7,18 +7,25 @@ import {
 } from 'browser-components/drawer/index'
 import { TextInput } from 'browser-components/Form'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
+import Link from '@material-ui/core/Link'
 
 function Node (props) {
   const [textField, handleToggle] = useState(false)
   const [nodeLabel, handleChange] = useState('')
   return (
     <React.Fragment>
-      <button
-        onClick={() => handleToggle(!textField)}
-        style={{ color: '#30333a', fontSize: 16 }}
-      >
-        Create Node
-      </button>
+      <div>
+        <Link
+          style={{ fontSize: 16 }}
+          component='button'
+          variant='body2'
+          onClick={() => {
+            handleToggle(!textField)
+          }}
+        >
+          I want to create a node
+        </Link>
+      </div>
       {textField ? (
         <DrawerSection>
           <DrawerSectionBody>
