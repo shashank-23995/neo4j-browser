@@ -75,7 +75,7 @@ function AddLabel (props) {
         >
           <TextField
             label='Label'
-            margin='normal'
+            margin='dense'
             variant='outlined'
             id='label'
             value={label}
