@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-import { getStringValue } from './utils'
 import PropTypes from 'prop-types'
 import Property from './Property'
 import { ExpansionPanel } from './ExpansionPanel'
@@ -13,28 +12,7 @@ import { BinIconBlack } from './DisplayLabel'
 
 export const DisplayProperties = props => {
   const [open, setOpen] = useState(false)
-  let { displayPropertiesStateKey, value } = props
-  const initState = {
-    properties: { [displayPropertiesStateKey]: value },
-    requested: false
-  }
-
-  const [propertiesState, updatePropertiesState] = useState(initState)
-
-  /**
-   * useEffect accepts a function that updates the state whenever the props change
-   * @param updatePropertiesState — Function that returns an updated state everytime props change
-   * @param deps —  Will activate when the props change
-   */
-  useEffect(
-    () => {
-      updatePropertiesState({
-        properties: { [displayPropertiesStateKey]: value },
-        requested: false
-      })
-    },
-    [value]
-  )
+  let { displayPropertiesStateKey } = props
 
   const panelActions = (
     <ConfirmationButton
