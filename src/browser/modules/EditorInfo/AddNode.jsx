@@ -6,17 +6,7 @@ import {
   DrawerSectionBody
 } from 'browser-components/drawer/index'
 import { TextInput } from 'browser-components/Form'
-import styled from 'styled-components'
 import PartialConfirmationButtons from 'browser-components/buttons/PartialConfirmationButtons'
-
-const IconButton = styled.div`
-  margin-left: 4px;
-  border: 0;
-  background: transparent;
-  &:focus {
-    outline: none;
-  }
-`
 
 function Node (props) {
   const [textField, handleToggle] = useState(false)

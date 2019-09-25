@@ -25,12 +25,15 @@ export const DisplayProperties = props => {
    * @param updatePropertiesState — Function that returns an updated state everytime props change
    * @param deps —  Will activate when the props change
    */
-  useEffect(() => {
-    updatePropertiesState({
-      properties: { [displayPropertiesStateKey]: value },
-      requested: false
-    })
-  }, [value])
+  useEffect(
+    () => {
+      updatePropertiesState({
+        properties: { [displayPropertiesStateKey]: value },
+        requested: false
+      })
+    },
+    [value]
+  )
 
   const handleChange = (displayPropertiesStateKey, e) => {
     let newState = _.cloneDeep(propertiesState)
@@ -41,13 +44,6 @@ export const DisplayProperties = props => {
         [displayPropertiesStateKey]: getStringValue(e.target.value)
       },
       requested: true
-    })
-  }
-
-  const onCanceled = () => {
-    updatePropertiesState({
-      properties: { [displayPropertiesStateKey]: value },
-      requested: false
     })
   }
 
