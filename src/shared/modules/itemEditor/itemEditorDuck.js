@@ -375,7 +375,9 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
           } else {
             let optionsList = res.records.map((record, index) => {
               return {
-                label: Object.values(record._fields[0].properties)[0],
+                label: Object.values(
+                  record._fields[0].properties
+                )[0].toString(),
                 value: record._fields[0]
               }
             })
