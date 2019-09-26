@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import Property from './Property'
 import { ExpansionPanel } from './ExpansionPanel'
 import { BinIconBlack } from './DisplayLabel'
+import { ConfirmationButtonBlack } from './ConfirmationButtonBlack'
+import { BinIcon } from 'browser-components/icons/Icons'
 
 /**
  * Component to display the properties of selected node
@@ -14,8 +16,31 @@ export const DisplayProperties = props => {
   const [open, setOpen] = useState(false)
   let { displayPropertiesStateKey } = props
 
-  const panelActions = (
+  const panelActions = open ? (
     <ConfirmationButton
+      requestIcon={<BinIcon />}
+      confirmIcon={<BinIcon deleteAction />}
+      onConfirmed={() => {
+        props.editEntityAction(
+          {
+            [props.node ? 'nodeId' : 'relationshipId']: props.node
+              ? props.node.identity.toInt()
+              : props.relationship.identity.toInt(),
+            [props.node ? 'label' : 'type']: props.node
+              ? props.node.labels[0]
+              : props.relationship.type,
+            propertyKey: displayPropertiesStateKey,
+            selectedNodeId: props.node
+              ? props.node.identity.toInt()
+              : props.selectedNodeId
+          },
+          'delete',
+          props.node ? 'nodeProperty' : 'relationshipProperty'
+        )
+      }}
+    />
+  ) : (
+    <ConfirmationButtonBlack
       requestIcon={<BinIconBlack />}
       confirmIcon={<BinIconBlack deleteAction />}
       onConfirmed={() => {
