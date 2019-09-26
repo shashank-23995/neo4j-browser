@@ -13,6 +13,7 @@ import * as itemEditorActions from 'shared/modules/itemEditor/itemEditorDuck'
 import { CONNECTED_STATE } from 'shared/modules/connections/connectionsDuck'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
 import { BinIcon } from 'browser-components/icons/Icons'
+import SearchNode from './SearchNode'
 /**
  * The Editor drawer.
  * Based on selection, either provides node editor or relationship editor.
@@ -45,7 +46,14 @@ export class EditorInfo extends Component {
                     />
                   )
                 ) : (
-                  <AddNode editEntityAction={this.props.editEntityAction} />
+                  <div>
+                    <AddNode editEntityAction={this.props.editEntityAction} />
+                    <SearchNode
+                      fetchSelectOptions={this.props.fetchSelectOptions}
+                      labelList={this.props.labelList}
+                      propertyKeyList={this.props.propertyKeyList}
+                    />
+                  </div>
                 )}
               </>
             ) : null}
@@ -81,6 +89,7 @@ const mapStateToProps = state => {
     relationshipTypeList: state.itemEditor.relationshipTypeList,
     labelList: state.itemEditor.labelList,
     nodeList: state.itemEditor.nodeList,
+    propertyKeyList: state.itemEditor.propertyKeyList,
     neo4jConnectionState: state.connections.connectionState
   }
 }

@@ -14,6 +14,8 @@ export const FETCH_SELECT_OPTIONS_LIST = `${NAME}/FETCH_SELECT_OPTIONS_LIST`
 export const SET_RELATIONSHIPTYPE_LIST = `${NAME}/SET_RELATIONSHIPTYPE_LIST`
 export const SET_LABEL_LIST = `${NAME}/SET_LABEL_LIST`
 export const SET_NODE_LIST = `${NAME}/SET_NODE_LIST`
+export const SEARCH_LABEL_LIST = `${NAME}/SEARCH_LABEL_LIST`
+export const SEARCH_PROPERTYKEY_LIST = `${NAME}/SEARCH_PROPERTYKEY_LIST`
 
 // Actions
 /**
@@ -77,6 +79,16 @@ export default function reducer (state = initialState, action) {
       return {
         ...state,
         nodeList: action.nodeList
+      }
+    case SEARCH_LABEL_LIST:
+      return {
+        ...state,
+        labelList: action.labelList
+      }
+    case SEARCH_PROPERTYKEY_LIST:
+      return {
+        ...state,
+        propertyKeyList: action.propertyKeyList
       }
     default:
       return state
@@ -335,13 +347,22 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
         return noop
       })
     }
-    let cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
-    if (action.serachOperation === 'relationshipType') {
-      cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
-    } else if (action.serachOperation === 'label') {
-      cmd = `CALL db.labels() YIELD label RETURN {name:'labels', data:COLLECT(label)} as result`
+    let cmd = `CALL db.labels() YIELD label RETURN COLLECT(label) as result`
+    if (action.entityType === 'custom') {
+      if (action.serachOperation === 'label') {
+        cmd = `CALL db.labels() YIELD label RETURN COLLECT(label) as result`
+      } else if (action.serachOperation === 'propertyKey') {
+        cmd = `CALL db.propertyKeys() YIELD propertyKey RETURN COLLECT(propertyKey) as result`
+      }
     } else {
-      cmd = `MATCH (n:\`${action.serachOperation}\`) RETURN n`
+      cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
+      if (action.serachOperation === 'relationshipType') {
+        cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
+      } else if (action.serachOperation === 'label') {
+        cmd = `CALL db.labels() YIELD label RETURN {name:'labels', data:COLLECT(label)} as result`
+      } else {
+        cmd = `MATCH (n:\`${action.serachOperation}\`) RETURN n`
+      }
     }
     let newAction = _.cloneDeep(action)
     newAction.cmd = cmd
@@ -349,42 +370,68 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
     return request
       .then(res => {
         if (res && res.records) {
-          if (action.serachOperation === 'relationshipType') {
-            let optionsList = res.records[0]._fields[0].data.map(
-              (item, index) => {
-                return { label: item, value: item }
-              }
-            )
-            store.dispatch({
-              type: SET_RELATIONSHIPTYPE_LIST,
-              relationshipTypeList: optionsList
-            })
-          } else if (action.serachOperation === 'label') {
-            let optionsList = res.records[0]._fields[0].data.map(
-              (item, index) => {
+          if (action.entityType === 'custom') {
+            if (action.serachOperation === 'label') {
+              let optionsList = res.records[0]._fields[0].map((item, index) => {
                 return {
                   label: item,
                   value: item
                 }
-              }
-            )
-            store.dispatch({
-              type: SET_LABEL_LIST,
-              labelList: optionsList
-            })
+              })
+              store.dispatch({
+                type: SEARCH_LABEL_LIST,
+                labelList: optionsList
+              })
+            } else if (action.serachOperation === 'propertyKey') {
+              let optionsList = res.records[0]._fields[0].map((item, index) => {
+                return {
+                  label: item,
+                  value: item
+                }
+              })
+              store.dispatch({
+                type: SEARCH_PROPERTYKEY_LIST,
+                propertyKeyList: optionsList
+              })
+            }
           } else {
-            let optionsList = res.records.map((record, index) => {
-              return {
-                label: Object.values(
-                  record._fields[0].properties
-                )[0].toString(),
-                value: record._fields[0]
-              }
-            })
-            store.dispatch({
-              type: SET_NODE_LIST,
-              nodeList: optionsList
-            })
+            if (action.serachOperation === 'relationshipType') {
+              let optionsList = res.records[0]._fields[0].data.map(
+                (item, index) => {
+                  return { label: item, value: item }
+                }
+              )
+              store.dispatch({
+                type: SET_RELATIONSHIPTYPE_LIST,
+                relationshipTypeList: optionsList
+              })
+            } else if (action.serachOperation === 'label') {
+              let optionsList = res.records[0]._fields[0].data.map(
+                (item, index) => {
+                  return {
+                    label: item,
+                    value: item
+                  }
+                }
+              )
+              store.dispatch({
+                type: SET_LABEL_LIST,
+                labelList: optionsList
+              })
+            } else {
+              let optionsList = res.records.map((record, index) => {
+                return {
+                  label: Object.values(
+                    record._fields[0].properties
+                  )[0].toString(),
+                  value: record._fields[0]
+                }
+              })
+              store.dispatch({
+                type: SET_NODE_LIST,
+                nodeList: optionsList
+              })
+            }
           }
         }
         return noop
