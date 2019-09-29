@@ -7,7 +7,53 @@ import {
 import classNames from 'classnames'
 import styles from '../DatabaseInfo/style_meta.css'
 import Select from 'react-select'
-import { colourStyles } from './CreateRelationship'
+import styled from 'styled-components'
+
+const chip = styled.div`
+  word-break: break-all;
+  cursor: pointer;
+  font-family: ${props => props.theme.primaryFontFamily};
+  font-weight: bold;
+  font-size: 12px;
+  background-color: #424650;
+  color: #ffffff;
+  margin: 4px;
+  padding: 3px 7px 3px 7px;
+  span {
+    line-height: normal;
+  }
+  text-align: center;
+`
+export const StyledButton = styled(chip)`
+  border-radius: 20px;
+`
+
+export const colourStyles = {
+  control: provided => ({
+    ...provided,
+    backgroundColor: '#efeff4',
+    width: '93%'
+  }),
+  placeholder: provided => ({
+    ...provided,
+    color: '#958d98',
+    font: 'inherit',
+    padding: 0,
+    fontSize: '1rem',
+    fontWeight: 400,
+    lineHeight: 1,
+    letterSpacing: '0.00938em'
+  }),
+  dropdownIndicator: provided => ({
+    ...provided,
+    color: '#958d98',
+    background: 'none'
+  }),
+  indicatorSeparator: provided => ({
+    ...provided,
+    backgroundColor: '#efeff4'
+  })
+}
 
 /**
  * Component to search specific node
@@ -143,37 +189,50 @@ function SearchNode (props) {
 
           {tempArray.map(item => item)}
 
-          <button
-            onClick={() =>
-              setTempArray([
-                ...tempArray,
-                <InitialLabel
-                  search={search}
-                  setSearch={setSearch}
-                  labelList={props.labelList}
-                  propertyKeyList={props.propertyKeyList}
-                  selectedLabelArray={selectedLabelArray}
-                  setSelectedLabelArray={setSelectedLabelArray}
-                  selectedPropertyKeyArray={selectedPropertyKeyArray}
-                  setSelectedPropertyKeyArray={setSelectedPropertyKeyArray}
-                />
-              ])
-            }
-          >
-            Add Condition
-          </button>
-          <button
-            onClick={() => {
-              console.log('propertyKeyArray - ', selectedPropertyKeyArray)
-              console.log('labelArray - ', selectedLabelArray)
-              props.fetchSelectOptions('custom', 'node', {
-                selectedLabelArray,
-                selectedPropertyKeyArray
-              })
+          <div
+            style={{
+              display: 'flex',
+              marginRight: 8,
+              // marginBottom: 16,
+              width: '100%'
             }}
           >
-            Apply Search
-          </button>
+            <div style={{ width: '100%' }}>
+              <StyledButton
+                onClick={() =>
+                  setTempArray([
+                    ...tempArray,
+                    <InitialLabel
+                      search={search}
+                      setSearch={setSearch}
+                      labelList={props.labelList}
+                      propertyKeyList={props.propertyKeyList}
+                      selectedLabelArray={selectedLabelArray}
+                      setSelectedLabelArray={setSelectedLabelArray}
+                      selectedPropertyKeyArray={selectedPropertyKeyArray}
+                      setSelectedPropertyKeyArray={setSelectedPropertyKeyArray}
+                    />
+                  ])
+                }
+              >
+                Add Condition
+              </StyledButton>
+            </div>
+            <div style={{ width: '100%' }}>
+              <StyledButton
+                onClick={() => {
+                  console.log('propertyKeyArray - ', selectedPropertyKeyArray)
+                  console.log('labelArray - ', selectedLabelArray)
+                  props.fetchSelectOptions('custom', 'node', {
+                    selectedLabelArray,
+                    selectedPropertyKeyArray
+                  })
+                }}
+              >
+                Apply Search
+              </StyledButton>
+            </div>
+          </div>
           <div
             style={{
               width: '100%',

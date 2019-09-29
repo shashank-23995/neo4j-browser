@@ -1,5 +1,6 @@
 import { handleCypherCommand } from '../commands/helpers/cypher'
 import * as _ from 'lodash'
+import { executeCommand } from 'shared/modules/commands/commandsDuck'
 const initialState = {
   record: undefined,
   entityType: undefined
@@ -428,6 +429,9 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
     let newAction = _.cloneDeep(action)
     newAction.cmd = cmd
     let [id, request] = handleCypherCommand(newAction, store.dispatch)
+    if (action.entityType === 'custom' && action.serachOperation === 'node') {
+      store.dispatch(executeCommand(cmd, id))
+    }
     return request
       .then(res => {
         if (res && res.records) {
