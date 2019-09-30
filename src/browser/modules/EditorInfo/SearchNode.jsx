@@ -60,7 +60,7 @@ export const colourStyles = {
  * @param {*} props
  */
 
-const InitialLabel = props => {
+const SearchComponent = props => {
   const [val, setVal] = useState(props.search)
   return (
     <div style={{ width: '100%', display: 'flex' }}>
@@ -98,7 +98,7 @@ const InitialLabel = props => {
           styles={colourStyles}
           // value={selectedLabel}
           onChange={selectedValue => {
-            if (val && val.value === 'Label') {
+            if (selectedValue && val && val.value === 'Label') {
               if (!props.selectedLabelArray.includes(selectedValue.value)) {
                 props.setSelectedLabelArray([
                   ...props.selectedLabelArray,
@@ -138,14 +138,7 @@ function SearchNode (props) {
   const [search, setSearch] = useState(null)
   const [selectedLabelArray, setSelectedLabelArray] = useState([])
   const [selectedPropertyKeyArray, setSelectedPropertyKeyArray] = useState([])
-  let [tempArray, setTempArray] = useState([
-    // <InitialLabel
-    //   search={search}
-    //   setSearch={setSearch}
-    //   labelList={props.labelList}
-    //   propertyKeyList={props.propertyKeyList}
-    // />
-  ])
+  let [searchComponentArray, setSearchComponentArray] = useState([])
   useEffect(() => {
     props.fetchSelectOptions('custom', 'label', {})
     props.fetchSelectOptions('custom', 'propertyKey', {})
@@ -187,7 +180,7 @@ function SearchNode (props) {
             I want to search node with
           </p>
 
-          {tempArray.map(item => item)}
+          {searchComponentArray.map(item => item)}
 
           <div
             style={{
@@ -200,9 +193,9 @@ function SearchNode (props) {
             <div style={{ width: '100%' }}>
               <StyledButton
                 onClick={() =>
-                  setTempArray([
-                    ...tempArray,
-                    <InitialLabel
+                  setSearchComponentArray([
+                    ...searchComponentArray,
+                    <SearchComponent
                       search={search}
                       setSearch={setSearch}
                       labelList={props.labelList}
@@ -221,8 +214,6 @@ function SearchNode (props) {
             <div style={{ width: '100%' }}>
               <StyledButton
                 onClick={() => {
-                  console.log('propertyKeyArray - ', selectedPropertyKeyArray)
-                  console.log('labelArray - ', selectedLabelArray)
                   props.fetchSelectOptions('custom', 'node', {
                     selectedLabelArray,
                     selectedPropertyKeyArray
@@ -246,10 +237,6 @@ function SearchNode (props) {
               isClearable
               placeholder='Result'
               styles={colourStyles}
-              // value={val}
-              // onChange={value => {
-              //   setVal(value)
-              // }}
               options={props.nodeList}
             />
           </div>
