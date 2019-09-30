@@ -456,17 +456,19 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
             } else if (action.serachOperation === 'node') {
               let optionsList
               if (res.records.length === 1) {
-                if (Object.keys(record._fields.properties).length !== 0) {
-                  return {
+                if (
+                  Object.keys(res.records[0]._fields[0].properties).length !== 0
+                ) {
+                  optionsList = {
                     label: Object.values(
-                      record._fields.properties
+                      res.records[0]._fields[0].properties
                     )[0].toString(),
-                    value: record._fields
+                    value: res.records[0]._fields[0]
                   }
                 } else {
-                  return {
-                    label: record._fields.identity.toInt(),
-                    value: record._fields
+                  optionsList = {
+                    label: res.records[0]._fields[0].identity.toInt(),
+                    value: res.records[0]._fields[0]
                   }
                 }
               } else {
