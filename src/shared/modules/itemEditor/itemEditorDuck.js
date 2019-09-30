@@ -1,5 +1,6 @@
 import { handleCypherCommand } from '../commands/helpers/cypher'
 import * as _ from 'lodash'
+import { executeCommand } from 'shared/modules/commands/commandsDuck'
 const initialState = {
   record: undefined,
   entityType: undefined
@@ -14,6 +15,9 @@ export const FETCH_SELECT_OPTIONS_LIST = `${NAME}/FETCH_SELECT_OPTIONS_LIST`
 export const SET_RELATIONSHIPTYPE_LIST = `${NAME}/SET_RELATIONSHIPTYPE_LIST`
 export const SET_LABEL_LIST = `${NAME}/SET_LABEL_LIST`
 export const SET_NODE_LIST = `${NAME}/SET_NODE_LIST`
+export const SEARCH_LABEL_LIST = `${NAME}/SEARCH_LABEL_LIST`
+export const SEARCH_PROPERTYKEY_LIST = `${NAME}/SEARCH_PROPERTYKEY_LIST`
+export const SEARCH_NODE_LIST = `${NAME}/SEARCH_NODE_LIST`
 
 // Actions
 /**
@@ -44,11 +48,16 @@ export const editEntityAction = (editPayload, editType, entityType) => {
   }
 }
 
-export const fetchSelectOptions = (entityType, serachOperation) => {
+export const fetchSelectOptions = (
+  entityType,
+  serachOperation,
+  searchPayload = null
+) => {
   return {
     type: FETCH_SELECT_OPTIONS_LIST,
     entityType,
-    serachOperation
+    serachOperation,
+    searchPayload
   }
 }
 
@@ -74,6 +83,21 @@ export default function reducer (state = initialState, action) {
         labelList: action.labelList
       }
     case SET_NODE_LIST:
+      return {
+        ...state,
+        nodeList: action.nodeList
+      }
+    case SEARCH_LABEL_LIST:
+      return {
+        ...state,
+        labelList: action.labelList
+      }
+    case SEARCH_PROPERTYKEY_LIST:
+      return {
+        ...state,
+        propertyKeyList: action.propertyKeyList
+      }
+    case SEARCH_NODE_LIST:
       return {
         ...state,
         nodeList: action.nodeList
@@ -335,56 +359,183 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
         return noop
       })
     }
-    let cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
-    if (action.serachOperation === 'relationshipType') {
-      cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
-    } else if (action.serachOperation === 'label') {
-      cmd = `CALL db.labels() YIELD label RETURN {name:'labels', data:COLLECT(label)} as result`
+    let cmd = `CALL db.labels() YIELD label RETURN COLLECT(label) as result`
+    if (action.entityType === 'custom') {
+      if (action.serachOperation === 'label') {
+        cmd = `CALL db.labels() YIELD label RETURN COLLECT(label) as result`
+      } else if (action.serachOperation === 'propertyKey') {
+        cmd = `CALL db.propertyKeys() YIELD propertyKey RETURN COLLECT(propertyKey) as result`
+      } else if (action.serachOperation === 'node') {
+        // form custom cypher query to search nodes
+        let selectedLabelArray = action.searchPayload.selectedLabelArray
+        let selectedPropertyKeyArray =
+          action.searchPayload.selectedPropertyKeyArray
+        let LabelCondition = ''
+        let propertyKeyCondition = ''
+        action.searchPayload.selectedPropertyKeyArray
+        if (selectedLabelArray.length !== 0) {
+          for (let i = 0; i < selectedLabelArray.length; i++) {
+            LabelCondition = LabelCondition + 'n:' + selectedLabelArray[i]
+            if (i !== selectedLabelArray.length - 1) {
+              LabelCondition = LabelCondition + ' AND '
+            }
+          }
+        }
+        if (selectedPropertyKeyArray.length !== 0) {
+          for (let i = 0; i < selectedPropertyKeyArray.length; i++) {
+            propertyKeyCondition =
+              propertyKeyCondition +
+              `n.\`${selectedPropertyKeyArray[i].key}\`=\"${
+                selectedPropertyKeyArray[i].value
+              }\"`
+
+            if (i !== selectedPropertyKeyArray.length - 1) {
+              propertyKeyCondition = propertyKeyCondition + ' AND '
+            }
+          }
+        }
+
+        if (
+          selectedLabelArray.length !== 0 &&
+          selectedPropertyKeyArray.length !== 0
+        ) {
+          cmd = `MATCH (n) WHERE ${LabelCondition} AND ${propertyKeyCondition} RETURN n`
+        } else if (
+          selectedLabelArray.length !== 0 &&
+          selectedPropertyKeyArray.length === 0
+        ) {
+          cmd = `MATCH (n) WHERE ${LabelCondition} RETURN n`
+        } else if (
+          selectedLabelArray.length === 0 &&
+          selectedPropertyKeyArray.length !== 0
+        ) {
+          cmd = `MATCH (n) WHERE ${propertyKeyCondition} RETURN n`
+        } else if (
+          selectedLabelArray.length === 0 &&
+          selectedPropertyKeyArray.length === 0
+        ) {
+          cmd = `MATCH (n) RETURN n`
+        }
+      }
     } else {
-      cmd = `MATCH (n:\`${action.serachOperation}\`) RETURN n`
+      cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
+      if (action.serachOperation === 'relationshipType') {
+        cmd = `CALL db.relationshipTypes() YIELD relationshipType RETURN {name:'relationshipTypes', data:COLLECT(relationshipType)} as result`
+      } else if (action.serachOperation === 'label') {
+        cmd = `CALL db.labels() YIELD label RETURN {name:'labels', data:COLLECT(label)} as result`
+      } else {
+        cmd = `MATCH (n:\`${action.serachOperation}\`) RETURN n`
+      }
     }
     let newAction = _.cloneDeep(action)
     newAction.cmd = cmd
     let [id, request] = handleCypherCommand(newAction, store.dispatch)
+    if (action.entityType === 'custom' && action.serachOperation === 'node') {
+      store.dispatch(executeCommand(cmd, id))
+    }
     return request
       .then(res => {
         if (res && res.records) {
-          if (action.serachOperation === 'relationshipType') {
-            let optionsList = res.records[0]._fields[0].data.map(
-              (item, index) => {
+          if (action.entityType === 'custom') {
+            if (action.serachOperation === 'label') {
+              let optionsList = res.records[0]._fields[0].map((item, index) => {
                 return { label: item, value: item }
-              }
-            )
-            store.dispatch({
-              type: SET_RELATIONSHIPTYPE_LIST,
-              relationshipTypeList: optionsList
-            })
-          } else if (action.serachOperation === 'label') {
-            let optionsList = res.records[0]._fields[0].data.map(
-              (item, index) => {
-                return {
-                  label: item,
-                  value: item
+              })
+              store.dispatch({
+                type: SEARCH_LABEL_LIST,
+                labelList: optionsList
+              })
+            } else if (action.serachOperation === 'propertyKey') {
+              let optionsList = res.records[0]._fields[0].map((item, index) => {
+                return { label: item, value: item }
+              })
+              store.dispatch({
+                type: SEARCH_PROPERTYKEY_LIST,
+                propertyKeyList: optionsList
+              })
+            } else if (action.serachOperation === 'node') {
+              let optionsList
+              if (res.records.length === 1) {
+                if (Object.keys(record._fields.properties).length !== 0) {
+                  return {
+                    label: Object.values(
+                      record._fields.properties
+                    )[0].toString(),
+                    value: record._fields
+                  }
+                } else {
+                  return {
+                    label: record._fields.identity.toInt(),
+                    value: record._fields
+                  }
                 }
+              } else {
+                optionsList = res.records.map((record, index) => {
+                  if (Object.keys(record._fields[0].properties).length !== 0) {
+                    return {
+                      label: Object.values(
+                        record._fields[0].properties
+                      )[0].toString(),
+                      value: record._fields[0]
+                    }
+                  } else {
+                    return {
+                      label: record._fields[0].identity.toInt(),
+                      value: record._fields[0]
+                    }
+                  }
+                })
               }
-            )
-            store.dispatch({
-              type: SET_LABEL_LIST,
-              labelList: optionsList
-            })
+              store.dispatch({
+                type: SEARCH_NODE_LIST,
+                nodeList: optionsList
+              })
+            }
           } else {
-            let optionsList = res.records.map((record, index) => {
-              return {
-                label: Object.values(
-                  record._fields[0].properties
-                )[0].toString(),
-                value: record._fields[0]
-              }
-            })
-            store.dispatch({
-              type: SET_NODE_LIST,
-              nodeList: optionsList
-            })
+            if (action.serachOperation === 'relationshipType') {
+              let optionsList = res.records[0]._fields[0].data.map(
+                (item, index) => {
+                  return { label: item, value: item }
+                }
+              )
+              store.dispatch({
+                type: SET_RELATIONSHIPTYPE_LIST,
+                relationshipTypeList: optionsList
+              })
+            } else if (action.serachOperation === 'label') {
+              let optionsList = res.records[0]._fields[0].data.map(
+                (item, index) => {
+                  return {
+                    label: item,
+                    value: item
+                  }
+                }
+              )
+              store.dispatch({
+                type: SET_LABEL_LIST,
+                labelList: optionsList
+              })
+            } else {
+              let optionsList = res.records.map((record, index) => {
+                if (Object.keys(record._fields[0].properties).length !== 0) {
+                  return {
+                    label: Object.values(
+                      record._fields[0].properties
+                    )[0].toString(),
+                    value: record._fields[0]
+                  }
+                } else {
+                  return {
+                    label: record._fields[0].identity.toInt(),
+                    value: record._fields[0]
+                  }
+                }
+              })
+              store.dispatch({
+                type: SET_NODE_LIST,
+                nodeList: optionsList
+              })
+            }
           }
         }
         return noop
