@@ -30,20 +30,34 @@ export class EditorInfo extends Component {
               <>
                 {this.props.selectedItem ? (
                   this.props.selectedItem.node && (
-                    <ConfirmationButton
-                      requestIcon={<BinIcon />}
-                      confirmIcon={<BinIcon deleteAction />}
-                      onConfirmed={() => {
-                        this.props.editEntityAction(
-                          {
-                            nodeId: this.props.selectedItem.node.identity.toInt(),
-                            firstLabel: this.props.selectedItem.node.labels[0]
-                          },
-                          'delete',
-                          'node'
-                        )
+                    <div
+                      style={{
+                        fontSize: 14,
+                        float: 'right',
+                        marginRight: 24,
+                        marginTop: 5
                       }}
-                    />
+                    >
+                      <ConfirmationButton
+                        requestIcon={
+                          <div style={{ display: 'flex' }}>
+                            <BinIcon />
+                            <p>Delete Node</p>
+                          </div>
+                        }
+                        confirmIcon={<BinIcon deleteAction />}
+                        onConfirmed={() => {
+                          this.props.editEntityAction(
+                            {
+                              nodeId: this.props.selectedItem.node.identity.toInt(),
+                              firstLabel: this.props.selectedItem.node.labels[0]
+                            },
+                            'delete',
+                            'node'
+                          )
+                        }}
+                      />
+                    </div>
                   )
                 ) : (
                   <React.Fragment>
