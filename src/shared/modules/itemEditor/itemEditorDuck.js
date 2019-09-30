@@ -377,7 +377,7 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
           for (let i = 0; i < selectedLabelArray.length; i++) {
             LabelCondition = LabelCondition + 'n:' + selectedLabelArray[i]
             if (i !== selectedLabelArray.length - 1) {
-              LabelCondition = LabelCondition + ' OR '
+              LabelCondition = LabelCondition + ' AND '
             }
           }
         }
@@ -385,20 +385,21 @@ export const handleFetchSelectOptionsEpic = (action$, store) =>
           for (let i = 0; i < selectedPropertyKeyArray.length; i++) {
             propertyKeyCondition =
               propertyKeyCondition +
-              'exists' +
-              `(n.\`${selectedPropertyKeyArray[i]}\`)`
+              `n.\`${selectedPropertyKeyArray[i].key}\`=\"${
+                selectedPropertyKeyArray[i].value
+              }\"`
+
             if (i !== selectedPropertyKeyArray.length - 1) {
-              propertyKeyCondition = propertyKeyCondition + ' OR '
+              propertyKeyCondition = propertyKeyCondition + ' AND '
             }
           }
         }
-        console.log(LabelCondition)
 
         if (
           selectedLabelArray.length !== 0 &&
           selectedPropertyKeyArray.length !== 0
         ) {
-          cmd = `MATCH (n) WHERE ${LabelCondition} OR ${propertyKeyCondition} RETURN n`
+          cmd = `MATCH (n) WHERE ${LabelCondition} AND ${propertyKeyCondition} RETURN n`
         } else if (
           selectedLabelArray.length !== 0 &&
           selectedPropertyKeyArray.length === 0
