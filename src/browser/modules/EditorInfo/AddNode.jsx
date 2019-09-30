@@ -51,6 +51,7 @@ function Node (props) {
                   }}
                   onConfirmed={() => {
                     handleToggle(!textField)
+                    handleChange('')
                     if (nodeLabel.length > 0) {
                       props.editEntityAction(
                         { nodeLabel: nodeLabel },
