@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { PropertiesSection } from './DisplayNodeDetails'
 import { ConfirmationButton } from 'browser-components/buttons/ConfirmationButton'
-import { StyledFavFolderButtonSpan } from '../Sidebar/styled'
 import DisplayRelationship from './DisplayRelationship'
 import { ExpansionPanel } from './ExpansionPanel'
 import { BinIconBlack } from './DisplayLabel'
+import { BinIcon } from 'browser-components/icons/Icons'
+import { ConfirmationButtonBlack } from './ConfirmationButtonBlack'
 
 /**
  * Component to Expand Relationship Details
@@ -24,24 +25,38 @@ export const ExpandRelationshipDetails = props => {
     }  -- ${Object.values(props.value.end.properties)[0] ||
       props.value.end.identity.toInt()}`
   }
-  const panelActions = (
-    <StyledFavFolderButtonSpan>
-      <ConfirmationButton
-        requestIcon={<BinIconBlack />}
-        confirmIcon={<BinIconBlack deleteAction />}
-        onConfirmed={() => {
-          // delete the relationship based on ID
-          props.editEntityAction(
-            {
-              relationshipId: props.value.segments[0].relationship.identity.toInt(),
-              nodeId: props.selectedNodeId
-            },
-            'delete',
-            'relationship'
-          )
-        }}
-      />
-    </StyledFavFolderButtonSpan>
+  const panelActions = open ? (
+    <ConfirmationButton
+      requestIcon={<BinIcon />}
+      confirmIcon={<BinIcon deleteAction />}
+      onConfirmed={() => {
+        // delete the relationship based on ID
+        props.editEntityAction(
+          {
+            relationshipId: props.value.segments[0].relationship.identity.toInt(),
+            nodeId: props.selectedNodeId
+          },
+          'delete',
+          'relationship'
+        )
+      }}
+    />
+  ) : (
+    <ConfirmationButtonBlack
+      requestIcon={<BinIconBlack />}
+      confirmIcon={<BinIconBlack deleteAction />}
+      onConfirmed={() => {
+        // delete the relationship based on ID
+        props.editEntityAction(
+          {
+            relationshipId: props.value.segments[0].relationship.identity.toInt(),
+            nodeId: props.selectedNodeId
+          },
+          'delete',
+          'relationship'
+        )
+      }}
+    />
   )
 
   return (
@@ -50,8 +65,6 @@ export const ExpandRelationshipDetails = props => {
         marginLeft: 1,
         marginRight: 1,
         marginBottom: 5,
-        backgroundColor: '#efeff4',
-        padding: 5,
         borderRadius: 5
       }}
     >
